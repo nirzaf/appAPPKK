@@ -33,8 +33,6 @@ namespace appBLL
 
             try
             {
-                //connectionString = System.Configuration.ConfigurationManager.AppSettings["ScriptDatabase"];
-                //connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ScriptDatabase"].ToString();
                 connectionString = "";
                 connection = new SqlConnection();
                 connection.ConnectionString = connectionString;
