@@ -1,0 +1,10 @@
+@model appAPP.Models.~prog~ViewModel
+@{
+    Layout = null;
+}
+
+     <div style="background-color: transparent; padding: 0px; margin:0px;">
+   
+      <partial name="~prog~ShowDetail" model="Model" />
+
+     </div>

@@ -1,0 +1,351 @@
+@model appAPP.Models.ChildAddViewModel
+
+
+    <style type="text/css">
+  
+      #ui-datepicker-div
+      {
+          z-index:9999999;
+      }
+    
+       /* Changes Calendar size */
+      .ui-datepicker { font-size:9pt !important}
+
+
+    </style>
+
+
+<script language="javascript" type="text/javascript">
+
+    //Url.Action(Action, Contoller)
+    var urlInsert7 = '@Url.Action("ReloadAdd","Home")';
+
+    function LayoutShowChildAddProgressBar() {
+        //Progress Bar Display.
+        $("#overlayprogressChildAdd").css("visibility", "visible");
+        $("#overlayprogressChildAdd").css("display", "block");
+
+        $("#showSpinChildAdd").css("display", "block");
+        //End Progress Bar
+    }
+
+    function LayoutHideChildAddProgressBar() {
+        //alert("LayoutHide");
+        //Hide Progress Bar Display.
+        $("#overlayprogressChildAdd").css("visibility", "hidden");
+        $("#overlayprogressChildAdd").css("display", "none");
+
+        $("#showSpinChildAdd").css("display", "none");
+        //End Hide Progress Bar
+    }
+
+
+
+
+    function GenerateCodein() {
+        //Doneit();  //test only
+        //LayoutShowProgressBar();  //found in _Layout.cshtml
+        LayoutShowChildAddProgressBar();
+
+        //$("#VSOLUTIONDetailForm #aspxrazorcombo").val($("#aspxrazorcombo_in").val());
+        //$("#VSOLUTIONDetailForm #adoefcombo").val($("#adoefcombo_in").val());
+        //$("#VSOLUTIONDetailForm #vscombo").val($("#vscombo_in").val());
+        if (document.getElementById('tablename').value.trim() == "") {
+            alert("Please enter Table Table.");
+            //LayoutHideProgressBar();  //found in _Layout.cshtml
+            LayoutHideChildAddProgressBar();
+            return false;
+        }
+        if (document.getElementById('progname').value.trim() == "") {
+            alert("Please enter Program Name.");
+            //LayoutHideProgressBar();  //found in _Layout.cshtml
+            LayoutHideChildAddProgressBar();
+            return false;
+        }
+
+        if (document.getElementById('primarykey').value.trim() == "") {
+            alert("Please enter all columns.");
+            //LayoutHideProgressBar();  //found in _Layout.cshtml
+            LayoutHideChildAddProgressBar();
+            return false;
+        }
+        if (document.getElementById('column1').value.trim() == "") {
+            alert("Please enter all columns.");
+            //LayoutHideProgressBar();  //found in _Layout.cshtml
+            LayoutHideChildAddProgressBar();
+            return false;
+        }
+        if (document.getElementById('column2').value.trim() == "") {
+            alert("Please enter all columns.");
+            //LayoutHideProgressBar();  //found in _Layout.cshtml
+            LayoutHideChildAddProgressBar();
+            return false;
+        }
+        if (document.getElementById('column3').value.trim() == "") {
+            alert("Please enter all columns.");
+            //LayoutHideProgressBar();  //found in _Layout.cshtml
+            LayoutHideChildAddProgressBar();
+            return false;
+        }
+        if (document.getElementById('column4').value.trim() == "") {
+            alert("Please enter all columns.");
+            //LayoutHideProgressBar();  //found in _Layout.cshtml
+            LayoutHideChildAddProgressBar();
+            return false;
+        }
+
+        var ParentPKID = $("#ParentGeneralDiv [name=PK_ID]").val();
+        $("#ChildAddForm [name=ParentPKID]").val(ParentPKID);
+
+        var ChildNo = $("#ChildCounterDiv [name=CHILDNUMBER]").val();
+        $("#ChildAddForm [name=ChildNumber]").val(ChildNo);
+
+        var ParentProg = $("#ParentProgNameDiv [name=PARENTPROG]").val();
+        $("#ChildAddForm [name=ParentProgName]").val(ParentProg);
+
+        var ParentProgPKID = $("#ParentProgPKIDDiv [name=PARENTPKID]").val();
+        $("#ChildAddForm [name=ParentProgPKID]").val(ParentProgPKID);
+
+        formData828 = $("#ChildAddForm").serialize();   //sets up Primary Key
+        //alert("formData " + formData828);
+
+        setTimeout(PostScriptGenCodeServer, 30);
+    }
+    //Get record details from Database and then display on form
+    function PostScriptGenCodeServer() {
+        //Url.Action(Action, Contoller)
+        //alert("in post");
+        var Names130DetailURL7 = '@Url.Action("GenerateCodeCHILD", "ENTITYTABLE")';
+        $.post(Names130DetailURL7, formData828, function (data, textStatus) {
+            DisplayGenCodeRecord(data);
+        }, "json");
+
+
+    }
+    function DisplayGenCodeRecord(jsonScript) {
+        //LayoutHideProgressBar();  //found in _Layout.cshtml
+        LayoutHideChildAddProgressBar();
+        var returnMessage = "";
+
+        for (i = 0; i < jsonScript.ReturnMessage.length; i++) {
+            //returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "<br>";
+            returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "\n";
+        }
+
+        if (jsonScript.ReturnStatus == true) {
+            alert("Generated Code successfully Built.");
+            Doneit();
+        }
+        else {
+            alert("" + returnMessage);
+        }
+    }
+
+    function Doneit() {
+        window.location.href = urlInsert7;
+
+    }
+
+
+
+
+</script>
+
+
+    <div id="ChildAddFormtopdiv" style="border: thin solid #C0C0C0; overflow: hidden;">
+
+
+        <form method="post" action="./" id="ChildAddForm">
+
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-xs visible-xs">.</div>
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-sm visible-sm">.</div>
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-md visible-md">.</div>
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-lg visible-lg">.</div>
+
+            <input name="PDFFlag" type="hidden" value="" />
+            <input name="Name_ID" type="hidden" value="" />
+            <input name="TimeDiff" type="hidden" value="" />
+
+            <input name="ParentPKID" type="hidden" value="" />
+            <input name="ChildNumber" type="hidden" value="" />
+            <input name="ParentProgName" type="hidden" value="" />
+            <input name="ParentProgPKID" type="hidden" value="" />
+
+            <input name="CurrentPageNumber" type="hidden" value="" />
+            <input name="CurrentRowNumber" type="hidden" value="" />
+            <input name="SortBy" type="hidden" value="" />
+            <input name="SortAscendingDescending" type="hidden" value="" />
+            <input name="PageSize" type="hidden" value="" />
+            <input name="PreviframeWidth" type="hidden" value="" />
+            <input name="PreviframeHeight" type="hidden" value="" />
+            <input name="ScrollWidthh" type="hidden" value="" />
+            <input name="OrigScreenWidthh" type="hidden" value="" />
+            <input name="ScrollPosition" type="hidden" value="" />
+
+            <div style="height:10px;">
+                &nbsp;
+            </div>
+
+            <table style="width:100%;">
+                <tr>
+                    <td align="center">
+                        <span style="font-weight:bold; font-family:Arial;font-size:16px;padding-right:1px;color:navy;"> Add New Child </span>
+                    </td>
+                </tr>
+            </table>
+           
+            <div style="height:35px;">
+                &nbsp;
+            </div>
+
+            <div id="Div1" style="padding-left: 0px; margin-left: 20px;margin-right:20px; display: block; font-size: 10px; background-color: white;">
+                <table border="0" style="background-color: white; width: 100%; border: solid 1px white">
+                    <tr>
+                        <td style="padding: 2px 0px 2px 0px; text-align: left; width: 100%;">
+                            <span style="font-size: 12px; display: inline-block; font-weight: bold;color: navy;">Child Table:&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <input style="font-size: 13px;display: inline-block;font-weight: bold;color: blue;width:160px;" name="tablename" type="text" id="tablename" value="Client_Care" />
+                            <span style="font-size: 11px; display: inline-block; font-weight: normal;">&nbsp;&nbsp;&nbsp;</span>
+                            <br />
+                            <span style="font-size: 12px; display: inline-block; font-weight: bold;color: navy;padding-top:9px;">Program Name:</span>
+                            <input style="font-size: 13px;display: inline-block;font-weight: bold;color: blue;width:160px;" name="progname" type="text" id="progname" value="Client_Care" />
+                            <span style="font-size: 11px; display: inline-block; font-weight: normal;padding-bottom:12px;">&nbsp;</span>
+                        </td>
+                        
+                    </tr>
+                </table>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped responsive-utilities">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Primary Key
+                                </th>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Column 1
+                                </th>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Column 2
+                                </th>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Column 3
+                                </th>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Column 4
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 130px;font-weight: bold;" name="primarykey" type="text" id="primarykey" value="EOC_ID" size="15" />
+                                    <br />
+                                    <select id="Select2" name="childcolumn177type" style="font-size: 11px; color: #800080;">
+                                        <option selected value="BigInt">BigInt</option>
+                                        <option value="Integer">Integer</option>
+                                    </select>
+                                </td>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 130px; display: inline-block;font-weight: bold;" name="column1" type="text" id="column1" value="Case_Manager" size="10" />
+                                    <br />
+                                    <select id="column1type" name="column1type" style="font-size: 10px; display: inline-block; color: #800080;">
+                                        <option selected value="Char">Char</option>
+                                        <option value="Date">Date</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Decimal">Decimal</option>
+                                    </select>
+                                </td>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 110px;" name="column2" type="text" id="column2" value="Client_Status" size="10" />
+                                    <br />
+                                    <select id="column2type" name="column2type" style="font-size: 10px; color: #800080;">
+                                        <option selected value="Char">Char</option>
+                                        <option value="Date">Date</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Decimal">Decimal</option>
+                                    </select>
+                                </td>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 110px;" name="column3" type="text" id="column3" value="First_Date_of_Episode" size="10" />
+                                    <br />
+                                    <select id="column3type" name="column3type" style="font-size: 10px; color: #800080;">
+                                        <option value="Char">Char</option>
+                                        <option selected value="Date">Date</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Decimal">Decimal</option>
+                                    </select>
+                                </td>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 110px;" name="column4" type="text" id="column4" value="Nature_of_Care" size="10" />
+                                    <br />
+                                    <select id="column4type" name="column4type" style="font-size: 10px; color: #800080;">
+                                        <option selected value="Char">Char</option>
+                                        <option value="Date">Date</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Decimal">Decimal</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+            <table border="0" style="width:90%;">
+                <tr>
+                    <td align="center">
+                        <table border="0" style="width:100%;">
+                            <tr>
+                                <td align="right" style="width:50%;">
+                                    <div style="height:15px;">
+                                        &nbsp;
+                                    </div>
+
+                                    <span style="font-weight:bold; font-family:Arial;font-size:13px;padding-right:7px;display:none;"> ChildAdd </span>
+                                    <input style="font-size:10px; float:left; display:block; padding-left: 20px; margin-left: 20px;" id="btnGenerate" type="button" class="btn btn-info" value="Generate Code" onclick="GenerateCodein();" />
+
+                                    <div style="height:40px;">
+                                        &nbsp;
+                                    </div>
+                                </td>
+                                <td style="width:50%;">
+
+                                    <div style="height:15px;">
+                                        &nbsp;
+                                    </div>
+
+                                    <div style="height:40px;">
+                                        &nbsp;
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+            </table>
+
+</form>
+
+</div>
+
+
+<div id="overlayprogressChildAdd" class="modalBackground2" style="position: absolute; left: 0px; background-color: #D8D8D8;overflow: hidden;
+    visibility: hidden; top: 0px; height: 100%; width: 100%; z-index: 300">
+</div>
+<div id="showSpinChildAdd" data-bind="visible: isSpinning"
+     style="position: absolute;top: 40%;margin: 5px auto 0;left: 45%;background-color:white;border-radius: 5px;display:none;border:1px solid silver">
+    <div style="height:7px;">
+        &nbsp;
+    </div>
+    &nbsp;<i class="fa fa-spinner fa-spin"></i>
+    <span style="font-size: 12px;color:navy;">Processing ...&nbsp;</span>
+    <div style="height:10px;">
+        &nbsp;
+    </div>
+</div>
+
+
+
+

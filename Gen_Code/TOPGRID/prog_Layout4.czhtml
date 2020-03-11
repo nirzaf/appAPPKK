@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Kal1Dog WebTech</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0" />
+
+    <meta name="description" content="ASP.NET SPA Build Code Tool">
+    <meta name="keywords" content="SPA,ASP.NET,MVC,innovative solution">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Add to Home">
+
+    <link rel="icon" href="@(Url.Content("~/Content/images/favicon2.png"))" type="image/png">
+    <link rel="shortcut icon" href="@(Url.Content("~/Content/images/favicon2.png"))" type="image/png">
+    <link rel="apple-touch-icon-precomposed" href="@(Url.Content("~/Content/images/favicon2.png"))" type="image/png">
+    <link rel="apple-touch-icon" href="@(Url.Content("~/Content/images/favicon2.png"))" type="image/png">
+    <link rel="android-touch-icon" href="@(Url.Content("~/Content/images/favicon2.png"))" type="image/png">
+
+    <link href="@Url.Content("~/Content/bootstrap.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Grid_list-min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+
+    <script src="@Url.Content("~/Scripts/jquery-3.2.1.min.js")" type="text/javascript"></script>
+    <link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/jquery.cookie.js")" type="text/javascript"></script>
+
+    <script language="javascript" type="text/javascript">
+
+    //The next function are for starting immediately a progressbar from a left side menu item
+    function LayoutShowProgressBar() {
+        //Progress Bar Display.
+        $("#overlayprogress").css("visibility", "visible");
+        $("#overlayprogress").css("display", "block");
+
+        $("#showSpin").css("display", "block");
+        //End Progress Bar
+    }
+    //The next function is called from the above left side menu item TOPGRID (ie Names.cshtml -> PostSearchToServer())
+    function LayoutHideProgressBar() {
+        //alert("LayoutHide");
+        //Hide Progress Bar Display.
+        $("#overlayprogress").css("visibility", "hidden");
+        $("#overlayprogress").css("display", "none");
+
+        $("#showSpin").css("display", "none");
+        //End Hide Progress Bar
+    }
+
+    </script>
+
+    <style>
+     body {
+         padding-top: 55px;
+     }
+
+
+#logindisplay
+    {
+        font-size: 12px;
+        display:block;
+        text-align:left;
+        margin:1px;
+        color: Navy;
+    }
+
+#logindisplay a:link
+    {
+        color: Navy;
+        text-decoration: underline;
+    }
+
+#logindisplay a:visited
+    {
+        color: Blue;
+        text-decoration: underline;
+    }
+
+#logindisplay a:hover
+    {
+        color: Blue;
+        text-decoration: none;
+    }
+
+    </style>
+
+</head>
+<body>
+
+     <div style="margin-left: 0px;overflow: hidden;">
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-left: 0px;">
+      <div class="container" style="margin-left: 0px;">
+       <div class="row" style="margin-left: 0px;">
+        <div class="col-sm-3 col-md-2 col-lg-2 navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" style="font-family: Arial; font-size: 15px; font-weight: bold; color: #800080">Generated SPA</a>
+        </div>
+        <div class="col-sm-9 col-md-10 col-lg-10 navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-left">
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>@Html.ActionLink("Charts", "About", "Home")</li>
+            <li>@Html.ActionLink("~prog~", "Display~prog~", "~prog~", null, new { onclick = "return LayoutShowProgressBar();" })</li>
+           <li class="dropdown">
+                  <a href="#" id="aboutpage" style="font-size:14px;"
+                     class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                      Names <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu" role="menu">
+                      <li style="font-size:12px;"><a href="@Url.Action("Display~prog~", "~prog~")">~prog~1</a></li>
+                      <li style="font-size:12px;"><a href="@Url.Action("Display~prog~", "~prog~")">~prog~2</a></li>
+                      <li style="font-size:12px;">@Html.ActionLink("~prog3~", "Display~prog~", "~prog~", null, new { onclick = "return LayoutShowProgressBar();" })</li>
+                  </ul>
+             </li>
+            <li>
+              <div id="logindisplay" style="margin-top:14px;">
+                @Html.Partial("_LogOnPartial")
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      </div>
+    </div>
+
+         <div class="container" style="margin-left: -11px;overflow: hidden;">
+             <div class="row" style="margin-left: 0px;overflow: hidden;">
+                 @RenderBody()
+             </div>
+         </div>
+
+        <div class="container" style="margin-left: 1px;overflow: hidden;margin: auto; max-width: 1200px;border:1px solid silver;">
+             <div class="row" style="margin-left: -17px;overflow: hidden;border:0px solid blue;">
+                 @RenderBody()
+             </div>
+         </div>
+
+         <div class="container" style="margin-left: 0px;overflow: hidden;">
+             <div class="row" style="margin-left: 0px;margin-top: 14px;overflow: hidden;">
+                 <div class="span12" style="text-align: left; font-family: Arial; font-size: 11px;overflow: hidden;">
+                     &copy; Copyright Kal1Dog <span id="copyYear"></span>
+                     &nbsp;&nbsp;<img src="@(Url.Content("~/Content/images/favicon2.png"))" alt="favicon" />
+                 </div>
+             </div>
+         </div>
+
+
+
+    </div>
+
+
+<div id="overlayprogress" class="modalBackground2" style="position: absolute; left: 0px; background-color: #D8D8D8;overflow: hidden;
+    visibility: hidden; top: 0px; height: 100%; width: 100%; z-index: 300">
+</div>
+<div id="showSpin" data-bind="visible: isSpinning"
+         style="position: absolute;top: 40%;margin: 5px auto 0;left: 45%;background-color:white;display:none;">
+        <i class="fa fa-spinner fa-spin"></i>
+        <span style="font-size: 12px;">Processing ...&nbsp; </span>
+</div>
+
+    <script src="@Url.Content("~/Scripts/jquery-3.2.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/jquery.cookie.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        // Return today's date and time
+        var currentTime = new Date()
+        // returns the year (four digits)
+        var yearin = currentTime.getFullYear();
+        $("#copyYear").text(yearin);
+
+    </script>
+
+        </body>
+        </html>

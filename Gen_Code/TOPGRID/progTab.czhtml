@@ -1,0 +1,264 @@
+@model appAPP.Models.~prog~ViewModel
+@{
+    Layout = null;
+}
+<style>
+   
+    /* Style the tab */
+    div.~prog~Tabtab {
+        overflow: hidden;
+        border-top: 1px solid #ccc;
+        border-bottom: 0px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        background-color: white;
+        border-top-left-radius:5px;
+        border-top-right-radius:5px;
+    }
+
+        /* Style the buttons inside the tab */
+        div.~prog~Tabtab button {
+            background-color: inherit;
+            float: left;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-top-left-radius:4px;
+            border-top-right-radius:4px;
+            outline: none;
+            cursor: pointer;
+            padding: 5px 8px;
+            transition: 0.3s;
+            font-size: 12px;
+            margin-left: 1px;
+            margin-top: 3px;
+            color: navy;
+            font-family:Arial;
+        }
+
+            /* Change background color of buttons on hover */
+            div.~prog~Tabtab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            div.~prog~Tabtab button.active {
+                background-color: #ccc;
+                color: black;
+                font-weight:bold;
+                font-family:Arial;
+                font-size: 13px;
+            }
+
+
+    div.~prog~Tabtabxs {
+        overflow: auto;
+        background-color: white;
+        border-top-left-radius:5px;
+        border-top-right-radius:5px;
+        white-space: nowrap;
+        border-top: 0px solid #ccc;
+        border-bottom: 0px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+    }
+
+        /* Style the buttons inside the tab */
+        div.~prog~Tabtabxs button {
+            background-color: inherit;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-top-left-radius:4px;
+            border-top-right-radius:4px;
+            outline: none;
+            cursor: pointer;
+            padding: 5px 8px;
+            transition: 0.3s;
+            font-size: 11px;
+            margin-left: 1px;
+            margin-top: 1px;
+            color: navy;
+            font-weight:normal;
+            font-family:Arial;
+        }
+
+            /* Change background color of buttons on hover */
+            div.~prog~Tabtabxs button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            div.~prog~Tabtabxs button.active {
+                background-color: #ccc;
+                color: black;
+                font-weight:bold;
+                font-family:Arial;
+                font-size: 12px;
+            }
+
+
+
+    /* Style the tab content */
+    .~prog~Tabtabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-bottom-left-radius:5px;
+        border-bottom-right-radius:5px;
+    }
+
+    
+.~prog~Tabclosebtn {
+    font-size: 17px;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    padding-right: 7px;
+    padding-top: 3px;
+}
+
+
+.~prog~Tabclosebtnsx {
+    font-size: 17px;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    padding-left: 4px;
+    padding-top: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+
+    /* Optional to have height on next div, so as record goes to top */
+</style>
+
+<div  id="~prog~Showtabtab" class="__toptabtabk" style="padding-top: 3px;height:380px;">
+
+    <div class="~prog~Tabtab hidden-xs">
+        <button class="~prog~Tabtablinks" onclick="~prog~TabOpenTab(event, '~prog~Tab~childprog1~', '~childprog1~')" id="~prog~TabdefaultOpen">~childprog1~</button>
+        <button class="~prog~Tabtablinks" onclick="~prog~TabOpenTab(event, '~prog~Tab~childprog2~', '~childprog2~')">~childprog2~</button>
+
+        <a href="javascript:void(0)" title="Close" class="~prog~Tabclosebtn" style="color: black;font-weight:bold;float:right;text-decoration: none;" onclick="~prog~HideChildALL();">&times;</a>
+    </div>
+ 
+    <div style="border:0px solid red;overflow-x: auto;display:inline-block;" class="visible-xs">
+            <table border="0" style="width:100%;">
+                <tr>
+                    <td align="left">
+                        <div class="~prog~Tabtabxs visible-xs">
+                            <button class="~prog~Tabtablinks" onclick="~prog~TabOpenTab(event, '~prog~Tab~childprog1~', '~childprog1~')" id="~prog~TabdefaultOpenxs">~childprog1~</button>
+                            <button class="~prog~Tabtablinks" onclick="~prog~TabOpenTab(event, '~prog~Tab~childprog2~', '~childprog2~')">~childprog2~</button>
+
+                        </div>
+                    </td>
+                    <td align="right">
+                        <a href="javascript:void(0)" title="Close" class="~prog~Tabclosebtnsx" style="color: black;font-weight:bold;text-decoration: none;" onclick="~prog~HideChildALL();">&times;</a>
+                    </td>
+                </tr>
+            </table>
+    </div>
+
+
+    <div id="~prog~Tab~childprog1~" class="~prog~Tabtabcontent">
+        <div id="~prog~Tab~childprog1~Div">
+
+        </div>
+    </div>
+    <div id="~prog~Tab~childprog2~" class="~prog~Tabtabcontent">
+        <div id="~prog~Tab~childprog2~Div">
+        
+        </div>
+    </div>
+
+</div>
+
+<div id="~prog~TabshowSpinPopup" data-bind="visible: isSpinning" style="display:none; position: absolute; top: 40px; left: 220px;">
+    <i class="fa fa-spinner fa-spin"></i>
+    <span class="updateProgressMessage">Processing ...</span>
+</div>
+
+
+<script language="javascript" type="text/javascript">
+
+    function ~prog~TabOpenTab(evt, tabName, ProgName) {
+        //alert("tabname is " + tabName);
+        //alert("evt is " + evt);
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("~prog~Tabtabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("~prog~Tabtablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+
+        var strAction = "Display" + ProgName;
+        var strController = ProgName;
+
+        //Controller/Action
+        var ~prog~Tabpagesrc = '/~prog~Tabk/~prog~TabActionk';  //new replace code example
+        ~prog~Tabpagesrc = ~prog~Tabpagesrc.replace("~prog~TabActionk", strAction);
+        ~prog~Tabpagesrc = ~prog~Tabpagesrc.replace("~prog~Tabk", strController);
+
+        //alert("pagesrc is " + ~prog~Tabpagesrc);  //TEST only display
+        $("#~prog~Tab" + ProgName + "Div").empty();
+        //$("#~prog~Tab" + ProgName + "Div").load(~prog~Tabpagesrc);
+
+        $("#~prog~Tab" + ProgName + "Div").load(~prog~Tabpagesrc, '', function (response, status, xhr) {
+            if (status == 'success') {
+                //alert("status text is: " + xhr.statusText);
+                //alert("response text is: " + xhr.responseText);
+                //get row number in Grid
+                var RowID = $("#~prog~Formtopdiv [name=CurrentRowNumber]").val();
+                setTimeout(ScrollToTop~prog~, 40, RowID);    //forces record to go to Top of Grid
+            }
+            else  //error or timeout, etc..
+            {
+                alert("Tab load problem is: " + xhr.statusText);
+                //alert("Tab load problem text is: " + xhr.responseText);
+            }
+
+        });
+
+
+    }
+
+    function ScrollToTop~prog~(indx) {
+        var row_ID2 = Number(indx) - 1;
+        //alert("row_ID22 " + row_ID2);
+        var imasterrowid2 = "~prog~master" + row_ID2;
+        var selectedPosy = 0;
+        //selectedPosx = document.getElementById(imasterrowid2).offsetLeft;
+        if (document.getElementById(imasterrowid2)) {
+            selectedPosy = document.getElementById(imasterrowid2).offsetTop;
+            //alert("selectedPosy is " + selectedPosy);
+            $("#idDiv~prog~TBody").scrollTop(selectedPosy);
+        }
+
+    }
+
+
+    // Get the element with id="defaultOpen" and click on it
+    //document.getElementById("~prog~TabdefaultOpen").click();
+
+    if (isBreakpointGet('xs')) {   //in Mobile device.
+        document.getElementById("~prog~TabdefaultOpenxs").click();
+    }
+    else {
+        document.getElementById("~prog~TabdefaultOpen").click();
+    }
+
+    setTimeout(LayoutHideProgressBar, 3000);   //wait 3 secs, just in case. Optional if CHILD Exists
+    //LayoutHideProgressBar();  //NOTE:-  Take out if CHILD exists, use above line instead. if NO CHILD then USE
+ 
+</script>

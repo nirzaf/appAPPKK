@@ -1,0 +1,416 @@
+@model appAPP.Models.~prog~ViewModel
+
+
+    <style type="text/css">
+  
+      #ui-datepicker-div
+      {
+          z-index:9999999;
+      }
+      
+    
+    </style>
+
+ <script language="javascript" type="text/javascript">
+
+    //Url.Action(Action, Controller)
+    var ~prog~GetURL = '@Url.Action("~prog~Search","~prog~")';
+
+
+    function ~prog~PostSearchToServer() {
+        //alert("in ~prog~PostSearchToServer " + ~prog~GetURL);
+     try {
+     
+            $.ajax(~prog~GetURL, {
+                type: 'GET',
+                data: ~prog~ListformData,
+                success: function (data, status, xhr) {
+                    ~prog~GetShowData(data);
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+                }
+
+            });
+
+      }
+        catch (err) {
+            alert("err message " + err.message);
+       }
+
+    }
+
+
+    function ~prog~GetShowData(~prog~returnHtml) {
+        //alert("in ~prog~PostSearchToServer " + ~prog~GetURL);
+     try {
+     
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+
+            //from now on down, the next lines are run after ajax call to Controller and subsequent database retrieval of records
+            $("#~prog~DivSearchResults").html('');                  
+            $("#~prog~DivSearchResults").append(~prog~returnHtml);        
+
+            var currentPageNumber = $("#~prog~Formtopdiv [name=CurrentPageNumber]").val();
+            var totalPages = $("#~prog~Formtopdiv [name=TotalPages]").val();
+            var totalRows = $("#~prog~Formtopdiv [name=TotalRows]").val();
+          
+            if (totalPages > 0)
+                ~prog~SetPagingLinks(currentPageNumber, totalPages);
+
+            if (totalRows == 1) {
+                var intPKIDD = $("#~prog~Formtopdiv #~prog~PK_IDD1").val();
+                //~prog~ShowChild(intPKIDD, 3, intPKIDD);   //expand 1 row automatically
+            }
+
+            if ($("#~prog~Formtopdiv [name=PageSizeNEW]").length != 0) {
+                var intPagesize = $("#~prog~Formtopdiv [name=PageSize]").val();
+                $("#~prog~Formtopdiv [name=PageSizeNEW]").val(intPagesize);
+            }
+
+            //Next is so to highlight row in grid that has been either updated or added
+            if ($("#~prog~Formtopdiv [name=~PK_ID~]").val() != 0) {
+                ~prog~newrowhighlight();
+            }
+
+            //$("#idDiv~prog~TBody").scrollTop(2);   //scroll down a little, for auto scrolling ONLY. Optional, take out if no auto scrolling
+
+            var currentSortBy = $("#~prog~Formtopdiv [name=SortBy]").val();
+            var currentSortAsc = $("#~prog~Formtopdiv [name=SortAscendingDescending]").val();
+
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            //Next part is for showing SORT up and down arrows on each sorted grid column
+            //Not much change needed really, but depends on how many columns. This code does 6 by default
+            if (currentSortBy == "~prog~FirstCol") {
+                ~prog~HighlightCol('~prog~FirstCol');  //highlight column
+
+                if (currentSortAsc == "DESC") {
+                    $("#~prog~Formtopdiv [name=FirstColDESC]").css("display", "inline-block");
+                }
+                else {
+                    $("#~prog~Formtopdiv [name=FirstColASC]").css("display", "inline-block");
+                }
+            }
+            if (currentSortBy == "~prog~SecondCol") {
+                ~prog~HighlightCol('~prog~SecondCol');
+
+                if (currentSortAsc == "DESC") {
+                    $("#~prog~Formtopdiv [name=SecondColDESC]").css("display", "inline-block");
+                }
+                else {
+                    $("#~prog~Formtopdiv [name=SecondColASC]").css("display", "inline-block");
+                }
+            }
+            if (currentSortBy == "~prog~ThirdCol") {
+                ~prog~HighlightCol('~prog~ThirdCol');
+                if (currentSortAsc == "DESC") {
+                    $("#~prog~Formtopdiv [name=ThirdColDESC]").css("display", "inline-block");
+                }
+                else {
+                    $("#~prog~Formtopdiv [name=ThirdColASC]").css("display", "inline-block");
+                }
+            }
+            if (currentSortBy == "~prog~FourthCol") {
+                ~prog~HighlightCol('~prog~FourthCol');
+                if (currentSortAsc == "DESC") {
+                    $("#~prog~Formtopdiv [name=FourthColDESC]").css("display", "inline-block");
+                }
+                else {
+                    $("#~prog~Formtopdiv [name=FourthColASC]").css("display", "inline-block");
+                }
+            }
+            if (currentSortBy == "~prog~FifthCol" || currentSortBy == "") {   //default Sort column  NOTE WELL (can be changed)
+                ~prog~HighlightCol('~prog~FifthCol');
+                if (currentSortAsc == "DESC") {
+                    $("#~prog~Formtopdiv [name=FifthColDESC]").css("display", "inline-block");
+                }
+                else {
+                    $("#~prog~Formtopdiv [name=FifthColASC]").css("display", "inline-block");
+                }
+            }
+            if (currentSortBy == "~prog~SixthCol") {
+                ~prog~HighlightCol('~prog~SixthCol');
+                if (currentSortAsc == "DESC") {
+                    $("#~prog~Formtopdiv [name=SixthColDESC]").css("display", "inline-block");
+                }
+                else {
+                    $("#~prog~Formtopdiv [name=SixthColASC]").css("display", "inline-block");
+                }
+            }
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+            var CurrentRowNo = $("#~prog~Formtopdiv [name=CurrentRowNumber]").val();
+            if (CurrentRowNo > 1) {
+                //~prog~resetablebg();                //reset grid table back to default  NEED?
+                //~prog~rowhighlight(CurrentRowNo);   //highlight row on page  NEED?
+            }
+
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+
+      }
+        catch (err) {
+            alert("err message " + err.message);
+       }
+
+    }
+
+
+   var ~prog~DelURL = '@Url.Action("Del~prog~","~prog~")';
+
+   var ~prog~formData;
+    function ~prog~DelRecord(PKID) {
+       $("#~prog~Formtopdiv [name=~PK_ID~]").val(PKID);   //Primary Key
+           
+       ~prog~formData = $("#~prog~Formtopdiv :input").serialize();  //get input values from div via class name
+
+       setTimeout(~prog~PostScriptDelIDToServer, 50);
+    }
+    //Delete record details from Database 
+    function ~prog~PostScriptDelIDToServer() {
+        //Url.Action(Action, Controller)
+      
+        var headersdel = {};
+        headersdel['MY-XSRF-TOKEN'] = $("[name='__RequestVerificationToken']").val();
+        //headersadd['MY-XSRF-TOKEN'] = "tets1234";  //to Test it, makes it fail, as token not matching with one in Controller.
+
+        //alert("gettoken is : " + $("[name='__RequestVerificationToken']").val() );
+
+        $.ajax(~prog~DelURL, {
+                    type: 'POST',
+                    data: ~prog~formData,
+                    datatype: 'json',
+                    headers: headersdel,
+                    success: function (data, status, xhr) {
+                       ~prog~ScriptDeleteComplete(data);
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+                    }
+
+         });
+
+
+        $("#~prog~Formtopdiv [name=CurrentPageNumber]").val(1);   //always set Page to 1 for DELETE of any record
+
+    }
+    function ~prog~ScriptDeleteComplete(jsonScript) {
+        $("#~prog~Formtopdiv [name=~PK_ID~]").val(0);  //so as not to pickup Deleted record in normal grid paging
+
+        ~prog~PostSearchForm();  //refresh grid on page, using CurrentPageNumber and CurrentRowNumber (could be changed from BLL)
+    }
+
+
+
+    var ~prog~DelALLURL = '@Url.Action("Del~prog~ALL","~prog~")';
+
+    function DeleteSelected() {
+        ~prog~formData = $("#~prog~Formtopdiv :input").serialize();  //get input values from div via class name
+        setTimeout(~prog~PostScriptDelIDToServerALL, 50);
+    }
+    //Delete All selected record details from Database 
+    function ~prog~PostScriptDelIDToServerALL() {
+        //Url.Action(Action, Controller)
+
+        var headersdelall = {};
+        headersdelall['MY-XSRF-TOKEN'] = $("[name='__RequestVerificationToken']").val();
+        //headersadd['MY-XSRF-TOKEN'] = "tets1234";  //to Test it, makes it fail, as token not matching with one in Controller.
+
+        //alert("gettoken is : " + $("[name='__RequestVerificationToken']").val() );
+
+        $.ajax(~prog~DelALLURL, {
+                    type: 'POST',
+                    data: ~prog~formData,
+                    datatype: 'json',
+                    headers: headersdelall,
+                    success: function (data, status, xhr) {
+                        ~prog~ScriptDeleteCompleteALL(data);
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+                    }
+
+        });
+
+
+        $("#~prog~Formtopdiv [name=CurrentPageNumber]").val(1);   //always set Page to 1 for DELETE of any record
+
+    }
+    function ~prog~ScriptDeleteCompleteALL(jsonScript) {
+        ~prog~PostSearchForm();  //refresh grid on page, using CurrentPageNumber and CurrentRowNumber (could be changed from BLL)
+    }
+
+
+
+ </script>
+
+<div id="~prog~Formtopdiv" style="border: 0px solid #C0C0C0; overflow: hidden;">
+
+    <form method="post" action="./" id="~prog~Form">
+
+       @Html.AntiForgeryToken()
+
+       <input name="PDFFlag" type="hidden" value="" />
+
+       <input name="~PK_ID~" type="hidden" value="" />
+       <input name="~FPK_ID~" type="hidden" value="" />
+       <input name="TimeDiff" type="hidden" value="" />
+
+        <input name="CurrentPageNumber" type="hidden" value="" />
+        <input name="CurrentRowNumber" type="hidden" value="" />
+        <input name="SortBy" type="hidden" value="" />
+        <input name="SortAscendingDescending" type="hidden" value="" />
+        <input name="PageSize" type="hidden" value="" />
+        <input name="PreviframeWidth" type="hidden" value="" />
+        <input name="PreviframeHeight" type="hidden" value="" />
+        <input name="ScrollWidthh" type="hidden" value="" />
+        <input name="OrigScreenWidthh" type="hidden" value="" />
+        <input name="ScrollPosition" type="hidden" value="" />
+
+    
+        <table border="0" style="width:100%; display: none;">
+            <tr>
+                <td align="center">
+                    <table border="0" style="width:100%;">
+                        <tr>
+                            <td align="right" style="width:50%;">
+                                <span style="font-weight:bold; font-family:Arial;font-size:13px;padding-right:7px;"> ~prog~  </span>
+                            </td>
+                            <td style="width:50%;">
+                                <a title="Search Option" style="font-size: 11px;" href="javascript:~prog~SearchOption();">
+                                    Search
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+
+
+
+    <table name="~prog~SearchOption" style="background-color: #ebeff2;  width: 100%; border:solid 1px #9fb8e9; display: none;" >
+    <tr>
+    <td style="padding-left: 7px; padding-bottom: 6px; padding-top: 6px;">
+     <table style="width: 400px;" cellspacing="0" cellpadding="0">
+       <tr>
+            <td  colspan="2" style="width: 100px">
+                <span style="font-size: 11px; height:12px; width: 34px; display: block">Search</span>
+                <input style="width: 90px; font-size: 11px;" value="" name="GlobalSearchString" type="text" maxlength="50" />
+            </td>
+            
+            <td style="width: 300px; text-align: left">
+                <div style="font-size: 11px; height:12px; width: 150px; display:block">&nbsp;</div>
+                <input style="display: inline-block; font-size: 11px;" id="Button1" onclick="~prog~StartSearch();" class="btn btn-primary btn-xs" type="button" value="Search" />
+                <input style="display: inline-block; font-size: 11px;" id="Button2" class="btn btn-primary btn-xs" type="button" value="Reset" onclick="~prog~ResetPage();" /> 
+                <a title="Advanced Search" style="font-size: 11px;" href="javascript:~prog~AdvancedSearch();">
+                   Advanced Search
+                </a>
+            </td>
+        </tr>
+       </table>
+       <table name="~prog~AdvancedSearch" style="width: 400px; display:none;">
+        <tr>
+            ~chartypecol1~<td colspan="1" style="width: 200px">
+                ~chartypecol1~<span style="font-size: 11px; height:12px; display: block">~column1~</span>
+                ~chartypecol1~<input style="width: 120px; font-size: 11px;" value="" name="~column1~" type="text" maxlength="20" />
+            ~chartypecol1~</td>
+            ~chartypecol2~<td colspan="1" style="width: 200px">
+                ~chartypecol2~<span style="font-size: 11px; height:12px; display: block">~column2~</span>
+                ~chartypecol2~<input style="width: 120px; font-size: 11px;" value="" name="~column2~" type="text" maxlength="20" />
+            ~chartypecol2~</td>
+
+            ~inttypecol1~<td colspan="1" style="width: 200px">
+                ~inttypecol1~<span style="font-size: 11px; height:12px; display: block">~column1~</span>
+                ~inttypecol1~<input style="width: 120px; font-size: 11px;" value=""  name="~column1~" type="text" maxlength="20" />
+            ~inttypecol1~</td>
+            ~inttypecol2~<td colspan="1" style="width: 200px">
+                ~inttypecol2~<span style="font-size: 11px; height:12px; display: block">~column2~</span>
+                ~inttypecol2~<input style="width: 120px; font-size: 11px;" value="" name="~column2~" type="text" maxlength="20" />
+            ~inttypecol2~</td>
+
+            ~dectypecol1~<td colspan="1" style="width: 200px">
+                ~dectypecol1~<span style="font-size: 11px; height:12px; display: block">~column1~</span>
+                ~dectypecol1~<input style="width: 120px; font-size: 11px;" value=""  name="~column1~" type="text" maxlength="20" />
+            ~dectypecol1~</td>
+            ~dectypecol2~<td colspan="1" style="width: 200px">
+                ~dectypecol2~<span style="font-size: 11px; height:12px; display: block">~column2~</span>
+                ~dectypecol2~<input style="width: 120px; font-size: 11px;" value="" name="~column2~" type="text" maxlength="20" />
+            ~dectypecol2~</td>
+
+            ~datetypecol1~<td colspan="1" style="width: 200px">
+                ~datetypecol1~<span style="font-size: 11px; height:12px; display: block">~column1~</span>
+                 ~datetypecol1~<input readonly="ReadOnly" style="width: 70px; font-size: 10px; display: inline-block; text-align:center; margin:0px 3px 0px 0px" name="~column1~_Str" type="text" value=""/>
+            ~datetypecol1~</td>
+            ~datetypecol2~<td colspan="1" style="width: 200px">
+                ~datetypecol2~<span style="font-size: 11px; height:12px; display: block">~column2~</span>
+                 ~datetypecol2~<input readonly="ReadOnly" style="width: 70px; font-size: 10px; display: inline-block; text-align:center; margin:0px 3px 0px 0px" name="~column2~_Str" type="text" value=""/>
+            ~datetypecol2~</td>
+
+            <td style="width: 0px; text-align: left">
+                <div style="font-size: 11px; height:12px; width: 150px; display:block">&nbsp;</div>
+            </td>
+
+        </tr>
+        <tr>
+            ~chartypecol3~<td colspan="1" style="width: 200px">
+                ~chartypecol3~<span style="font-size: 11px; height:12px; display: block">~column3~</span>
+                ~chartypecol3~<input style="width: 120px; font-size: 11px;" value=""  name="~column3~" type="text" maxlength="20" />
+            ~chartypecol3~</td>
+            ~chartypecol4~<td colspan="1" style="width: 200px">
+                ~chartypecol4~<span style="font-size: 11px; height:12px; display: block">~column4~</span>
+                ~chartypecol4~<input style="width: 120px; font-size: 11px;" value="" name="~column4~" type="text" maxlength="20" />
+            ~chartypecol4~</td>
+
+            ~inttypecol3~<td colspan="1" style="width: 200px">
+                ~inttypecol3~<span style="font-size: 11px; height:12px; display: block">~column3~</span>
+                ~inttypecol3~<input style="width: 120px; font-size: 11px;" value=""  name="~column3~" type="text" maxlength="20" />
+            ~inttypecol3~</td>
+            ~inttypecol4~<td colspan="1" style="width: 200px">
+                ~inttypecol4~<span style="font-size: 11px; height:12px; display: block">~column4~</span>
+                ~inttypecol4~<input style="width: 120px; font-size: 11px;" value="" name="~column4~" type="text" maxlength="20" />
+            ~inttypecol4~</td>
+
+            ~dectypecol3~<td colspan="1" style="width: 200px">
+                ~dectypecol3~<span style="font-size: 11px; height:12px; display: block">~column3~</span>
+                ~dectypecol3~<input style="width: 120px; font-size: 11px;" value=""  name="~column3~" type="text" maxlength="20" />
+            ~dectypecol3~</td>
+            ~dectypecol4~<td colspan="1" style="width: 200px">
+                ~dectypecol4~<span style="font-size: 11px; height:12px; display: block">~column4~</span>
+                ~dectypecol4~<input style="width: 120px; font-size: 11px;" value="" name="~column4~" type="text" maxlength="20" />
+            ~dectypecol4~</td>
+
+            ~datetypecol3~<td colspan="1" style="width: 200px">
+                ~datetypecol3~<span style="font-size: 11px; height:12px; display: block">~column3~</span>
+                 ~datetypecol3~<input readonly="ReadOnly" style="width: 70px; font-size: 10px; display: inline-block; text-align:center; margin:0px 3px 0px 0px" name="~column3~_Str" type="text" value=""/>
+            ~datetypecol3~</td>
+            ~datetypecol4~<td colspan="1" style="width: 200px">
+                ~datetypecol4~<span style="font-size: 11px; height:12px; display: block">~column4~</span>
+                 ~datetypecol4~<input readonly="ReadOnly" style="width: 70px; font-size: 10px; display: inline-block; text-align:center; margin:0px 3px 0px 0px" name="~column4~_Str" type="text" value=""/>
+            ~datetypecol4~</td>
+
+            <td style="width: 0px; text-align: left">
+                <div style="font-size: 11px; height:12px; width: 150px; display:block">&nbsp;</div>
+            </td>
+
+        </tr>
+    </table>
+     </td>
+    </tr>
+    </table>
+  
+   </form>
+
+    <!-- next DIV is where the actual grid of records are displayed from the AJAX call -->
+    <div id="~prog~DivSearchResults">    
+     <partial name="~prog~Results" model="Model" />
+    </div>
+
+
+ </div>
+
+
+    <div id="confirm-dialog~prog~" style="display: none; font-family: Arial; font-size: 9px; font-weight: normal">
+     <textarea rows="3" cols="1" id="confirm-dialogText~prog~" name="confirm-dialogText~prog~" readonly="readonly" style="border-width: 0px; font-family: Arial; font-size: 11px; font-style: normal; color: #800080; width: 180px; height: 50px; max-height: 50px; min-height: 50px; overflow: hidden; display:none;"></textarea>
+    </div>
+

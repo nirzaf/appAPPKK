@@ -1,0 +1,450 @@
+@model appAPP.Models.~prog~ViewModel
+@{
+    Layout = null;
+}
+
+<style>
+    /* Style the tab */
+    div.~prog~Showtab {
+        overflow: hidden;
+        border-top: 1px solid #ccc;
+        border-bottom: 0px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        background-color: white;
+        border-top-left-radius:5px;
+        border-top-right-radius:5px;
+    }
+
+        /* Style the buttons inside the tab */
+        div.~prog~Showtab button {
+            background-color: inherit;
+            float: left;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-top-left-radius:4px;
+            border-top-right-radius:4px;
+            outline: none;
+            cursor: pointer;
+            padding: 5px 8px;
+            transition: 0.3s;
+            font-size: 12px;
+            margin-left: 1px;
+            margin-top: 3px;
+            color: navy;
+            font-family:Arial;
+        }
+
+            /* Change background color of buttons on hover */
+            div.~prog~Showtab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            div.~prog~Showtab button.active {
+                background-color: #ccc;
+                color: black;
+                font-weight:bold;
+                font-family:Arial;
+                font-size: 13px;
+            }
+
+
+    div.~prog~Showtabxs {
+        overflow: auto;
+        background-color: white;
+        border-top-left-radius:5px;
+        border-top-right-radius:5px;
+        white-space: nowrap;
+        border-top: 0px solid #ccc;
+        border-bottom: 0px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+    }
+
+        /* Style the buttons inside the tab */
+        div.~prog~Showtabxs button {
+            background-color: inherit;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-top-left-radius:4px;
+            border-top-right-radius:4px;
+            outline: none;
+            cursor: pointer;
+            padding: 5px 8px;
+            transition: 0.3s;
+            font-size: 11px;
+            margin-left: 1px;
+            margin-top: 1px;
+            color: navy;
+            font-weight:normal;
+            font-family:Arial;
+        }
+
+            /* Change background color of buttons on hover */
+            div.~prog~Showtabxs button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            div.~prog~Showtabxs button.active {
+                background-color: #ccc;
+                color: black;
+                font-weight:bold;
+                font-family:Arial;
+                font-size: 12px;
+            }
+
+
+    /* Style the tab content */
+    .~prog~Showtabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+
+    .~prog~Showclosebtn {
+        font-size: 17px;
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        padding-right: 7px;
+        padding-top: 3px;
+    }
+</style>
+
+
+<div id="~prog~ShowShowtabs" style="padding-top: 0px;background-color:white;">
+
+    <partial name="~prog~Detail" model="Model" />
+
+    <div class="~prog~Showtab hidden-xs">
+
+        <button class="~prog~Showtablinks" onclick="~prog~ShowAddChild('~prog~ShowStart', 'Child1')" id="~prog~ShowStartChild1">Add Child</button>
+
+    </div>
+    <div class="~prog~Showtabxs visible-xs">
+
+        <button class="~prog~Showtablinks" onclick="~prog~ShowAddChild('~prog~ShowStart', 'Child1')" id="~prog~ShowStartChild1xs">Add Child</button>
+
+    </div>
+
+    <div id="~prog~Show~childprog1~" class="~prog~Showtabcontent">
+        <div id="~prog~Show~childprog1~Div">
+
+        </div>
+    </div>
+    <div id="~prog~Show~childprog2~" class="~prog~Showtabcontent">
+         <div id="~prog~Show~childprog2~Div">
+
+        </div>
+    </div>
+    <div id="~prog~Show~childprog3~" class="~prog~Showtabcontent">
+        <div id="~prog~Show~childprog3~Div">
+
+        </div>
+    </div>
+    <div id="~prog~Show~childprog4~" class="~prog~Showtabcontent">
+         <div id="~prog~Show~childprog4~Div">
+
+        </div>
+    </div>
+    <div id="~prog~Show~childprog5~" class="~prog~Showtabcontent">
+         <div id="~prog~Show~childprog5~Div">
+
+        </div>
+    </div>
+   <div id="~prog~Show~childprog6~" class="~prog~Showtabcontent">
+        <div id="~prog~Show~childprog6~Div">
+
+        </div>
+    </div>
+    <div id="~prog~Show~childprog7~" class="~prog~Showtabcontent">
+         <div id="~prog~Show~childprog7~Div">
+
+        </div>
+    </div>
+    <div id="~prog~Show~childprog8~" class="~prog~Showtabcontent">
+         <div id="~prog~Show~childprog8~Div">
+
+        </div>
+    </div>
+
+</div>
+
+<div id="~prog~ShowshowSpinPopup" data-bind="visible: isSpinning" style="display:none; position: absolute; top: 40px; left: 220px;">
+    <i class="fa fa-spinner fa-spin"></i>
+    <span class="updateProgressMessage">Processing ...</span>
+</div>
+
+
+<script language="javascript" type="text/javascript">
+
+   var ~prog~urlChildDel = '/Home/ReloadDel';  
+   function ~prog~ShowDelChild(Prog, ChildNumber) {
+     var txt;
+     var r = confirm("Continue to Delete?");
+     if (r == true) {
+        // txt = "You pressed OK!";
+         ~prog~ShowDelChildStart(Prog, ChildNumber);
+      } else {
+        // txt = "You pressed Cancel!";
+      } 
+
+   }
+    function ~prog~ShowDelChildStart(Prog, ChildNumber) {
+        //LayoutShowProgressBar();  //found in _Layout.cshtml
+        $("#~prog~Formtopdiv [name=CurrentProgName]").val(Prog);
+        $("#~prog~Formtopdiv [name=CurrentChildNo]").val(ChildNumber);
+        var ParentProgName = "~prog~";
+        $("#~prog~Formtopdiv [name=ParenterProgName]").val(ParentProgName);
+        var TopProgName = "~topprog~";
+        $("#~prog~Formtopdiv [name=ToperProgName]").val(TopProgName);
+
+        ~prog~ChildDel = $("#~prog~Form").serialize();   //sets up Primary Key
+        //alert("formData " + ~prog~ChildDel);
+
+        setTimeout(~prog~ChildServerDEL, 30);
+    }
+  function ~prog~ChildServerDEL() {
+        //Url.Action(Action, Contoller)
+        //alert("in post");
+        var ~prog~ChildDelURL77 = '@Url.Action("GenerateCodeDELGrandChild", "ENTITYTABLE")';
+        $.post(~prog~ChildDelURL77, ~prog~ChildDel, function (data, textStatus) {
+            ~prog~ChildGenCodeRecordDEL(data);
+        }, "json");
+
+    }
+    function ~prog~ChildGenCodeRecordDEL(jsonScript) {
+        //LayoutHideProgressBar();  //found in _Layout.cshtml
+        var returnMessage = "";
+
+        for (i = 0; i < jsonScript.ReturnMessage.length; i++) {
+            //returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "<br>";
+            returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "\n";
+        }
+
+        if (jsonScript.ReturnStatus == true) {
+            alert("Generated Code successfully Deleted.");
+            ~prog~ChildDoneitDEL();
+        }
+        else {
+            alert("" + returnMessage);
+        }
+    }
+    function ~prog~ChildDoneitDEL() {
+        window.location.href = ~prog~urlChildDel;   //see up top for url
+    }
+
+
+
+  function ~prog~ShowAddChild(PKID, ChildNumber) {
+        //LayoutShowProgressBar();  //found in _Layout.cshtml
+
+        //var PrimPKID = $("#~prog~Formtopdiv [name=Name_ID]").val();
+        //alert("PrimPKID is " + PrimPKID);
+
+        //$("#~prog~Formtopdiv [name=Name_ID]").val(PKID);      //Primary Key
+        //$("#ParentGeneralDiv [name=PK_ID]").val(PKID);       //Store Primary Key for later processing in Child
+
+        $("#ChildCounterDiv [name=CHILDNUMBER]").val(ChildNumber);
+
+        var ParentProgName = "~prog~";
+        $("#ParentProgNameDiv [name=PARENTPROG]").val(ParentProgName);
+
+        var ParentProgPKID = "~PK_ID~";
+        $("#ParentProgPKIDDiv [name=PARENTPKID]").val(ParentProgPKID);
+
+        var TopProgName = "~topprog~";
+        $("#TopProgNameDiv [name=TOPPROG]").val(TopProgName);
+
+
+        var putTitle = "";
+        putTitle = "Add Child";
+       
+        //var strAction = "Contact";
+        //var strController = "Home";
+
+        var strAction = "DisplayGrandChildAdd";
+        var strController = "GrandChildAdd";
+
+        //Controller/Action
+        var pagesrc = '/Names17/Names1Detail7';  //new replace code example
+        pagesrc = pagesrc.replace("Names1Detail7", strAction);
+        pagesrc = pagesrc.replace("Names17", strController);
+        //alert("pagesrc is " + pagesrc);
+   
+        var dialogWidth = 0;
+        var dialogHeight = 0;
+        var topform = top.document.forms[0].id;   //use this to get TOP GRID Search form 
+        dialogWidth = document.getElementById(topform).offsetWidth;
+        dialogHeight = document.getElementById(topform).offsetHeight;
+        //var dialogHeight = 0;
+
+        var deviceHeight = (typeof window.outerHeight != 'undefined') ? Math.max(window.outerHeight, $(window).height()) : $(window).height();
+        //-------------------------------------------------------------------------------------------------------------------------------
+        //Checking for height of device. Optional, can take out
+        //-------------------------------------------------------------------------------------------------------------------------------
+        var HeightChk = "true";
+        if (isBreakpointGet('xs')) {   //in Mobile device.  Width < 768px
+            if (Number(deviceHeight) < 400) {
+                alert("Please increase Window Height, or use Portrait Mode, to proceed.");
+                LayoutHideProgressBar();  //found in _Layout.cshtml
+                HeightChk = "false";
+            }
+        }
+        else  //a screen > 768px wide
+        {
+            if (Number(deviceHeight) < 640) {
+                alert("Please increase Window Height, or use Portrait Mode, to proceed.");
+                LayoutHideProgressBar();  //found in _Layout.cshtml
+                HeightChk = "false";
+            }
+        }
+        //-------------------------------------------------------------------------------------------------------------------------------
+        //END Checking for height of device
+        //-------------------------------------------------------------------------------------------------------------------------------
+
+        //alert("deviceHeight " + deviceHeight);
+        if (isBreakpointGet('xs')) {   //in Mobile device. Getting this from ~prog~.cshtml now
+            dialogHeight = Number(deviceHeight) - 328;
+        }
+        else {
+            dialogHeight = Number(deviceHeight) - 350;  //so as cope with desktop window top part
+        }
+
+        var deviceWidth = (typeof window.outerWidth != 'undefined') ? Math.max(window.outerWidth, $(window).width()) : $(window).width();
+
+        if (isBreakpointGet('xs')) {   //in Mobile device. Getting this from ~prog~.cshtml now
+            dialogWidth = Number(deviceWidth) - 40;     //not used
+        }
+        else {
+            dialogWidth = Number(deviceWidth) - 240;   //not used
+        }
+
+
+        if (HeightChk == "true")  //Window Height OK to proceed
+        {
+
+            $("#~topprog~Modalk").css("display", "block");
+            $("#~topprog~modalkTitle").text(putTitle);
+
+            var Expandid = "Modal~topprog~OverlayK";              //div in prog.cshtml
+
+            var Expandheightpx = dialogHeight + "px";
+            document.getElementById(Expandid).style.height = Expandheightpx;
+
+            $("#Modal~topprog~OverlayK").empty();
+
+            if ($("#Modal~topprog~OverlayK").length == 0) {   //check if load destination div exists, first
+                //it doesn't exist
+                //LayoutHideProgressBar();  //found in _Layout.cshtml
+                alert("Div not found, for load. Check load statement. ");
+            }
+            else {
+
+                $('#Modal~topprog~OverlayK').load(pagesrc, '', function (response, status, xhr) {
+                    //alert("status is " + status);   //can be ("success", "notmodified", "error", "timeout", or "parsererror")
+                    if (status == 'success') {
+                        //alert("status text is: " + xhr.statusText);
+                        //alert("response text is: " + xhr.responseText);
+                        //LayoutHideProgressBar();  //found in _Layout.cshtml
+                    }
+                    else  //error or timeout, etc..
+                    {
+                        //LayoutHideProgressBar();  //found in _Layout.cshtml
+                        alert("Edit load problem is: " + xhr.statusText);
+                        alert("Edit load problem text is: " + xhr.responseText);
+                    }
+
+                });
+
+            }
+
+        }   //if (HeightChk == "true")  //Window Height OK to proceed
+
+    }
+  
+
+
+    function ~prog~ShowOpenTab(evt, tabName, ProgName) {
+        //alert("tabname is " + tabName);
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("~prog~Showtabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("~prog~Showtablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        //alert("cityname2 is " + cityName);
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+
+        var strAction = "Display" + ProgName;
+        var strController = ProgName;
+
+        //Controller/Action
+        var ~prog~Showpagesrc = '/~prog~Showk/~prog~ShowActionk';  //new replace code example
+        ~prog~Showpagesrc = ~prog~Showpagesrc.replace("~prog~ShowActionk", strAction);
+        ~prog~Showpagesrc = ~prog~Showpagesrc.replace("~prog~Showk", strController);
+
+        //alert("pagesrc is " + ~prog~Showpagesrc);  //TEST only display
+        $("#~prog~Show" + ProgName + "Div").empty();
+        //$("#~prog~Show" + ProgName + "Div").load(~prog~Showpagesrc);
+
+        $("#~prog~Show" + ProgName + "Div").load(~prog~Showpagesrc, '', function (response, status, xhr) {
+            if (status == 'success') {
+                //alert("status text is: " + xhr.statusText);
+                //alert("response text is: " + xhr.responseText);
+            }
+            else  //error or timeout, etc..
+            {
+                alert("Show load problem is: " + xhr.statusText);
+                //alert("Show load problem text is: " + xhr.responseText);
+            }
+
+        });
+
+    }
+
+    //Get the element with id="defaultOpen" and click on it
+    //document.getElementById("~prog~ShowdefaultOpen").click();
+
+          try {
+           //Get the element with id="defaultOpen" and click on it
+           if (isBreakpointGet('xs')) {   //in Mobile device.
+
+              var parentElement = document.getElementsByClassName("~prog~Showtabxs")[0];
+              var c = parentElement.children;
+              c[0].click();  //first Child Tab
+
+             //document.getElementById("~prog~ShowdefaultOpenxs").click();
+           }
+           else
+           {
+               var parentElement = document.getElementsByClassName("~prog~Showtab")[0];
+               var c = parentElement.children;
+               c[0].click();  //first Child Tab
+
+              //document.getElementById("~prog~ShowdefaultOpen").click();
+            }
+          }
+          catch (err) {
+            //alert("err message " + err.message);
+          }
+
+          setTimeout(LayoutHideProgressBar, 1000);   //wait 1 secs, just in case. Optional if CHILD Exists
+  
+
+</script>
+

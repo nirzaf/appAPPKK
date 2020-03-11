@@ -1,0 +1,583 @@
+@model appAPP.Models.ParentAddViewModel
+
+
+    <style type="text/css">
+  
+      #ui-datepicker-div
+      {
+          z-index:9999999;
+      }
+    
+       /* Changes Calendar size */
+      .ui-datepicker { font-size:9pt !important}
+
+
+/* The Modal (background) */
+.modalk {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place or can be absolute */
+    z-index: 1; /* Sit on top */
+    padding-top: 112px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: hidden; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.2); /* Black w/ opacity */
+ 
+}
+
+/* Modal Content */
+.modal-contentk {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 85%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+
+}
+
+.modal-bodyk {padding: 2px 6px;}
+
+.closebtn {
+    font-size: 17px;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    padding-right: 7px;
+    
+}
+
+.closebtn:hover {
+    text-decoration: none;
+}
+
+    </style>
+
+
+
+<script language="javascript" type="text/javascript">
+
+    //Url.Action(Action, Contoller)
+    var urlInsert7 = '@Url.Action("ReloadAdd","Home")';
+    var urlInsert7DEL = '@Url.Action("ReloadDel","Home")';
+
+    function ParentAddPopDialog(PKID, row_ID) {
+        LayoutShowProgressBar();  //found in _Layout.cshtml
+
+        //Names130HideChildALL();
+
+        //$("#Names130Formtopdiv [name=Name_ID]").val(PKID);      //Primary Key
+        //$("#ParentGeneralDiv [name=PK_ID]").val(PKID);       //Store Primary Key for later processing in Child
+
+        var putTitle = "";
+        if (PKID == -1) {
+            putTitle = "Add Parent";
+        }
+        else {
+            putTitle = "Edit Names130";
+            //Names130resetablebg();
+            //Names130rowhighlight(row_ID);
+        }
+
+        //var strAction = "Names130Detail";
+        //var strController = "Names130";
+
+        var strAction = "ParentAddDetail";
+        var strController = "ParentAdd";
+
+        //Url.Action(Action, Contoller)
+        var pagesrc = '/Names13077/Names130Detail77';  //new replace code example
+        pagesrc = pagesrc.replace("Names130Detail77", strAction);
+        pagesrc = pagesrc.replace("Names13077", strController);
+        //alert("pagesrc is " + pagesrc);
+        //var pagesrc = Names130DetailURL;
+
+        var dialogWidth = 0;
+        var dialogHeight = 0;
+        var topform = top.document.forms[0].id;   //use this to get TOP GRID Search form
+        dialogWidth = document.getElementById(topform).offsetWidth;
+        dialogHeight = document.getElementById(topform).offsetHeight;
+        //var dialogHeight = 0;
+        var deviceHeight = (typeof window.outerHeight != 'undefined') ? Math.max(window.outerHeight, $(window).height()) : $(window).height();
+        //-------------------------------------------------------------------------------------------------------------------------------
+        //Checking for height of device. NOT Doing anymore.
+        //-------------------------------------------------------------------------------------------------------------------------------
+        if (Number(deviceHeight) < 400)  //if device height less than 400px, then DO NOT Proceed. Please use Portrait mode in mobile
+        {
+            if (isBreakpointGet('xs')) {   //in Mobile device. Getting this from Names130.cshtml now
+                //alert("Please Use Portrait Mode, to proceed.");
+                //Names130HideProgressBar();
+                //return false;
+            }
+            else  //desktop or ipad device
+            {
+                //alert("Please increase Height, to proceed.");
+                //Names130HideProgressBar();
+                //return false;
+            }
+        }
+        //-------------------------------------------------------------------------------------------------------------------------------
+        //END Checking for height of device
+        //-------------------------------------------------------------------------------------------------------------------------------
+
+        //alert("deviceHeight " + deviceHeight);
+        if (isBreakpointGet('xs')) {   //in Mobile device. Getting this from Names130.cshtml now
+            dialogHeight = Number(deviceHeight) - 328;
+        }
+        else {
+            dialogHeight = Number(deviceHeight) - 350;  //so as cope with desktop window top part
+        }
+
+        var deviceWidth = (typeof window.outerWidth != 'undefined') ? Math.max(window.outerWidth, $(window).width()) : $(window).width();
+
+        if (isBreakpointGet('xs')) {   //in Mobile device. Getting this from Names130.cshtml now
+            dialogWidth = Number(deviceWidth) - 40;     //not used
+        }
+        else {
+            dialogWidth = Number(deviceWidth) - 240;   //not used
+        }
+
+        $("#ParentAddModalk").css("display", "block");
+        $("#ParentAddmodalkTitle").text(putTitle);
+
+        var Expandid = "ModalParentAddOverlayK";              //div in prog.cshtml
+
+        var Expandheightpx = dialogHeight + "px";
+        document.getElementById(Expandid).style.height = Expandheightpx;
+
+        //$("#OverlayNames130Detail").empty();  //erase OpenDetails in case
+        $("#ModalParentAddOverlayK").empty();
+
+        if ($("#ModalParentAddOverlayK").length == 0) {   //check if load destination div exists, first
+            //it doesn't exist
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            alert("Div not found, for load. Check load statement. ");
+        }
+        else {
+
+            $('#ModalParentAddOverlayK').load(pagesrc, '', function (response, status, xhr) {
+                //alert("status is " + status);   //can be ("success", "notmodified", "error", "timeout", or "parsererror")
+                if (status == 'success') {
+                    //alert("status text is: " + xhr.statusText);
+                    //alert("response text is: " + xhr.responseText);
+                    LayoutHideProgressBar();  //found in _Layout.cshtml
+                }
+                else  //error or timeout, etc..
+                {
+                    LayoutHideProgressBar();  //found in _Layout.cshtml
+                    alert("Edit load problem is: " + xhr.statusText);
+                    alert("Edit load problem text is: " + xhr.responseText);
+                }
+
+            });
+
+        }
+
+    }
+    function ParentAddCloseK() {
+        //alert("Names130closeK");
+        //$("#OverlayNames130Detail").empty();  //erase OpenDetails in case
+        $("#ModalParentAddOverlayK").empty();
+        $("#ParentAddModalk").css("display", "none");
+        $(".modal-contentk").css("width", "85%");   //so as set back to original size
+    }
+
+
+
+
+
+    function GenerateCodein() {
+        //Doneit();  //test only
+        LayoutShowProgressBar();  //found in _Layout.cshtml
+
+        //$("#VSOLUTIONDetailForm #aspxrazorcombo").val($("#aspxrazorcombo_in").val());
+        //$("#VSOLUTIONDetailForm #adoefcombo").val($("#adoefcombo_in").val());
+        //$("#VSOLUTIONDetailForm #vscombo").val($("#vscombo_in").val());
+        if (document.getElementById('tablename').value.trim() == "") {
+            alert("Please enter Table Table.");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            return false;
+        }
+        if (document.getElementById('progname').value.trim() == "") {
+            alert("Please enter Program Name.");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            return false;
+        }
+
+        if (document.getElementById('primarykey').value.trim() == "") {
+            alert("Please enter all columns.");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            return false;
+        }
+        if (document.getElementById('column1').value.trim() == "") {
+            alert("Please enter all columns.");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            return false;
+        }
+        if (document.getElementById('column2').value.trim() == "") {
+            alert("Please enter all columns.");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            return false;
+        }
+        if (document.getElementById('column3').value.trim() == "") {
+            alert("Please enter all columns.");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            return false;
+        }
+        if (document.getElementById('column4').value.trim() == "") {
+            alert("Please enter all columns.");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            return false;
+        }
+
+
+        formData828 = $("#ParentAddForm").serialize();   //sets up Primary Key
+        //alert("formData " + formData828);
+
+        setTimeout(PostScriptGenCodeServer, 30);
+    }
+    //Get record details from Database and then display on form
+    function PostScriptGenCodeServer() {
+        //Url.Action(Action, Contoller)
+        //alert("in post");
+        var Names130DetailURL7 = '@Url.Action("GenerateCodeNEW", "ENTITYTABLE")';
+        $.post(Names130DetailURL7, formData828, function (data, textStatus) {
+            DisplayGenCodeRecord(data);
+        }, "json");
+
+
+    }
+    function DisplayGenCodeRecord(jsonScript) {
+        LayoutHideProgressBar();  //found in _Layout.cshtml
+        var returnMessage = "";
+
+        for (i = 0; i < jsonScript.ReturnMessage.length; i++) {
+            //returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "<br>";
+            returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "\n";
+        }
+
+        if (jsonScript.ReturnStatus == true) {
+            alert("Generated Code successfully Built.");
+            Doneit();
+        }
+        else {
+            alert("" + returnMessage);
+        }
+    }
+
+    function Doneit() {
+        window.location.href = urlInsert7;
+
+    }
+
+    function GenerateCodeinDEL() {
+        var txt;
+        var r = confirm("Continue to Delete?");
+        if (r == true) {
+            // txt = "You pressed OK!";
+            GenerateCodeinDELStart();
+        } else {
+            // txt = "You pressed Cancel!";
+        } 
+
+    }
+
+    function GenerateCodeinDELStart() {
+        LayoutShowProgressBar();  //found in _Layout.cshtml
+
+        if (document.getElementById('progname').value.trim() == "") {
+            alert("Please enter Program Name.");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            return false;
+        }
+
+        formData8288 = $("#ParentAddForm").serialize();   //sets up Primary Key
+        //alert("formData " + formData8288);
+
+        setTimeout(PostScriptGenCodeServerDEL, 30);
+    }
+
+    function PostScriptGenCodeServerDEL() {
+        //Url.Action(Action, Contoller)
+        //alert("in post del");
+        var Names130DetailURL77 = '@Url.Action("GenerateCodeDEL", "ENTITYTABLE")';
+        //$.post(Names130DetailURL77, formData8288, function (data, textStatus) {
+          //  DisplayGenCodeRecordDEL(data);
+        //}, "json");
+
+
+        
+        $.ajax(Names130DetailURL77, {
+                    type: 'POST',
+                    data: formData8288,
+                    datatype: 'json',
+                    success: function (data, status, xhr) {
+                       DisplayGenCodeRecordDEL(data);
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+                    }
+
+         });
+
+
+    }
+
+
+    function DisplayGenCodeRecordDEL(jsonScript) {
+        //alert("in post after jsonScript is " + jsonScript);
+        LayoutHideProgressBar();  //found in _Layout.cshtml
+        var returnMessage = "";
+
+        for (i = 0; i < jsonScript.ReturnMessage.length; i++) {
+            //returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "<br>";
+            returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "\n";
+        }
+
+        if (jsonScript.ReturnStatus == true) {
+            alert("Generated Code successfully Deleted.");
+            DoneitDEL();
+        }
+        else {
+            alert("" + returnMessage);
+        }
+    }
+
+    function DoneitDEL() {
+        window.location.href = urlInsert7DEL;   //see up top for url
+    }
+
+
+
+</script>
+
+
+    <div id="ParentAddFormtopdiv" style="border: thin solid #C0C0C0; overflow: hidden;">
+
+
+        <form method="post" action="./" id="ParentAddForm">
+
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-xs visible-xs">.</div>
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-sm visible-sm">.</div>
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-md visible-md">.</div>
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-lg visible-lg">.</div>
+
+            <input name="PDFFlag" type="hidden" value="" />
+            <input name="Name_ID" type="hidden" value="" />
+            <input name="TimeDiff" type="hidden" value="" />
+
+            <input name="CurrentPageNumber" type="hidden" value="" />
+            <input name="CurrentRowNumber" type="hidden" value="" />
+            <input name="SortBy" type="hidden" value="" />
+            <input name="SortAscendingDescending" type="hidden" value="" />
+            <input name="PageSize" type="hidden" value="" />
+            <input name="PreviframeWidth" type="hidden" value="" />
+            <input name="PreviframeHeight" type="hidden" value="" />
+            <input name="ScrollWidthh" type="hidden" value="" />
+            <input name="OrigScreenWidthh" type="hidden" value="" />
+            <input name="ScrollPosition" type="hidden" value="" />
+
+            <div style="height:10px;">
+                &nbsp;
+            </div>
+
+            <table style="width:100%;">
+                <tr>
+                    <td align="center">
+                        <span style="font-weight:bold; font-family:Arial;font-size:16px;padding-right:1px;color:navy;"> Add/Delete Parent Table </span>
+                    </td>
+                </tr>
+            </table>
+           
+            <div style="height:35px;">
+                &nbsp;
+            </div>
+
+            <div id="Div1" style="padding-left: 0px; margin-left: 20px;margin-right:20px; display: block; font-size: 10px; background-color: white;">
+                <table border="0" style="background-color: white; width: 100%; border: solid 1px white">
+                    <tr>
+                        <td style="padding: 2px 0px 2px 0px; text-align: left; width: 100%;">
+                            <span style="font-size: 12px; display: inline-block; font-weight: bold;color: navy;">Parent Table:&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <input style="font-size: 13px;display: inline-block;font-weight: bold;color: blue;width:160px;" name="tablename" type="text" id="tablename" value="Names" />
+                            <span style="font-size: 11px; display: inline-block; font-weight: normal;">&nbsp;&nbsp;&nbsp;</span>
+                            <br />
+                            <span style="font-size: 12px; display: inline-block; font-weight: bold;color: navy;padding-top:9px;">Program Name:</span>
+                            <input style="font-size: 13px;display: inline-block;font-weight: bold;color: blue;width:160px;" name="progname" type="text" id="progname" value="Names" />
+                            <span style="font-size: 11px; display: inline-block; font-weight: normal;padding-bottom:12px;">&nbsp;</span>
+                        </td>
+                        
+                    </tr>
+                </table>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped responsive-utilities">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Primary Key
+                                </th>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Column 1
+                                </th>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Column 2
+                                </th>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Column 3
+                                </th>
+                                <th style="font-size: 12px; font-weight: normal;">
+                                    Column 4
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 130px;font-weight: bold;" name="primarykey" type="text" id="primarykey" value="NAME_ID" size="15" />
+                                    <br />
+                                    <select id="Select2" name="childcolumn177type" style="font-size: 11px; color: #800080;">
+                                        <option selected value="BigInt">BigInt</option>
+                                        <option value="Integer">Integer</option>
+                                    </select>
+                                </td>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 130px; display: inline-block;font-weight: bold;" name="column1" type="text" id="column1" value="Firstname" size="10" />
+                                    <br />
+                                    <select id="column1type" name="column1type" style="font-size: 10px; display: inline-block; color: #800080;">
+                                        <option selected value="Char">Char</option>
+                                        <option value="Date">Date</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Decimal">Decimal</option>
+                                    </select>
+                                </td>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 110px;" name="column2" type="text" id="column2" value="Lastname" size="10" />
+                                    <br />
+                                    <select id="column2type" name="column2type" style="font-size: 10px; color: #800080;">
+                                        <option selected value="Char">Char</option>
+                                        <option value="Date">Date</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Decimal">Decimal</option>
+                                    </select>
+                                </td>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 110px;" name="column3" type="text" id="column3" value="Date_of_birth" size="10" />
+                                    <br />
+                                    <select id="column3type" name="column3type" style="font-size: 10px; color: #800080;">
+                                        <option value="Char">Char</option>
+                                        <option selected value="Date">Date</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Decimal">Decimal</option>
+                                    </select>
+                                </td>
+                                <td class="is-visible">
+                                    <input style="font-size: 12px; width: 110px;" name="column4" type="text" id="column4" value="Update_Date" size="10" />
+                                    <br />
+                                    <select id="column4type" name="column4type" style="font-size: 10px; color: #800080;">
+                                        <option value="Char">Char</option>
+                                        <option selected value="Date">Date</option>
+                                        <option value="Integer">Integer</option>
+                                        <option value="Decimal">Decimal</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+            <table border="0" style="width:90%;">
+                <tr>
+                    <td align="center">
+                        <table border="0" style="width:100%;">
+                            <tr>
+                                <td align="right" style="width:50%;">
+                                    <div style="height:15px;">
+                                        &nbsp;
+                                    </div>
+
+                                    <span style="font-weight:bold; font-family:Arial;font-size:13px;padding-right:7px;display:none;"> ParentAdd </span>
+                                    <input style="font-size:14px; float:left; display:block; padding-left: 20px; margin-left: 20px;font-weight:bold;" id="btnGenerate" type="button" class="btn-lg btn-info" value="Generate Code" onclick="GenerateCodein();" />
+
+                                    <div style="height:160px;">
+                                        &nbsp;
+                                    </div>
+                                </td>
+                                <td style="width:50%;">
+
+                                    <div style="height:15px;">
+                                        &nbsp;
+                                    </div>
+
+                                    <input style="font-size:10px; float:left; display:block; padding-left: 10px; margin-left: 20px;" id="btnGenerateDEL" type="button" class="btn-xs btn-danger" value="Delete Generated Code" onclick="GenerateCodeinDEL();" />
+
+                                    <input type="button" value="New" class="btn btn-success btn-xs" onclick="ParentAddPopDialog(-1, 0)" style="font-family: Arial; font-size: 10px;display:none;" title="Create New Names130" />
+
+                                    <div style="height:160px;">
+                                        &nbsp;
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+            </table>
+
+</form>
+
+</div>
+
+
+
+<!-- Next Divs are key to whole App -->
+<div id="ParentAddModalk" class="modalk">
+<div class="modal-contentk">
+    <div class="modal-bodyk">
+        <div style="height: 1px;">
+            &nbsp;
+        </div>
+        <table border="0" style="width: 100%;">
+            <tr>
+                <td style="width: 100%;">
+                    <div style="border-radius: 5px;height: 32px;border: 1px solid #8c8c8c;background: #cccccc;background: linear-gradient(#e6e6e6, #bfbfbf);background: -webkit-linear-gradient(#e6e6e6, #bfbfbf);">
+                        <table border="0" style="width:100%;height: 30px;">
+                            <tr>
+                                <td align="left" style="width: 50%;">
+                                    <span id="ParentAddmodalkTitle" style="padding-left: 10px;font-size:11px;color: black;font-weight:bold;">test</span>
+                                </td>
+                                <td align="right" style="width: 50%;">
+                                    <input style="font-size:10px;display: none;" class="btn btn-sm" type="button" value="X" onclick="ParentAddCloseK();" />
+                                    <input style="font-size:10px;color: black;display: none;" type="button" value="X" onclick="ParentAddCloseK();" />
+                                    <a href="javascript:void(0)" title="Close" class="closebtn" style="color: black;font-weight:bold;" onclick="ParentAddCloseK();">&times;</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div style="height: 7px;">
+            &nbsp;
+        </div>
+        <div id="ModalParentAddOverlayK">
+
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div id="confirm-dialogParentAdd" style="display: none; font-family: Arial; font-size: 9px; font-weight: normal">
+ <textarea rows="3" cols="1" id="confirm-dialogTextParentAdd" name="confirm-dialogTextParentAdd" readonly="readonly" style="border-width: 0px; font-family: Arial; font-size: 11px; font-style: normal; color: #800080; width: 180px; height: 50px; max-height: 50px; min-height: 50px; overflow: hidden; display:none;"></textarea>
+</div>
+
+
+
+

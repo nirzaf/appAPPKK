@@ -1,0 +1,903 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+//using System.Web.Mvc;
+using System.Data.SqlClient;
+using System.Data;
+using System.Configuration;
+using System.Text;
+using System.IO;
+using System.Net.Mail;
+//using System.Media;
+using System.ComponentModel;
+using System.Threading.Tasks;
+
+using appBLL;
+using appMODEL;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+using iText.Html2pdf;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas;
+using iText.Kernel.Pdf.Xobject;
+using iText.Kernel.Events;
+using iText.Kernel.Geom;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using iText.Layout.Font;
+using iText.Kernel.Font;
+using iText.IO.Font.Constants;
+using iText.IO;
+using iText.Kernel.Utils;
+
+
+namespace appAPP.Controllers
+{
+
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Users = "kalvin,umesh")]
+    //[Authorize]
+    public class ~prog~Controller : Controller
+    {
+      
+        private IMemoryCache _Cache;
+        private IHostingEnvironment _Env;
+        private IHttpContextAccessor _Htp;
+        IConfiguration _iconfiguration;
+
+        public ~prog~Controller(IHostingEnvironment envrtmnt, IHttpContextAccessor htp, IConfiguration iconfiguration, IMemoryCache imemoryCache)
+        {
+            _Env = envrtmnt;
+            _Htp = htp;
+            _iconfiguration = iconfiguration;
+            _Cache = imemoryCache;
+
+        }
+
+
+        /// Display master Grid Page
+        /// Initial start point of displaying the Grid
+        public IActionResult Display~prog~()
+        {
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+          
+            ThisViewModel.TotalPages = 0;
+            ThisViewModel.TotalRows = 0;
+            ThisViewModel.CurrentPageNumber = 0;
+            //ThisViewModel.SortAscendingDescending = "DESC";  //default init setting. NOT NEEDED now
+
+            ViewData.Model = ThisViewModel;
+          
+            return View("~prog~Grid");   //must match View name
+        }
+
+       
+        /// Get actual records from Database
+        [HttpGet]
+        public async Task<PartialViewResult> ~prog~Search()
+        {
+            long totalRows;
+            long totalPages;
+            long pageRows;
+            bool returnStatus;
+            string returnErrorMessage;
+            long totalRowspdf;
+            long totalPagespdf;
+            long pageRowspdf;
+            bool returnStatuspdf;
+            string returnErrorMessagepdf;
+
+            ~prog~BLL ThisBLL = new ~prog~BLL();
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+         
+            await this.TryUpdateModelAsync(ThisViewModel);    //get search criteria form input
+
+            ThisViewModel.DBConnectString = _iconfiguration.GetSection("Data").GetSection("ConnectString").Value;
+
+            List<~prog~> scripts = ThisBLL.~prog~Search(
+                ThisViewModel,
+                ThisViewModel.CurrentPageNumber,
+                ThisViewModel.PageSize,
+                ThisViewModel.SortBy,
+                ThisViewModel.SortAscendingDescending,
+                out totalRows,
+                out totalPages,
+                out pageRows,
+                out returnStatus,
+                out returnErrorMessage);
+
+            ViewData["scripts"] = scripts;  //give back list array to View(ie ...Results) for processing(reading)
+      
+            ThisViewModel.TotalPages = totalPages;
+            ThisViewModel.TotalRows = totalRows;
+
+            ViewData.Model = ThisViewModel;
+
+
+            //Next is for doing the PDF Report. Will get all records or search criteria records
+            if (ThisViewModel.PDFFlag == "ALL")
+            {
+                List<~prog~> scriptspdf = ThisBLL.~prog~Search(
+                ThisViewModel,
+                ThisViewModel.CurrentPageNumber,
+                -1,
+                ThisViewModel.SortBy,
+                ThisViewModel.SortAscendingDescending,
+                out totalRowspdf,
+                out totalPagespdf,
+                out pageRowspdf,
+                out returnStatuspdf,
+                out returnErrorMessagepdf);
+
+                ViewData["scriptspdf"] = scriptspdf;  //give back list array to View(ie ...Results) for processing(reading)
+            }
+            
+            return PartialView("~prog~Results");  //must match View name
+        
+        }
+
+
+        /// Display Detail Page
+        //[Authorize]
+        public IActionResult ~prog~Detail()
+        {
+            //bool returnStatus;
+            //string returnErrorMessage;
+
+            ~prog~BLL ThisBLL = new ~prog~BLL();
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+
+            ViewData.Model = ThisViewModel;
+
+            //List<~prog~RiskLevelList> risklist = ThisBLL.GetRiskLevels(out returnStatus,
+            //out returnErrorMessage);
+            //ViewData["InRiskList"] = risklist;
+
+            return View();  //goes to Detail View by default
+        }
+
+
+
+        /// Get Details
+        //[Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Get~prog~Detail()
+        {
+            bool returnStatus;
+            string returnErrorMessage;
+            List<string> returnMessage;
+
+            ~prog~BLL ThisBLL = new ~prog~BLL();
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+
+            await this.TryUpdateModelAsync(ThisViewModel);    //get search criteria form input
+
+            ThisViewModel.DBConnectString = _iconfiguration.GetSection("Data").GetSection("ConnectString").Value;
+
+            ~prog~ script = ThisBLL.Get~prog~Detail(
+                ThisViewModel.~PK_ID~, 
+                ThisViewModel.DBConnectString,
+                out returnStatus, 
+                out returnErrorMessage,
+                out returnMessage);
+
+            ThisViewModel.UpdateViewModel(script, typeof(~prog~).GetProperties());  
+
+            ThisViewModel.ReturnMessage = returnMessage;
+            ThisViewModel.ReturnStatus = returnStatus;
+            //ThisViewModel.ScriptDate_Bought = UtilitiesBLL.FormatDate(ThisViewModel.Date_Bought);
+            //ThisViewModel.ScriptDate_Sold = UtilitiesBLL.FormatDate(ThisViewModel.Date_Sold);
+
+            //return Json(ThisViewModel);
+            return new JsonResult(ThisViewModel);
+        }
+
+
+        /// Add Record
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> Add~prog~()
+        {
+            long returnPageNumber;
+            long returnRowNumber;
+            bool returnStatus;
+            string returnErrorMessage;
+
+            List<string> returnMessage;
+
+            try
+            {
+             ~prog~BLL ThisBLL = new ~prog~BLL();
+             Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+
+             await this.TryUpdateModelAsync(ThisViewModel);    //get search criteria form input
+
+             ThisViewModel.DBConnectString = _iconfiguration.GetSection("Data").GetSection("ConnectString").Value;
+
+             ~prog~ script = ThisBLL.Add~prog~(
+                ThisViewModel,
+                out returnPageNumber,
+                out returnRowNumber,
+                out returnMessage,
+                out returnStatus,
+                out returnErrorMessage);
+
+             ThisViewModel.UpdateViewModel(script, typeof(~prog~).GetProperties());
+
+             ThisViewModel.ReturnMessage = returnMessage;
+             ThisViewModel.ReturnStatus = returnStatus;
+             ThisViewModel.CurrentPageNumber = returnPageNumber;
+             ThisViewModel.CurrentRowNumber = returnRowNumber;
+
+             //return Json(ThisViewModel);
+             return new JsonResult(ThisViewModel);
+
+            }
+            catch (Exception ex)
+            {
+                Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+                List<string> outputMessage = new List<string>();
+                outputMessage.Add(ex.Message);
+                ThisViewModel.ReturnMessage = outputMessage;
+               
+                ThisViewModel.ReturnStatus = false;
+
+                //return Json(ThisViewModel);
+                return new JsonResult(ThisViewModel);
+            }
+
+        }
+
+        
+        /// Update Record
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> Update~prog~()
+        {
+            long returnPageNumber;
+            long returnRowNumber;
+
+            bool returnStatus;
+
+            List<string> returnMessage;
+
+            try
+            {
+             ~prog~BLL ThisBLL = new ~prog~BLL();
+             Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+
+             await this.TryUpdateModelAsync(ThisViewModel);    //get search criteria form input
+
+             ThisViewModel.DBConnectString = _iconfiguration.GetSection("Data").GetSection("ConnectString").Value;
+
+             ~prog~ script = ThisBLL.Update~prog~(
+                ThisViewModel,
+                out returnPageNumber,
+                out returnRowNumber,
+                out returnStatus,
+                out returnMessage);
+
+             ThisViewModel.UpdateViewModel(script, typeof(~prog~).GetProperties());
+
+             ThisViewModel.ReturnMessage = returnMessage;
+             ThisViewModel.ReturnStatus = returnStatus;
+             ThisViewModel.CurrentPageNumber = returnPageNumber;
+             ThisViewModel.CurrentRowNumber = returnRowNumber;
+
+             //return Json(ThisViewModel);
+             return new JsonResult(ThisViewModel);
+
+            }
+            catch (Exception ex)
+            {
+                Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+                List<string> outputMessage = new List<string>();
+                outputMessage.Add(ex.Message);
+                ThisViewModel.ReturnMessage = outputMessage;
+               
+                ThisViewModel.ReturnStatus = false;
+
+                //return Json(ThisViewModel);
+                return new JsonResult(ThisViewModel);
+            }
+
+        }
+
+
+        /// Delete Record
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> Del~prog~()
+        {
+            long returnPageNumber;
+            long returnRowNumber;
+
+             bool returnStatus;
+
+            List<string> returnMessage;
+
+            ~prog~BLL ThisBLL = new ~prog~BLL();
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+
+            await this.TryUpdateModelAsync(ThisViewModel);    //get search criteria form input
+
+            ThisViewModel.DBConnectString = _iconfiguration.GetSection("Data").GetSection("ConnectString").Value;
+
+            ~prog~ script = ThisBLL.Del~prog~(
+                ThisViewModel,
+                out returnPageNumber,
+                out returnRowNumber,
+                out returnStatus,
+                out returnMessage);
+
+            ThisViewModel.UpdateViewModel(script, typeof(~prog~).GetProperties());
+
+            ThisViewModel.ReturnMessage = returnMessage;
+            ThisViewModel.ReturnStatus = returnStatus;
+            ThisViewModel.CurrentPageNumber = returnPageNumber;
+            ThisViewModel.CurrentRowNumber = returnRowNumber;
+           
+            //return Json(ThisViewModel);
+            return new JsonResult(ThisViewModel);
+
+        }
+
+
+        /// Delete Records from list
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> Del~prog~ALL()
+        {
+            long returnPageNumber;
+            long returnRowNumber;
+
+            bool returnStatus;
+
+            List<string> returnMessage;
+
+            ~prog~BLL ThisBLL = new ~prog~BLL();
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+           
+            await this.TryUpdateModelAsync(ThisViewModel);    //get search criteria form input
+
+            ThisViewModel.DBConnectString = _iconfiguration.GetSection("Data").GetSection("ConnectString").Value;
+
+            ~prog~ script = ThisBLL.Del~prog~ALL(
+                ThisViewModel,
+                out returnPageNumber,
+                out returnRowNumber,
+                out returnStatus,
+                out returnMessage);
+
+            ThisViewModel.UpdateViewModel(script, typeof(~prog~).GetProperties());
+
+            ThisViewModel.ReturnMessage = returnMessage;
+            ThisViewModel.ReturnStatus = returnStatus;
+            ThisViewModel.CurrentPageNumber = returnPageNumber;
+            ThisViewModel.CurrentRowNumber = returnRowNumber;
+
+            //return Json(ThisViewModel);
+            return new JsonResult(ThisViewModel);
+        }
+
+
+
+        /// Display Tab Page
+        public IActionResult ~prog~Tab()
+        {
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+            ViewData.Model = ThisViewModel;
+
+            return View();  //goes to ~prog~Tab View by default
+        }
+
+
+        /// Display other Detail Tab Page
+        public IActionResult ~prog~Show()
+        {
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+            ViewData.Model = ThisViewModel;
+
+            return View();  //goes to ~prog~Show View by default
+        }
+
+
+
+        /// Export actual records from Database to XLS
+        public async Task<IActionResult> ~prog~XLS()
+        {
+            bool returnStatus;
+            string returnErrorMessage;
+ 
+            ~prog~BLL ThisBLL = new ~prog~BLL();
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+      
+            await this.TryUpdateModelAsync(ThisViewModel);    //get search criteria form input
+
+            ThisViewModel.DBConnectString = _iconfiguration.GetSection("Data").GetSection("ConnectString").Value;
+
+            ThisViewModel.CurrentPageNumber = 1;
+
+            ThisViewModel.SortBy = ThisViewModel.SortBy2;
+            ThisViewModel.SortAscendingDescending = ThisViewModel.SortAscendingDescending2;
+            ThisViewModel.PageSize = ThisViewModel.PageSize2;
+
+            //Response.AppendCookie(new HttpCookie("fileDownloadTokenXLS", ThisViewModel.download_token_value));
+            Response.Cookies.Append("fileDownloadTokenXLS", ThisViewModel.download_token_value);
+
+            MemoryStream excelBLOB = ThisBLL.~prog~SearchXLS(
+              ThisViewModel,
+              ThisViewModel.SortBy,
+              ThisViewModel.SortAscendingDescending,
+              out returnStatus,
+              out returnErrorMessage);
+
+            var filenamexls = "xls_" + DateTime.Now.ToString("yyyyMMddHHmm");
+            string filenamereal = "wwwroot/" + filenamexls + ".xlsx";
+            var filecombine = System.IO.Path.Combine(_Env.ContentRootPath, filenamereal);
+
+            System.IO.File.WriteAllBytes(filecombine, excelBLOB.ToArray());
+
+            return new JsonResult(new { filename = filenamexls, errorMessage = "" });
+         
+         
+            //return File(excelBLOB.ToArray(), "application/vnd.ms-excel", "~prog~.xls");
+            //return File(excelBLOB.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "~prog~.xlsx");
+
+
+        }
+
+        [HttpGet]
+        public IActionResult ~prog~DownloadXLSX(string file)
+        {
+            string filenamereal = "wwwroot/" + file + ".xlsx";
+            var filecombine = System.IO.Path.Combine(_Env.ContentRootPath, filenamereal);
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filecombine);   //best performance, eg 15Mb files takes 24ms  (milliseconds)
+
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file + ".xlsx");
+
+        }
+
+        public IActionResult ~prog~DownloadXLSXDel(string file)
+        {
+
+            try
+            {
+                //Delete outputted file
+                string filenamereal = "wwwroot/" + file + ".xlsx";
+                var filecombine = System.IO.Path.Combine(_Env.ContentRootPath, filenamereal);
+
+                System.IO.File.Delete(filecombine);
+
+            }
+            catch (Exception ex)
+            {
+                string errmsg = ex.Message;
+            }
+
+            return Json(new { filename = file, errorMessage = "" });
+        }
+
+
+
+
+
+        public async Task<IActionResult> ~prog~PDF()
+        {
+            long totalRows;
+            long totalPages;
+            bool returnStatus;
+            string returnErrorMessage;
+
+            ~prog~BLL ThisBLL = new ~prog~BLL();
+            Models.~prog~ViewModel ThisViewModel = new Models.~prog~ViewModel();
+          
+            await this.TryUpdateModelAsync(ThisViewModel);    //get search criteria form input
+
+            ThisViewModel.DBConnectString = _iconfiguration.GetSection("Data").GetSection("ConnectString").Value;
+
+            ThisViewModel.CurrentPageNumber = 1;
+
+            ThisViewModel.SortBy = ThisViewModel.SortBy2;
+            ThisViewModel.SortAscendingDescending = ThisViewModel.SortAscendingDescending2;
+            ThisViewModel.PageSize = ThisViewModel.PageSize2;
+
+            //Response.AppendCookie(new HttpCookie("fileDownloadToken", ThisViewModel.download_token_value));
+            Response.Cookies.Append("fileDownloadToken", ThisViewModel.download_token_value);
+
+            string scripts = ThisBLL.~prog~SearchPDF(
+                ThisViewModel,
+                ThisViewModel.CurrentPageNumber,
+                ThisViewModel.PageSize,
+                ThisViewModel.SortBy,
+                ThisViewModel.SortAscendingDescending,
+                out totalRows,
+                out totalPages,
+                out returnStatus,
+                out returnErrorMessage);
+
+
+            iText.Html2pdf.ConverterProperties propk = new iText.Html2pdf.ConverterProperties();
+          
+            //string pthgetk = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
+            string pthgetk = Request.Scheme + "://" + Request.Host + Request.PathBase + "/";
+
+            propk.SetBaseUri(pthgetk);
+
+            PdfFont fontt = PdfFontFactory.CreateFont(StandardFontFamilies.COURIER);
+           
+            FontProvider fontProvider = new FontProvider();
+            //iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFontFamilies.COURIER);
+            iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFonts.HELVETICA);
+
+            fontProvider.AddFont(fontprog);
+            propk.SetFontProvider(fontProvider);
+
+            string ws_html_front = "";
+            ws_html_front = ws_html_front + "<HTML>";
+
+            //add css for page margins
+            ws_html_front = ws_html_front + "<style>";
+
+            ws_html_front = ws_html_front + " @page { ";
+            ws_html_front = ws_html_front + " margin-top: 47px;margin-bottom: 80px; ";
+            //ws_html_front = ws_html_front + " @bottom-right {content: 'Page '; } ";   //works OK
+            //ws_html_front = ws_html_front + " @top-right {content: 'Page ' counter(pages); } ";  //error with counter?
+            // ws_html_front = ws_html_front + "  @bottom-left {content: 'Page ' counter(page) ' of ' counter(pages); } ";
+            ws_html_front = ws_html_front + " } ";
+            ws_html_front = ws_html_front + "</style>";
+
+            string ws_html_end = "";
+
+            //Next Line is a TEST only
+            ws_html_end = ws_html_end + "<br /><span>test span</span><img src='images/favicon2.png'/><span>test span2</span><br />";
+
+            ws_html_end = ws_html_end + "</HTML>";
+
+            String htmlContent = ws_html_front + scripts + ws_html_end;
+
+            var pdfContentType = "application/pdf";
+
+            string htmlToConvert = htmlContent;
+
+            string pthget = _Env.WebRootPath;
+            var filenameit = "pdf_" + DateTime.Now.ToString("yyyyMMddHHmm");
+
+            CreatePdf(pthget + "/" + filenameit + ".pdf", htmlToConvert, pthgetk);
+
+            return new JsonResult(new { filename = filenameit, errorMessage = "" });
+
+        }
+
+
+        [HttpGet]
+        public IActionResult ~prog~DownloadPDF(string file)
+        {
+            string pthget = _Env.WebRootPath;
+
+            string getFileNameit = "/" + file + ".pdf";
+
+            var pdfContentType = "application/pdf";
+            IFileProvider provider = new PhysicalFileProvider(pthget);
+            IFileInfo fileinfo = provider.GetFileInfo(getFileNameit);
+
+            var readStream = fileinfo.CreateReadStream();
+
+            return File(readStream, pdfContentType, file + ".pdf");
+
+        }
+
+        public IActionResult ~prog~DownloadPDFDel(string file)
+        {
+            try
+            {
+
+                //Delete outputted file
+                string filenamereal = "wwwroot/" + file + ".pdf";
+                var filecombine = System.IO.Path.Combine(_Env.ContentRootPath, filenamereal);
+
+                System.IO.File.Delete(filecombine);
+
+            }
+            catch (Exception ex)
+            {
+                string errmsg = ex.Message;
+            }
+
+
+            return Json(new { filename = file, errorMessage = "" });
+        }
+
+
+
+        public void CreatePdf(string dest, string html, string pthgetk)
+        {
+            //Initialize PDF document
+            PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
+          
+            //pdf.SetDefaultPageSize(PageSize.A4);  //works
+            //pdf.SetDefaultPageSize(PageSize.A3);  
+
+            string header = "Page Header";
+            header = pthgetk;  //BaseUri  now
+
+            string LocalPath = GetPathK();  //local Path
+
+            Header headerHandler = new Header(header);
+            PageXofY footerHandler = new PageXofY(pdf, LocalPath);
+            //Assign event-handlers
+            pdf.AddEventHandler(PdfDocumentEvent.START_PAGE, headerHandler);
+            pdf.AddEventHandler(PdfDocumentEvent.END_PAGE, footerHandler);
+
+            ConverterProperties converterProperties = new ConverterProperties().SetBaseUri(pthgetk);
+
+            FontProvider fontProvider = new FontProvider();
+            //iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFontFamilies.COURIER);
+            iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFonts.HELVETICA);
+
+            fontProvider.AddFont(fontprog);
+            converterProperties.SetFontProvider(fontProvider);
+
+            HtmlConverter.ConvertToDocument(html, pdf, converterProperties);
+            //Write the total number of pages to the placeholder
+            footerHandler.writeTotal(pdf);
+            pdf.Close();
+
+
+
+            //TEST code next
+            iText.IO.Font.FontProgram fontprog2 = iText.IO.Font.FontProgramFactory.CreateFont(StandardFonts.TIMES_BOLD);
+            iText.IO.Font.FontProgram fontprog22 = iText.IO.Font.FontProgramFactory.CreateFont(StandardFontFamilies.COURIER);
+            iText.IO.Font.FontProgram fontprog24 = iText.IO.Font.FontProgramFactory.CreateFont(LocalPath + "/Lato-Light.ttf");
+
+            PdfFont fontt2 = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_OBLIQUE);
+            PdfFont fontt3 = PdfFontFactory.CreateFont(LocalPath + "/Lato-Light.ttf", "CP1251", true);
+            Text author = new Text("Test Text").SetFont(fontt3).SetFontSize(16);
+
+            Paragraph p = new Paragraph("Hello World! ")
+            .Add(new Text("Hallo Wereld! ").SetFontSize(14))
+            .Add(new Text("Bonjour le monde! ").SetFontSize(10));
+
+            //END Test code
+
+        }
+
+       
+        public string GetPathK()
+        {
+            //string pathget = Server.MapPath("~");
+            string pathget = _Env.WebRootPath;
+            return pathget;
+        }
+
+        //Header event handler
+        public class Header : IEventHandler
+        {
+            string header;
+            public Header(string header)
+            {
+                this.header = header;
+            }
+            public void HandleEvent(Event e)
+            {
+                //Retrieve document
+                PdfDocumentEvent docEvent = (PdfDocumentEvent)e;
+                PdfDocument pdf = docEvent.GetDocument();
+                PdfPage page = docEvent.GetPage();
+                Rectangle pageSize = page.GetPageSize();
+                PdfCanvas pdfCanvas = new PdfCanvas(
+                        page.GetLastContentStream(), page.GetResources(), pdf);
+                Canvas canvas = new Canvas(pdfCanvas, pdf, pageSize);
+                canvas.SetFontSize(18f);
+
+                PdfFont fontt = PdfFontFactory.CreateFont(StandardFontFamilies.COURIER);
+                //canvas.SetFont(fontt);
+
+                //Write text at position
+                Paragraph p = new Paragraph().SetFont(fontt);
+              
+
+                Table tablek = new Table(3);  //TEST
+                //table.SetWidths(widths);
+                //tablek.SetWidth(595);
+                tablek.SetWidth(UnitValue.CreatePercentValue(100));
+                tablek.AddHeaderCell("A");
+                tablek.AddHeaderCell("B");
+                tablek.AddHeaderCell("C");
+
+
+                string strTable = "";
+                strTable = strTable + "<table border='0' style='width: 590px;'>";
+
+                strTable = strTable + "<tr bgcolor='white' >";
+                strTable = strTable + "<td width='295px' align='center' colspan='2'> ";
+                strTable = strTable + " <div align='left' style='font-size: 12px; color: #000000;'> ";
+                strTable = strTable + "<img src='images/favicon2.png' style='height:20px;' />";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+                strTable = strTable + "<td width='295px' align='center' colspan='3'> ";
+                strTable = strTable + " <div align='center' style='font-size: 12px; color: #000000;'> ";
+                strTable = strTable + "Page Header";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+                strTable = strTable + "</tr>";
+
+                //Setup Header ROW
+                strTable = strTable + "<tr bgcolor='#DCEDEA' >";
+
+                strTable = strTable + "<td align='left'> ";
+                strTable = strTable + " <div align='left' style='font-size: 8px; color: #000000; width: 82px;'> ";
+                strTable = strTable + "PK_ID";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+
+                strTable = strTable + "<td align='left'> ";
+                strTable = strTable + " <div align='left' style='font-size: 8px; color: #000000; width: 154px;'> ";
+                strTable = strTable + "Column1";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+
+                strTable = strTable + "<td align='left'> ";
+                strTable = strTable + " <div align='left' style='font-size: 8px; color: #000000; width: 154px;'> ";
+                strTable = strTable + "Column2";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+
+                strTable = strTable + "<td align='center'> ";
+                strTable = strTable + " <div align='center' style='font-size: 8px; color: #000000; width: 100px;'> ";
+                strTable = strTable + "Column3";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+
+                strTable = strTable + "<td align='center'> ";
+                strTable = strTable + " <div align='center' style='font-size: 8px; color: #000000; width: 100px;'> ";
+                strTable = strTable + "Column4";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+
+                //END of Header ROW
+
+                strTable = strTable + "</tr>";
+                strTable = strTable + "</table>";
+
+                iText.Html2pdf.ConverterProperties propk = new iText.Html2pdf.ConverterProperties();
+                FontProvider fontProvider = new FontProvider();
+                //iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFontFamilies.COURIER);
+                iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+                fontProvider.AddFont(fontprog);
+                propk.SetFontProvider(fontProvider);
+                propk.SetBaseUri(header);
+             
+                var elements = HtmlConverter.ConvertToElements(strTable, propk);
+                foreach (IElement ek2 in elements)
+                    p.Add((IBlockElement)ek2);
+
+                PdfFont fontt2 = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+                Text author = new Text("Robert Louis Stevenson").SetFont(fontt2);
+                //p.Add("By ").Add(author);
+
+                //p.Add(tablek);
+                //var pagew = pageSize.GetWidth();
+
+                canvas.ShowTextAligned(p,
+                        pageSize.GetWidth() / 2,
+                        pageSize.GetTop() - 40, TextAlignment.CENTER);
+
+                //next is original code
+                //canvas.ShowTextAligned(header,
+                // pageSize.GetWidth() / 2,
+                //pageSize.GetTop() - 30, TextAlignment.CENTER);
+
+            }
+        }
+
+        //Footer handler
+        public class PageXofY : IEventHandler
+        {
+            public PdfFormXObject placeholder;
+            public float side = 20;
+            public float x = 300;
+            public float y = 25;
+            public float space = 4.5f;
+            public float descent = 3;
+            public string pathLocal;
+            public PageXofY(PdfDocument pdf, string Localpathk)
+            {
+                placeholder =
+                        new PdfFormXObject(new Rectangle(0, 0, side, side));
+
+                pathLocal = Localpathk;
+
+            }
+            public void HandleEvent(Event e)
+            {
+                PdfDocumentEvent docEvent = (PdfDocumentEvent)e;
+                PdfDocument pdf = docEvent.GetDocument();
+                PdfPage page = docEvent.GetPage();
+                int pageNumber = pdf.GetPageNumber(page);
+                string pageStr = pageNumber.ToString();
+                Rectangle pageSize = page.GetPageSize();
+                PdfCanvas pdfCanvas = new PdfCanvas(
+                        page.GetLastContentStream(), page.GetResources(), pdf);
+                Canvas canvas = new Canvas(pdfCanvas, pdf, pageSize);
+
+                //try to css the footer, with a html table
+                string strTable = "";
+                //strTable = "";
+                strTable = strTable + " <div align='right' style='font-size: 12px; color: navy;width: 120px;'> ";
+                strTable = strTable + "Page " + pageStr + " of";
+                strTable = strTable + " </div> ";
+
+                iText.Html2pdf.ConverterProperties propk = new iText.Html2pdf.ConverterProperties();
+                FontProvider fontProvider = new FontProvider();
+                //iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFontFamilies.COURIER);
+                iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+                iText.IO.Font.FontProgram fontprog2 = iText.IO.Font.FontProgramFactory.CreateFont(pathLocal + "/Lato-Light.ttf");
+
+                fontProvider.AddFont(fontprog2);
+                propk.SetFontProvider(fontProvider);
+                var elements = HtmlConverter.ConvertToElements(strTable, propk);
+                Paragraph p2 = new Paragraph();
+                foreach (IElement ek2 in elements)
+                    p2.Add((IBlockElement)ek2);
+
+                //PdfFont fontt = PdfFontFactory.CreateFont(StandardFontFamilies.COURIER);
+                PdfFont fontt = PdfFontFactory.CreateFont(pathLocal + "/Lato-Light.ttf", "CP1251", true);  //works
+
+                Text author = new Text("Page ").SetFont(fontt);
+                //p2.Add("Page  ").Add(author).Add(pageNumber.ToString()).Add(" of");  //Works OK
+
+
+                Paragraph p = new Paragraph()
+                        .Add("Page ").Add(pageNumber.ToString()).Add(" of");
+
+                //canvas.ShowTextAligned(p2, x, y, TextAlignment.CENTER);
+                canvas.ShowTextAligned(p2, x, y, TextAlignment.RIGHT);
+
+                pdfCanvas.AddXObject(placeholder, x + space, y - descent);
+                pdfCanvas.Release();
+            }
+            public void writeTotal(PdfDocument pdf)
+            {
+                string pageTotal = pdf.GetNumberOfPages().ToString();
+                string strTable = "";
+                strTable = strTable + " <div align='left' style='font-size: 12px; color: navy;width: 40px;'> ";
+                strTable = strTable + "" + pageTotal + "";
+                strTable = strTable + " </div> ";
+                iText.Html2pdf.ConverterProperties propk = new iText.Html2pdf.ConverterProperties();
+                FontProvider fontProvider = new FontProvider();
+                //iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFontFamilies.COURIER);
+                iText.IO.Font.FontProgram fontprog = iText.IO.Font.FontProgramFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+                fontProvider.AddFont(fontprog);
+                propk.SetFontProvider(fontProvider);
+                var elements = HtmlConverter.ConvertToElements(strTable, propk);
+                Paragraph p2 = new Paragraph();
+                foreach (IElement ek2 in elements)
+                    p2.Add((IBlockElement)ek2);
+
+
+                Canvas canvas = new Canvas(placeholder, pdf);
+                canvas.ShowTextAligned(p2,
+                      0, descent, TextAlignment.LEFT);
+
+                //canvas.ShowTextAligned(pdf.GetNumberOfPages().ToString(),
+                // 0, descent, TextAlignment.LEFT);
+            }
+        }
+
+
+
+
+    }
+}

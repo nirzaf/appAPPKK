@@ -1,0 +1,275 @@
+
+//Code between these comments can be changed-  &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+/// ~prog~StartSearch
+/// <summary>Next function is the initial starting point of showing the Parent grid
+/// </summary> 
+function ~prog~StartSearch() {
+        //alert("in ~prog~StartSearch");
+        try {
+            ~prog~HideChildALL();   //for if only found 1 record
+        }
+        catch (err) {
+          //alert("err message " + err.message);
+        }
+
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {   //see if using a Apple Device
+            //$("#iframe~prog~Overlay").css("overflow", "scroll");  //so as to make scroll work on IOS
+        }
+        else {
+            //alert("test");
+            //$("#modalIframeIdCombo").attr("scrolling", "auto");
+        }
+
+       //--------------------------------------------------------------------------------------------
+       //workout time difference in minutes
+        var dtime = new Date();
+        var ndiff = dtime.getTimezoneOffset();
+        $("#~prog~Formtopdiv [name=TimeDiff]").val(ndiff);   //difference between UTC(GMT) time and local time
+       //END workout time difference in minutes
+       //--------------------------------------------------------------------------------------------
+
+        $("#~prog~Formtopdiv [name=CurrentPageNumber]").val("1");
+        $("#~prog~Formtopdiv [name=CurrentRowNumber]").val("0");
+        $("#~prog~Formtopdiv [name=~PK_ID~]").val("0");
+         
+        if ($("#~prog~Formtopdiv [name=PageSizeNEW]").length != 0) {     
+            var intPagesize = $("#~prog~Formtopdiv [name=PageSizeNEW]").val();
+            $("#~prog~Formtopdiv [name=PageSize]").val(intPagesize);
+        }
+        else {
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            $("#~prog~Formtopdiv [name=PageSize]").val("24");  //Change here to set page default size
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        }
+
+        $("#~prog~Formtopdiv [name=SortAscendingDescending]").val("ASC");    //default starting Sort. Change here to DESC, for starting sort.
+        $("#~prog~Formtopdiv [name=SortBy]").val("~prog~FourthCol");    //default starting Sort Column 
+
+        //Next function is used to refresh the grid, after deletes, etc
+        ~prog~PostSearchForm();     //Further down in this code
+    }
+
+
+
+/// ~prog~ResetPage
+/// <summary>Next function is to Reset Search criteria and refresh grid of records
+/// </summary> 
+function ~prog~ResetPage() {
+
+    try {
+        ~prog~HideChildALL();   //for if only found 1 record
+    }
+    catch (err) {
+        //alert("err message " + err.message);
+    }
+   
+    //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    //Add or Take out columns as necessary
+    $("#~prog~Formtopdiv [name=GlobalSearchString]").val("");
+
+    $("#~prog~Formtopdiv [name=~column1~]").val("");
+
+    $("#~prog~Formtopdiv [name=~column2~]").val("");
+
+    $("#~prog~Formtopdiv [name=~column3~_Str]").val("");
+
+    $("#~prog~Formtopdiv [name=~column4~_Str]").val("");
+    //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+    ~prog~StartSearch();
+}
+
+
+
+/// ~prog~EnableGridSorting
+/// <summary>Next function is to enable grid column sorting
+/// </summary> 
+function ~prog~EnableGridSorting() {
+
+    //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&2w many columns. This code does 6 by default
+    $("#~prog~Formtopdiv [name=SortByFirstCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortByFirstCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortBySecondCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortBySecondCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortByThirdCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortByThirdCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortByFourthCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortByFourthCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortByFifthCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortByFifthCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortBySixthCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortBySixthCol]").css("display", "block");
+    //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+
+}
+
+
+
+
+
+
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/// START of Code from here down is fixed, which does not need any changing
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+/// ~prog~SetPagingLinks
+/// <summary>Next function is to show correct paging buttons (ie First, Next, Prev, Last)
+/// </summary> 
+function ~prog~SetPagingLinks(currentPageNumber, totalPages) {
+    $("#~prog~Formtopdiv [name=PagingLinks]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=PagingLinks]").css("display", "block");
+
+    var currPageNumber = parseFloat(currentPageNumber);
+    totalPages = parseFloat(totalPages);
+
+    $("#~prog~firstpagee").hide();
+    $("#~prog~prevpagee").hide();
+    $("#~prog~nextpagee").hide();
+    $("#~prog~lastpagee").hide();
+
+    if (currPageNumber == 1) {
+        $("#~prog~firstpagee").hide();
+        $("#~prog~prevpagee").hide();
+        $("#~prog~nextpagee").hide();
+        $("#~prog~lastpagee").hide();
+    }
+    if (currPageNumber > 1) {
+        $("#~prog~firstpagee").show();
+        $("#~prog~prevpagee").show();
+    }
+    if (currPageNumber < totalPages && totalPages > 0) {
+        $("#~prog~nextpagee").show();
+        $("#~prog~lastpagee").show();
+    }
+    if (currPageNumber == totalPages && totalPages > 0) {
+        $("#~prog~nextpagee").hide();
+        $("#~prog~lastpagee").hide();
+    }
+
+    ~prog~EnableGridSorting();  
+}
+
+function ~prog~NavigateToPage(action) {
+    ~prog~HideChildALL();   //in case in Tab child screen.
+    //setTimeout(~prog~HideChildALL, 50);
+
+    var currentPage = $("#~prog~Formtopdiv [name=CurrentPageNumber]").val();
+    currentPage = parseFloat(currentPage);
+
+    if (action == "next")
+        currentPage = currentPage + 1;
+    else if (action == "prev")
+        currentPage = currentPage - 1;
+    else if (action == "last")
+        currentPage = $("#~prog~Formtopdiv [name=TotalPages]").val();
+    else if (action == "first")
+        currentPage = 1;
+
+    $("#~prog~Formtopdiv [name=CurrentPageNumber]").val(currentPage);
+    $("#~prog~Formtopdiv [name=CurrentRowNumber]").val("0");   //row number will always be 0 on new page
+
+    $("#~prog~Formtopdiv [name=~PK_ID~]").val("0");
+
+    ~prog~PostSearchForm();             //Further down in this code
+}
+
+function ~prog~NextPage() {
+    ~prog~NavigateToPage("next");
+}
+function ~prog~PrevPage() {
+    ~prog~NavigateToPage("prev");
+}
+function ~prog~LastPage() {
+    ~prog~NavigateToPage("last");
+}
+function ~prog~FirstPage() {
+    ~prog~NavigateToPage("first");
+}
+
+function ~prog~SortGrid(sortBy) {
+    ~prog~HideChildALL();   //in case in Tab child screen.
+
+    var currentSortBy = $("#~prog~Formtopdiv [name=SortBy]").val();
+    var currentSortAsc = $("#~prog~Formtopdiv [name=SortAscendingDescending]").val();
+
+    if (currentSortBy == sortBy) {
+        if (currentSortAsc == "ASC")
+            currentSortAsc = "DESC";
+        else
+            currentSortAsc = "ASC";
+    }
+    else {
+        currentSortAsc = "ASC";
+    }
+
+    $("#~prog~Formtopdiv [name=SortAscendingDescending]").val(currentSortAsc);
+    $("#~prog~Formtopdiv [name=SortBy]").val(sortBy);
+
+    $("#~prog~Formtopdiv [name=CurrentRowNumber]").val("0");   //row number will always be 0 on new page
+    $("#~prog~Formtopdiv [name=~PK_ID~]").val("0");  //set Primary Key
+
+    ~prog~PostSearchForm();         //Further down in this code
+}
+
+
+/// ~prog~PostSearchForm
+/// <summary>Next function is the KEY one that calls another function, which does an ajax DB call
+/// </summary> 
+var ~prog~ListformData;
+function ~prog~PostSearchForm() {
+    //setTimeout(LayoutShowProgressBar, 20);  //delay showing Progress Bar (may need)
+    LayoutShowProgressBar();  //found in _Layout.cshtml
+  
+    ~prog~ListformData = $("#~prog~Formtopdiv :input").serialize();  //get input values from div via class name
+    //alert("formData is " + ~prog~ListformData);
+    try {
+        setTimeout(~prog~PostSearchToServer, 50);
+    }
+    catch (err) {
+        alert("err message " + err.message);
+    }
+ 
+}
+
+
+function ~prog~DisableForm() {
+    $('#~prog~Form').css("cursor", "wait");  //HourGlass
+}
+function ~prog~EnableForm() {
+    $('#~prog~Form').css("cursor", "default");
+}
+
+       
+function ~prog~AdvancedSearch() {
+    ~prog~HideChildALL();   //in case in Tab child screen.
+    var el = $("#~prog~Formtopdiv [name=~prog~AdvancedSearch]")[0];
+    el.style.display = (el.style.display == "block") ? "none" : "block";
+}
+function ~prog~SearchOption() {
+    ~prog~HideChildALL();   //in case in Tab child screen.
+    var el = $("#~prog~Formtopdiv [name=~prog~SearchOption]")[0];
+    if (el.style.display == "block") {
+        ~prog~ResetPage();
+    }
+    el.style.display = (el.style.display == "block") ? "none" : "block";
+}
+
+function isBreakpointGet(alias) {
+    return $('.device-' + alias).is(':visible');
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/// END of fixed code, which does not need any changing
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

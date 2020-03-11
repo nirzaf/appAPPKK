@@ -1,0 +1,266 @@
+﻿
+/* ajax modal dialog styles */
+.modalBackground {
+	background-color: Gray;
+                 zoom:1;
+                 width:100%; height:100%;
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+	-moz-opacity: 0.50; 
+}
+.modalBox {
+	background-color : #f5f5f5;
+	border-width: 3px;
+	border-style: solid;
+	border-color: Blue;
+	padding: 3px;
+}
+.modalBox caption {
+	background-image: url(images/window_titlebg.gif);
+	background-repeat:repeat-x;
+}
+
+ .modalBackground2
+        {
+	        background-color: gray;
+	        filter:alpha(opacity=40);
+	         -moz-opacity: 0.40;   
+	        opacity: 0.40;
+            z-index: 900;
+        }
+
+ .modalBackground7
+        {
+	        background-color: white;
+	        filter:alpha(opacity=90);
+	         -moz-opacity: 0.90;   
+	        opacity: 0.90;
+            z-index: 900;
+        }
+
+ .modalBackground2NEW
+{
+	z-index: 10000;
+	filter: alpha(opacity=50); /*older IE*/
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50); /* IE */
+	-moz-opacity: .50; /*older Mozilla*/
+	-khtml-opacity: 0.5;   /*older Safari*/
+	opacity: 0.5;   /*supported by current Mozilla, Safari, and Opera*/
+	background-color:#000000;
+	position:fixed; top:0px; left:0px; width:100%; height:400px; color:#FFFFFF; text-align:center; vertical-align:middle;
+}
+
+
+
+        .updateProgress
+        {
+            border-width:1px; 
+            border-style:solid; 
+            background-color:#FFFFFF; 
+            width:150px; 
+            height:50px;    
+        }
+        
+        .updateProgress2
+        {
+            border-width:1px; 
+            border-style:solid; 
+            background-color: #FFFFCC; 
+            width:150px; 
+            height:50px;    
+        }
+        .updateProgress2new
+        {
+            border-width:0px; 
+            border-style:solid; 
+            background-color: white; 
+            width:150px; 
+            height:50px;  
+        }
+        
+        .updateProgress2Blank
+        {
+            border-width:0px; 
+            border-style:solid; 
+            background-color: transparent; 
+            width:150px; 
+            height:50px;    
+        }
+        
+        .updateProgressMessage
+        {
+            margin:3px; 
+            font-family:Trebuchet MS; 
+            font-size:small; 
+            vertical-align: middle;
+        }        
+                
+        .modalBox2 {
+	 background-color: white;
+	border-width: 1px;
+	border-style: solid;
+	border-color: Navy;
+	padding: 2px;
+}
+
+
+/* tweb modal dialog styles */
+.modalPanelTitle td {
+	padding: 3px;
+	font-weight: bold;
+	font-size: 0.9em;
+	background-image: url(images/window_titlebg.gif);
+	cursor: pointer;
+	color: black;
+	font-family: Verdana;
+	width: 100%;
+	height: 30px;
+	background-color: #6f90dc;
+}
+
+.modalPanel {
+	z-index: 500;
+	width: 500px;
+	border: solid 1px #275473;
+	position: absolute;
+	border-collapse: collapse;
+	background-color: #f0faff;
+}
+
+.modalPanel td {
+	vertical-align: top;
+}
+
+.titleIcon {
+	padding-right: 20px;
+}
+
+
+  /* Next styles is for Header Sorting */
+        .alternatingrowstyle
+        {
+            background-color: #F0F0F6;
+        }
+        /* END of styles is for Header Sorting */
+
+        a:hover
+        {
+          color: Red;
+        }
+        
+        a3
+        {
+          color: Black;
+        }
+        
+        a:link {
+  color: Blue;
+text-decoration: none;
+}a:visited {
+color: Blue;
+text-decoration: none;
+}a:hover {
+color: Red;
+text-decoration: underline overline;
+}
+
+        a:hover#navigat
+        {
+          color: Orange;
+          text-decoration: underline overline;
+        }
+        
+        #navigat
+        {
+          color: white;
+          text-decoration: underline;
+        }
+        
+        
+        body 
+        {
+          font-family: Tahoma, Helvetica, Arial, sans-serif;
+          font-size: 16px;
+        }
+
+
+       .popuptitle {
+        position: relative;
+        background: #003B58;
+        color: white;
+        font-weight: bold;
+        font-size: 12px;
+        width: 750px; 
+        height: 13px;
+        padding: 4px;
+      }
+      
+      .popuptitle span {
+        position: absolute;
+        font-size: 75%;
+        right: 1px;
+        top: 3px;
+      }
+
+
+       .popuptitlePermit {
+        position: relative;
+        background: #003B58;
+        color: white;
+        font-weight: bold;
+        font-size: 12px;
+        width: 790px; 
+        height: 13px;
+        padding: 4px;
+      }
+     .popuptitlePermit span {
+        position: absolute;
+        font-size: 75%;
+        right: 1px;
+        top: 3px;
+      }
+
+       .popuptitlecal {
+        position: relative;
+        background: blue;
+        color: white;
+        font-weight: bold;
+        font-size: 12px;
+        width: 210px; 
+        height: 13px;
+        padding: 4px;
+      }
+      
+      .popuptitlecal span {
+        position: absolute;
+        font-size: 75%;
+        right: 1px;
+        top: 3px;
+      }
+
+
+option
+{
+  background-color: #fef5e6;
+     
+}
+
+Table.sortable {
+border-collapse: collapse;
+border: 1px solid #32649b;
+}
+.sortable td{
+border: 1px solid #32649b;
+padding: 5px;
+}
+table.sortable a.sortheader {
+color:rgb(100, 150, 200);
+font-weight: bold;
+text-decoration: none;
+display: block;
+}
+table.sortable span.sortarrow {
+color: red;
+text-decoration: none;
+}
+

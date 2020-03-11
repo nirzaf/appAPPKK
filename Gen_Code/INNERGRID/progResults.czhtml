@@ -1,0 +1,607 @@
+@model appAPP.Models.~prog~ViewModel
+
+<input name="TotalPages" type="hidden" value="@(Model.TotalPages)" />
+<input name="TotalRows" type="hidden" value="@(Model.TotalRows)" />
+<input name="PageRows" type="hidden" value="@(Model.PageRows)" />
+
+<script src="../js/~prog~.js?v=@(Guid.NewGuid())" type="text/javascript"></script>
+<script src="../js/~prog~Results.js?v=@(Guid.NewGuid())" type="text/javascript"></script>
+
+<script language="javascript" type="text/javascript">
+
+    var ~prog~DetailURL = '@Url.Action("~prog~Detail", "~prog~")';
+    var ~prog~DetailShowURL = '@Url.Action("~prog~Show", "~prog~")';
+  
+</script>
+
+<div align="left">
+
+    @if (ViewData["scripts"] != null)
+       {
+    if (Model.TotalRows == 0)
+       {
+   <table style="width: 100%">
+        <tr>
+        <td colspan="1" style="width: 70%; margin-bottom: 12px; padding-bottom: 12px;" >
+          <span style="font-size: 10px; font-weight:bold; font-family: Arial;">No ~prog~/s Found.</span>
+            <br />
+          <input type="button" value="New ~prog~" class="btn btn-success btn-xs" onclick="~prog~PopDialog(-1, 0)" style="font-family: Arial; font-size: 10px;" title="Create New ~prog~" />
+         
+        </td> 
+        <td colspan="1"style="width: 30%">
+            &nbsp;     
+        </td>   
+        </tr>
+    </table>
+    }
+       else
+       {
+    
+    <table id="id~prog~Header" style="width: 100%" cellspacing="0" cellpadding="0">
+        <tr style="height: 4px; color: Black; padding: 0px 0px 0px 0px; font-size: 11px">
+         <td colspan="7">
+
+          <ul class="pagination pagination-sm" style="margin-top: 1px; padding-top: 1px; margin-bottom: 0px; padding-bottom: 0px;padding-left:2px;">
+            <li>
+                <div style="font-size: 10px; margin-top: 1px; padding-top: 1px;">
+                 &nbsp;Page&nbsp;@(Html.Encode(Model.CurrentPageNumber))
+                 of&nbsp;@(Html.Encode(Model.TotalPages)) 
+                 &nbsp;&nbsp;&nbsp;|&nbsp;@(Html.Encode(Model.TotalRows))&nbsp;Record/s
+                </div>
+             </li>
+             <li id="~prog~firstpagee">
+                <a title="First Page" href="javascript:~prog~FirstPage()">&laquo;</a>
+             </li>
+             <li id="~prog~prevpagee">
+                <a title="Previous Page" href="javascript:~prog~PrevPage()">Prev</a>
+             </li>
+             <li id="~prog~nextpagee">
+                <a title="Next Page" href="javascript:~prog~NextPage()">Next</a>
+             </li>
+             <li id="~prog~lastpagee">
+                <a title="Last Page" href="javascript:~prog~LastPage()">&raquo;</a>
+             </li>
+           </ul>
+   
+          </td>
+        </tr>
+        <tr>
+            <td align="left" colspan="9" style="height: 1px; width: 100%;">
+                <div name="PagingLinks" style="text-align: left; vertical-align: top; float: none;
+                    visibility: hidden; display: none; padding: 4px 1px 1px 1px; font-size: 11px">
+
+                    <select name="PageSizeNEW" onchange="~prog~StartSearch()" style="float: left;
+                        text-align: left; width: 40px; border: 1px solid #AAA; font-size: 10px;">
+                        <option value="6">6</option>
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                    </select>
+
+                  <div style="float: left; font-size: 10px" >
+                        &nbsp;
+                      <input type="button" value="New" class="btn btn-success btn-xs" onclick="~prog~PopDialog(-1, 0)" style="font-family: Arial; font-size: 10px;" title="Create New ~prog~" />
+                   
+                    </div>
+                    <div style="float: left; font-size: 10px; display: none;" >
+                        &nbsp;<a style="color: red; font-weight: bold; text-decoration: underline"
+                            title="Delete" href="javascript:~prog~DeleteALL()">Del</a>
+                    </div>
+
+            
+                    <div style="float: left; font-size: 10px; padding-bottom: 4px; padding-left: 5px;">
+                     <form name="~prog~RepPDF" id="~prog~RepPDF" action="@(@Url.Action("~prog~PDF","~prog~"))" method="post">
+                       <input type="button" value="PDF" class="btn btn-primary btn-xs" onclick="~prog~PDF()" style="font-family: Arial; font-size: 10px;" title="PDF Report" />
+
+                      <input name="SortBy2" type="hidden" value="" />
+                      <input name="SortAscendingDescending2" type="hidden" value="" />
+                      <input name="PageSize2" type="hidden" value="" />
+
+                      <input name="GlobalSearchString" type="hidden" value="" />
+
+                      ~chartypecol1~<input name="~column1~" type="hidden" value="" />
+                      ~inttypecol1~<input name="~column1~" type="hidden" value="" />
+                      ~dectypecol1~<input name="~column1~" type="hidden" value="" />
+                      ~datetypecol1~<input name="~column1~_Str" type="hidden" value="" />
+
+                      ~chartypecol2~<input name="~column2~" type="hidden" value="" />
+                      ~inttypecol2~<input name="~column2~" type="hidden" value="" />
+                      ~dectypecol2~<input name="~column2~" type="hidden" value="" />
+                      ~datetypecol2~<input name="~column2~_Str" type="hidden" value="" />
+
+                      ~chartypecol3~<input name="~column3~" type="hidden" value="" />
+                      ~inttypecol3~<input name="~column3~" type="hidden" value="" />
+                      ~dectypecol3~<input name="~column3~" type="hidden" value="" />
+                      ~datetypecol3~<input name="~column3~_Str" type="hidden" value="" />
+
+                      ~chartypecol4~<input name="~column4~" type="hidden" value="" />
+                      ~inttypecol4~<input name="~column4~" type="hidden" value="" />
+                      ~dectypecol4~<input name="~column4~" type="hidden" value="" />
+                      ~datetypecol4~<input name="~column4~_Str" type="hidden" value="" />
+
+                     <input name="~FPK_ID~" type="hidden" value="" />
+
+                      <input type="hidden" name="download_token_value" value="" />
+
+                    </form>
+                    <span></span>
+                  </div>
+
+                   <div style="float: left; font-size: 10px; padding-bottom: 4px; padding-left: 5px;display:none;">
+                        <input type="button" value="PDF" class="btn btn-primary btn-xs" onclick="~prog~PDF()" style="font-family: Arial; font-size: 10px;" title="PDF Report" />
+                   </div>
+
+
+                 <div style="float:left; font-size: 10px; vertical-align: top; padding-bottom: 4px; padding-left: 3px;" id="Div6">
+                    <form name="~prog~RepXLS" id="~prog~RepXLS" action="@(@Url.Action("~prog~XLS","~prog~"))" method="post" >
+                     <input type="button" value="XLS" class="btn btn-primary btn-xs" onclick="~prog~XLS()" style="font-family: Arial; font-size: 9px;"  title="Spreadsheet Report" />
+                   
+                     <input name="SortBy2" type="hidden" value="" />
+                     <input name="SortAscendingDescending2" type="hidden" value="" />
+                     <input name="PageSize2" type="hidden" value="" />
+
+                     <input name="GlobalSearchString" type="hidden" value="" />
+
+                     ~chartypecol1~<input name="~column1~" type="hidden" value="" />
+                     ~inttypecol1~<input name="~column1~" type="hidden" value="" />
+                     ~dectypecol1~<input name="~column1~" type="hidden" value="" />
+                     ~datetypecol1~<input name="~column1~_Str" type="hidden" value="" />
+
+                     ~chartypecol2~<input name="~column2~" type="hidden" value="" />
+                     ~inttypecol2~<input name="~column2~" type="hidden" value="" />
+                     ~dectypecol2~<input name="~column2~" type="hidden" value="" />
+                     ~datetypecol2~<input name="~column2~_Str" type="hidden" value="" />
+
+                     ~chartypecol3~<input name="~column3~" type="hidden" value="" />
+                     ~inttypecol3~<input name="~column3~" type="hidden" value="" />
+                     ~dectypecol3~<input name="~column3~" type="hidden" value="" />
+                     ~datetypecol3~<input name="~column3~_Str" type="hidden" value="" />
+
+                     ~chartypecol4~<input name="~column4~" type="hidden" value="" />
+                     ~inttypecol4~<input name="~column4~" type="hidden" value="" />
+                     ~dectypecol4~<input name="~column4~" type="hidden" value="" />
+                     ~datetypecol4~<input name="~column4~_Str" type="hidden" value="" />
+
+                     <input name="~FPK_ID~" type="hidden" value="" />
+
+                     <input type="hidden" name="download_token_value" value="" />
+                    </form>
+                    <span></span>
+                    
+                </div>
+
+                </div>
+            </td>
+        </tr>
+       </table>
+
+
+<!--  Must calculate min-width for each <td> column, as percentage of table min-width(ie 700px) -->
+<!--  This is for Safari browser ONLY -->
+
+        <div id="idDiv~prog~TBody2" style="width: auto; height: 100%; overflow: hidden;">
+        <table id="id~prog~Header2" style="width: 100%; min-width: 700px;">
+        <tr style="background-color: #C6C6FF; color: White; height: 2px;">
+            <td style="text-align: center; width: 3%; min-width: 21px; background-color: #E6E6FF;
+                height: 9px;">
+                <input id="~prog~CheckALL" name="~prog~CheckALL" type="checkbox" onclick="javascript:~prog~CheckALLs()" />
+            </td>
+            <td style="text-align: left; font-size: 11px; width: 9%; min-width: 63px; background-color: #E6E6FF; display: none;">
+                <div name="SortByFirstCol">
+                    <a title="~PK_ID~ Sort" style="color: black;" href="javascript:~prog~SortGrid('~prog~FirstCol')">~PK_ID~</a>
+                    <span name="FirstColDESC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbdown_sel4.gif"))" alt="Descending" />
+                    </span><span name="FirstColASC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbup_sel4.gif"))" alt="Ascending" />
+                    </span>
+                </div>
+            </td>
+            <td style="text-align: left; width: 16%; min-width: 112px; font-size: 11px; background-color: #E6E6FF;">
+                <div style="color: Black;" >
+                    Details</div>
+            </td>
+            ~chartypecol1~<td style="text-align: left; font-size: 11px; width: 20%; min-width: 140px; background-color: #E6E6FF;">
+            ~inttypecol1~<td style="text-align: right; font-size: 11px; width: 20%; min-width: 140px; background-color: #E6E6FF;">
+            ~dectypecol1~<td style="text-align: right; font-size: 11px; width: 20%; min-width: 140px; background-color: #E6E6FF;">
+            ~datetypecol1~<td style="text-align: center; font-size: 11px; width: 20%; min-width: 140px; background-color: #E6E6FF;">
+                <div name="SortBySecondCol">
+                    <a title="~column1~ Sort" style="color: black;" href="javascript:~prog~SortGrid('~prog~SecondCol')">
+                        ~column1~</a>
+                    <span name="SecondColDESC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbdown_sel4.gif"))" alt="Descending" />
+                    </span><span name="SecondColASC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbup_sel4.gif"))" alt="Ascending" />
+                    </span>
+                </div>
+            </td>
+            ~chartypecol2~<td style="text-align: left; font-size: 11px; width: 21%; min-width: 147px; background-color: #E6E6FF;">
+            ~inttypecol2~<td style="text-align: right; font-size: 11px; width: 21%; min-width: 147px; background-color: #E6E6FF;">
+            ~dectypecol2~<td style="text-align: right; font-size: 11px; width: 21%; min-width: 147px; background-color: #E6E6FF;">
+            ~datetypecol2~<td style="text-align: center; font-size: 11px; width: 21%; min-width: 147px; background-color: #E6E6FF;">
+                <div name="SortByThirdCol">
+                    <a title="~column2~ Sort" style="color: black;" href="javascript:~prog~SortGrid('~prog~ThirdCol')">
+                        ~column2~</a>
+                    <span name="ThirdColDESC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbdown_sel4.gif"))" alt="Descending" />
+                    </span><span name="ThirdColASC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbup_sel4.gif"))" alt="Ascending" />
+                    </span>
+                </div>
+            </td>
+            ~chartypecol3~<td style="text-align: left; font-size: 11px; width: 18%; min-width: 126px; background-color: #E6E6FF;">
+            ~inttypecol3~<td style="text-align: right; font-size: 11px; width: 18%; min-width: 126px; background-color: #E6E6FF;">
+            ~dectypecol3~<td style="text-align: right; font-size: 11px; width: 18%; min-width: 126px; background-color: #E6E6FF;">
+            ~datetypecol3~<td style="text-align: center; font-size: 11px; width: 18%; min-width: 126px; background-color: #E6E6FF;">
+                <div name="SortByFourthCol">
+                    <a title="~column3~ Sort" style="color: black;" href="javascript:~prog~SortGrid('~prog~FourthCol')">
+                        ~column3~</a>
+                    <span name="FourthColDESC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbdown_sel4.gif"))" alt="Descending" />
+                    </span><span name="FourthColASC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbup_sel4.gif"))" alt="Ascending" />
+                    </span>
+                </div>
+            </td>
+            ~chartypecol4~<td style="text-align: left; font-size: 11px; width: 18%; min-width: 126px; background-color: #E6E6FF;">
+            ~inttypecol4~<td style="text-align: right; font-size: 11px; width: 18%; min-width: 126px; background-color: #E6E6FF;">
+            ~dectypecol4~<td style="text-align: right; font-size: 11px; width: 18%; min-width: 126px; background-color: #E6E6FF;">
+            ~datetypecol4~<td style="text-align: center; font-size: 11px; width: 18%; min-width: 126px; background-color: #E6E6FF;">
+                <div name="SortByFifthCol">
+                    <a title="~column4~ Sort" style="color: black;" href="javascript:~prog~SortGrid('~prog~FifthCol')">
+                        ~column4~</a>
+                    <span name="FifthColDESC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbdown_sel4.gif"))" alt="Descending" />
+                    </span><span name="FifthColASC" style="display: none">
+                        <img src="@(Url.Content("~/images/arrowbup_sel4.gif"))" alt="Ascending" />
+                    </span>
+                </div>
+            </td>
+            <td style="text-align: left; width: 4%; min-width: 28px; background-color: #E6E6FF;">
+                &nbsp;
+            </td>
+        </tr>
+    </table>
+    </div>
+
+<!--  Must calculate min-width for each <td> column, as percentage of table min-width(ie 700px) -->
+<!--  This is for Safari browser ONLY -->
+
+    <div id="idDiv~prog~TBody" style="width: auto; height: 100%; overflow: scroll;" onscroll="~prog~myTimer();" >
+        <table id="~prog~Table" style="width: 100%; min-width: 700px; height: auto;">
+            @{ int i = 0;
+~chartypecol1~string trunc~column1~ = "";
+~chartypecol1~string trunc~column1~valid = "";
+~chartypecol2~string trunc~column2~ = "";
+~chartypecol2~string trunc~column2~valid = "";
+~chartypecol3~string trunc~column3~ = "";
+~chartypecol3~string trunc~column3~valid = "";
+~chartypecol4~string trunc~column4~ = "";
+~chartypecol4~string trunc~column4~valid = "";
+string DelName = "";}
+@foreach (var recList in (IEnumerable<appMODEL.~prog~>)ViewData["scripts"])
+{ 
+         ~chartypecol1~trunc~column1~ = "";
+           ~chartypecol1~trunc~column1~valid = "false";
+           ~chartypecol1~if (string.IsNullOrEmpty(recList.~column1~) || string.IsNullOrEmpty(recList.~column1~.Trim()))
+           ~chartypecol1~{
+               ~chartypecol1~trunc~column1~ = "";
+           ~chartypecol1~}
+           ~chartypecol1~else
+           ~chartypecol1~{
+           ~chartypecol1~if (recList.~column1~.Length > 20)
+           ~chartypecol1~{
+               ~chartypecol1~trunc~column1~ = recList.~column1~.Substring(0, 20);
+                 ~chartypecol1~trunc~column1~valid = "true";
+           ~chartypecol1~}
+           ~chartypecol1~else
+           ~chartypecol1~{
+               ~chartypecol1~trunc~column1~ = recList.~column1~;
+           ~chartypecol1~}
+           ~chartypecol1~}
+
+           ~chartypecol2~trunc~column2~ = "";
+           ~chartypecol2~trunc~column2~valid = "false";
+           ~chartypecol2~if (string.IsNullOrEmpty(recList.~column2~) || string.IsNullOrEmpty(recList.~column2~.Trim()))
+           ~chartypecol2~{
+               ~chartypecol2~trunc~column2~ = "";
+           ~chartypecol2~}
+           ~chartypecol2~else
+           ~chartypecol2~{
+           ~chartypecol2~if (recList.~column2~.Length > 20)
+           ~chartypecol2~{
+               ~chartypecol2~trunc~column2~ = recList.~column2~.Substring(0, 20);
+                 ~chartypecol2~trunc~column2~valid = "true";
+           ~chartypecol2~}
+           ~chartypecol2~else
+           ~chartypecol2~{
+               ~chartypecol2~trunc~column2~ = recList.~column2~;
+           ~chartypecol2~}
+           ~chartypecol2~}
+
+           ~chartypecol3~trunc~column3~ = "";
+           ~chartypecol3~trunc~column3~valid = "false";
+           ~chartypecol3~if (string.IsNullOrEmpty(recList.~column3~) || string.IsNullOrEmpty(recList.~column3~.Trim()))
+           ~chartypecol3~{
+               ~chartypecol3~trunc~column3~ = "";
+           ~chartypecol3~}
+           ~chartypecol3~else
+           ~chartypecol3~{
+           ~chartypecol3~if (recList.~column3~.Length > 20)
+           ~chartypecol3~{
+               ~chartypecol3~trunc~column3~ = recList.~column3~.Substring(0, 20);
+                 ~chartypecol3~trunc~column3~valid = "true";
+           ~chartypecol3~}
+           ~chartypecol3~else
+           ~chartypecol3~{
+               ~chartypecol3~trunc~column3~ = recList.~column3~;
+           ~chartypecol3~}
+           ~chartypecol3~}
+
+           ~chartypecol4~trunc~column4~ = "";
+           ~chartypecol4~trunc~column4~valid = "false";
+           ~chartypecol4~if (string.IsNullOrEmpty(recList.~column4~) || string.IsNullOrEmpty(recList.~column4~.Trim()))
+           ~chartypecol4~{
+               ~chartypecol4~trunc~column4~ = "";
+           ~chartypecol4~}
+           ~chartypecol4~else
+           ~chartypecol4~{
+           ~chartypecol4~if (recList.~column4~.Length > 20)
+           ~chartypecol4~{
+               ~chartypecol4~trunc~column4~ = recList.~column4~.Substring(0, 20);
+                 ~chartypecol4~trunc~column4~valid = "true";
+           ~chartypecol4~}
+           ~chartypecol4~else
+           ~chartypecol4~{
+               ~chartypecol4~trunc~column4~ = recList.~column4~;
+           ~chartypecol4~}
+           ~chartypecol4~}
+
+            <tr id="~prog~master@(i+2)" style="height: 5px; color: Black; background-color: @(i++ % 2 == 0 ? "#D3DCE5"  : "#ebeff2")">
+                <td style="width: 3%; min-width: 21px; font-size: 9px; font-weight: normal; text-align: center;">
+                    <input id="~prog~Chk@(i)" name="~prog~Chk@(i)" type="checkbox" />
+                    <input id="~prog~CheckB@(i)" name="CheckBoxx" type="hidden" value="off" />
+                </td>
+                <td id="~prog~FirstCol" style="text-align: left; width: 9%; min-width: 63px; font-size: 11px; display: none;">
+                   @(Html.Encode(recList.~PK_ID~))
+                </td>
+                <td style="text-align: left; width: 16%; font-size: 10px; min-width: 112px; font-weight: normal">
+                    <a class="btn btn-success btn-xs" style="color: white;margin-top: 2px; margin-bottom: 2px;font-size: 10px;" title="Edit Popup" href="javascript:~prog~PopDialog('@(Html.Encode(recList.~PK_ID~))', '@(i+2)');">
+                        Edit
+                    </a> 
+                    <a class="btn btn-default btn-xs" style="color: black;margin-top: 2px; margin-bottom: 2px;font-size: 10px;" title="Child Overlay" href="javascript:~prog~OpenDetails('@(Html.Encode(recList.~PK_ID~))', '@(i+2)');">
+                            Detail
+                    </a>
+                </td>
+                ~chartypecol1~<td id="~prog~SecondCol" style="text-align: left; width: 20%; min-width: 140px; font-size: 11px">
+                   ~chartypecol1~@if (trunc~column1~valid == "true")
+                   ~chartypecol1~{
+                     ~chartypecol1~<div name="plusign~column1~@(i+2)" style="display: inline-block;">
+                     ~chartypecol1~<a style="font-weight:normal; text-decoration:none;" title="Expand" href="javascript:~prog~ShowColumn('@(i+2)','~column1~');">
+                      ~chartypecol1~<img src="@(Url.Content("~/images/plus.gif"))" alt="Ascending" style="border-style: none" />
+                     ~chartypecol1~</a> 
+                     ~chartypecol1~</div> 
+                     ~chartypecol1~<div name="minusign~column1~@(i+2)" style="display: none; font-size: 10px; color: Purple; height: 30px;">
+                     ~chartypecol1~<a style="font-size: 10px; text-decoration:none; color:Navy" title="Collapse" href="javascript:~prog~HideColumn('@(i+2)','~column1~');">
+                      ~chartypecol1~<img src="@(Url.Content("~/images/minus.gif"))" alt="Ascending" style="border-style: none" />
+                     ~chartypecol1~</a> 
+                        ~chartypecol1~@(Html.Encode(recList.~column1~))
+                     ~chartypecol1~</div> 
+                    ~chartypecol1~}
+                    ~chartypecol1~
+                    ~chartypecol1~<span id="~column1~tipp@(i)">
+                      ~chartypecol1~@(Html.Encode(trunc~column1~))
+                    ~chartypecol1~</span>
+                ~chartypecol1~
+                ~chartypecol1~</td>
+
+                ~inttypecol1~<td id="~prog~SecondCol" style="text-align: right; width: 20%; min-width: 140px; font-size: 11px">
+                    ~inttypecol1~@(Html.Encode(recList.~column1~))
+                ~inttypecol1~</td>
+
+                ~dectypecol1~<td id="~prog~SecondCol" style="text-align: right; width: 20%; min-width: 140px; font-size: 11px">
+                    ~dectypecol1~@(Html.Encode(recList.~column1~))
+                ~dectypecol1~</td>
+
+                 ~datetypecol1~<td id="~prog~SecondCol" style="text-align: center; width: 20%; min-width: 140px; font-size: 11px">
+                    ~datetypecol1~@if (recList.~column1~ == Convert.ToDateTime("01/01/1858"))
+                    ~datetypecol1~{
+                    ~datetypecol1~
+                    ~datetypecol1~}
+                    ~datetypecol1~else
+                    ~datetypecol1~{
+                    ~datetypecol1~@(Html.Encode(appBLL.UtilitiesBLL.FormatDate(recList.~column1~)))
+                    //~datetypecol1~@(Html.Encode(appBLL.UtilitiesBLL.FormatDateOffsetTime(recList.~column1~)))
+                    ~datetypecol1~}
+                ~datetypecol1~</td>
+
+                   ~chartypecol2~<td id="~prog~ThirdCol" style="text-align: left; width: 21%; min-width: 147px; font-size: 11px">
+                   ~chartypecol2~@if (trunc~column2~valid == "true")
+                   ~chartypecol2~{
+                     ~chartypecol2~<div name="plusign~column2~@(i+2)" style="display: inline-block;">
+                     ~chartypecol2~<a style="font-weight:normal; text-decoration:none;" title="Expand" href="javascript:~prog~ShowColumn('@(i+2)','~column2~');">
+                      ~chartypecol2~<img src="@(Url.Content("~/images/plus.gif"))" alt="Ascending" style="border-style: none" />
+                     ~chartypecol2~</a> 
+                     ~chartypecol2~</div> 
+                     ~chartypecol2~<div name="minusign~column2~@(i+2)" style="display: none; font-size: 10px; color: Purple; height: 30px;">
+                     ~chartypecol2~<a style="font-size: 10px; text-decoration:none; color:Navy" title="Collapse" href="javascript:~prog~HideColumn('@(i+2)','~column2~');">
+                      ~chartypecol2~<img src="@(Url.Content("~/images/minus.gif"))" alt="Ascending" style="border-style: none" />
+                     ~chartypecol2~</a> 
+                        ~chartypecol2~@(Html.Encode(recList.~column2~))
+                     ~chartypecol2~</div> 
+                    ~chartypecol2~}
+                    ~chartypecol2~
+                    ~chartypecol2~<span id="~column2~tipp@(i)">
+                      ~chartypecol2~@(Html.Encode(trunc~column2~))
+                    ~chartypecol2~</span>
+                ~chartypecol2~
+                ~chartypecol2~</td>
+
+                ~inttypecol2~<td id="~prog~ThirdCol" style="text-align: right; width: 21%; min-width: 147px; font-size: 11px">
+                    ~inttypecol2~@(Html.Encode(recList.~column2~))
+                ~inttypecol2~</td>
+
+                ~dectypecol2~<td id="~prog~ThirdCol" style="text-align: right; width: 21%; min-width: 147px; font-size: 11px">
+                    ~dectypecol2~@(Html.Encode(recList.~column2~))
+                ~dectypecol2~</td>
+
+                 ~datetypecol2~<td id="~prog~ThirdCol" style="text-align: center; width: 21%; min-width: 147px; font-size: 11px">
+                    ~datetypecol2~@if (recList.~column2~ == Convert.ToDateTime("01/01/1858"))
+                    ~datetypecol2~{
+                    ~datetypecol2~
+                    ~datetypecol2~}
+                    ~datetypecol2~else
+                    ~datetypecol2~{
+                    ~datetypecol2~@(Html.Encode(appBLL.UtilitiesBLL.FormatDate(recList.~column2~)))
+                    //~datetypecol2~@(Html.Encode(appBLL.UtilitiesBLL.FormatDateOffsetTime(recList.~column2~)))
+                    ~datetypecol2~}
+                ~datetypecol2~</td>
+
+                   ~chartypecol3~<td id="~prog~FourthCol" style="text-align: left; width: 18%; min-width: 126px; font-size: 11px">
+                   ~chartypecol3~@if (trunc~column3~valid == "true")
+                   ~chartypecol3~{
+                     ~chartypecol3~<div name="plusign~column3~@(i+2)" style="display: inline-block;">
+                     ~chartypecol3~<a style="font-weight:normal; text-decoration:none;" title="Expand" href="javascript:~prog~ShowColumn('@(i+2)','~column3~');">
+                      ~chartypecol3~<img src="@(Url.Content("~/images/plus.gif"))" alt="Ascending" style="border-style: none" />
+                     ~chartypecol3~</a> 
+                     ~chartypecol3~</div> 
+                     ~chartypecol3~<div name="minusign~column3~@(i+2)" style="display: none; font-size: 10px; color: Purple; height: 30px;">
+                     ~chartypecol3~<a style="font-size: 10px; text-decoration:none; color:Navy" title="Collapse" href="javascript:~prog~HideColumn('@(i+2)','~column3~');">
+                      ~chartypecol3~<img src="@(Url.Content("~/images/minus.gif"))" alt="Ascending" style="border-style: none" />
+                     ~chartypecol3~</a> 
+                        ~chartypecol3~@(Html.Encode(recList.~column3~))
+                     ~chartypecol3~</div> 
+                    ~chartypecol3~}
+                    ~chartypecol3~
+                    ~chartypecol3~<span id="~column3~tipp@(i)">
+                      ~chartypecol3~@(Html.Encode(trunc~column3~))
+                    ~chartypecol3~</span>
+                ~chartypecol3~
+                ~chartypecol3~</td>
+
+                ~inttypecol3~<td id="~prog~FourthCol" style="text-align: right; width: 18%; min-width: 126px; font-size: 11px">
+                    ~inttypecol3~@(Html.Encode(recList.~column3~))
+                ~inttypecol3~</td>
+
+                ~dectypecol3~<td id="~prog~FourthCol" style="text-align: right; width: 18%; min-width: 126px; font-size: 11px">
+                    ~dectypecol3~@(Html.Encode(recList.~column3~))
+                ~dectypecol3~</td>
+
+                 ~datetypecol3~<td id="~prog~FourthCol" style="text-align: center; width: 18%; min-width: 126px; font-size: 11px">
+                    ~datetypecol3~@if (recList.~column3~ == Convert.ToDateTime("01/01/1858"))
+                    ~datetypecol3~{
+                    ~datetypecol3~
+                    ~datetypecol3~}
+                    ~datetypecol3~else
+                    ~datetypecol3~{
+                    ~datetypecol3~@(Html.Encode(appBLL.UtilitiesBLL.FormatDate(recList.~column3~)))
+                    //~datetypecol3~@(Html.Encode(appBLL.UtilitiesBLL.FormatDateOffsetTime(recList.~column3~)))
+                    ~datetypecol3~}
+                ~datetypecol3~</td>
+
+                   ~chartypecol4~<td id="~prog~FifthCol" style="text-align: left; width: 18%; min-width: 126px; font-size: 11px">
+                   ~chartypecol4~@if (trunc~column4~valid == "true")
+                   ~chartypecol4~{
+                     ~chartypecol4~<div name="plusign~column4~@(i+2)" style="display: inline-block;">
+                     ~chartypecol4~<a style="font-weight:normal; text-decoration:none;" title="Expand" href="javascript:~prog~ShowColumn('@(i+2)','~column4~');">
+                      ~chartypecol4~<img src="@(Url.Content("~/images/plus.gif"))" alt="Ascending" style="border-style: none" />
+                     ~chartypecol4~</a> 
+                     ~chartypecol4~</div> 
+                     ~chartypecol4~<div name="minusign~column4~@(i+2)" style="display: none; font-size: 10px; color: Purple; height: 30px;">
+                     ~chartypecol4~<a style="font-size: 10px; text-decoration:none; color:Navy" title="Collapse" href="javascript:~prog~HideColumn('@(i+2)','~column4~');">
+                      ~chartypecol4~<img src="@(Url.Content("~/images/minus.gif"))" alt="Ascending" style="border-style: none" />
+                     ~chartypecol4~</a> 
+                        ~chartypecol4~@(Html.Encode(recList.~column4~))
+                     ~chartypecol4~</div> 
+                    ~chartypecol4~}
+                    ~chartypecol4~
+                    ~chartypecol4~<span id="~column4~tipp@(i)">
+                      ~chartypecol4~@(Html.Encode(trunc~column4~))
+                    ~chartypecol4~</span>
+                ~chartypecol4~
+                ~chartypecol4~</td>
+
+                ~inttypecol4~<td id="~prog~FifthCol" style="text-align: right; width: 18%; min-width: 126px; font-size: 11px">
+                    ~inttypecol4~@(Html.Encode(recList.~column4~))
+                ~inttypecol4~</td>
+
+                ~dectypecol4~<td id="~prog~FifthCol" style="text-align: right; width: 18%; min-width: 126px; font-size: 11px">
+                    ~dectypecol4~@(Html.Encode(recList.~column4~))
+                ~dectypecol4~</td>
+
+                 ~datetypecol4~<td id="~prog~FifthCol" style="text-align: center; width: 18%; min-width: 126px; font-size: 11px">
+                    ~datetypecol4~@if (recList.~column4~ == Convert.ToDateTime("01/01/1858"))
+                    ~datetypecol4~{
+                    ~datetypecol4~
+                    ~datetypecol4~}
+                    ~datetypecol4~else
+                    ~datetypecol4~{
+                    ~datetypecol4~@(Html.Encode(appBLL.UtilitiesBLL.FormatDate(recList.~column4~)))
+                    //~datetypecol4~@(Html.Encode(appBLL.UtilitiesBLL.FormatDateOffsetTime(recList.~column4~)))
+                    ~datetypecol4~}
+                ~datetypecol4~</td>
+
+                <td style="text-align: center; width: 4%; min-width: 28px; font-size: 12px; font-weight: normal">
+                    <a style="font-size: 10px; color: Red" title="Details" href="javascript:~prog~DelDetails('@(Html.Encode(recList.~PK_ID~))', '@(i+2)', '@(Html.Encode(recList.~column1~))');">
+                        Del</a>
+
+                    <input style="display: none;" name="PK_IDD" type="text" id="~prog~PK_IDD@(i)" value='@(Html.Encode(recList.~PK_ID~))' />
+                </td>
+            </tr>
+            }
+        </table>
+    </div>
+   
+   
+<div id="idDivNamesTFooter" style="width: auto; height: 100%; overflow: hidden;display:none;">
+<table id="idNamesFooter" style="width: 100%; min-width: 700px;">
+<tr style="background-color: #C6C6FF; color: White; height: 2px;">
+<td style="text-align: center; width: 3%;background-color: #FFECEC; height: 9px;min-width: 21px;">
+        &nbsp;
+</td>
+<td style="text-align: left; width: 3%;background-color: #FFECEC; height: 9px;min-width: 21px;">
+        &nbsp;
+</td>
+<td style="text-align: left; font-size: 11px; width: 6%; background-color: #FFECEC;display: none;min-width: 42px;">
+       &nbsp;
+</td>
+<td style="text-align: center; width: 16%; font-size: 11px; background-color: #FFECEC;min-width: 112px;">
+    <div style="color: Black;">
+            &nbsp;
+    </div>
+</td>
+<td style="text-align: left; font-size: 11px; width: 20%; background-color: #FFECEC;min-width: 140px;">
+    <div style="color: Black;">
+       Column1
+    </div>
+</td>
+<td style="text-align: left; font-size: 11px; width: 18%;background-color: #FFECEC;min-width: 126px;">
+    <div style="color: Black;">
+       Column2
+    </div>
+</td>
+<td style="text-align: center; font-size: 11px; width: 18%;background-color: #FFECEC;min-width: 126px;">
+    <div style="color: Black;">
+       Column3
+    </div>
+</td>
+<td style="text-align: center; font-size: 11px; width: 18%;background-color: #FFECEC;min-width: 126px;">
+     <div style="color: Black;">
+        Column4
+     </div>
+ </td>
+ <td style="text-align: center; width: 4%;background-color: #FFECEC;min-width: 28px;">
+     &nbsp;
+    </td>
+  </tr>
+ </table>
+</div>
+
+
+    }
+    }
+
+
+</div>
+
+
+
+

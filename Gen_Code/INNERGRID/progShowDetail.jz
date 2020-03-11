@@ -1,0 +1,984 @@
+
+        //Code between these comments can be changed-  &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        //NOTE:- If columns are added or removed, then need to change most functions.
+
+        $(~prog~DetailpageReady);
+
+        function ~prog~DetailpageReady() {
+            //alert("~prog~ShowDetail");
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {   //for Apple Device
+                //$("#divIdCombo").css("overflow", "scroll");
+            }
+            else {
+                $("#~prog~Detailtopdiv #~prog~DetailCombo1Div").css("overflow", "hidden");
+                $("#~prog~Detailtopdiv #~prog~DetailCombo2Div").css("overflow", "hidden");
+            }
+          
+            Get~prog~Detail();  //so as to get record via Primary Key
+
+            $.ajaxSetup({ cache: false });   //stop caching, as querying current database data everytime of a POST, not what has been cached
+          
+        }   //END function pageReady()
+     
+
+        var form~prog~DetailData;
+        function Get~prog~Detail() {
+            //alert("in detail");
+            LayoutShowProgressBar();  //found in _Layout.cshtml
+    
+            //Size the page height properly
+            var deviceHeight = (typeof window.outerHeight != 'undefined') ? Math.max(window.outerHeight, $(window).height()) : $(window).height();
+            if (isBreakpointGet('xs')) {   //in Mobile device. Getting this from Names2.cshtml now
+                dialogHeight = Number(deviceHeight) / 1.65;
+            }
+            else {
+                dialogHeight = Number(deviceHeight) / 1.75;
+            }
+            //END Size the page height properly
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            if (document.getElementById("~prog~ShowShowtabs")) {     //From OpenDetail link in Grid
+                //alert("in showtabs");
+                document.getElementById("~prog~DetailFormData").style.height = "150px";   //make it smaller to fit Detail & List at bottom - was 120
+                //$("#~prog~DetailFormData").css("display", "");
+            }
+            else  //normal edit modal page
+            {
+                document.getElementById("~prog~Detailtopdiv").style.height = dialogHeight + "px";
+            }
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+          
+            var PKIDget = $("#~prog~Formtopdiv [name=~PK_ID~]").val();   //Primary Key
+            //$("#~prog~DetailForm [name=~FPK_ID~]").val($("#~childprog~Form [name=~FPK_ID~]").val());
+            //$("#~prog~DetailForm [name=~FPK_ID~]").val($("#ChildGeneralDiv [name=PK_ID]").val());      //getting Foreign Key
+            $("#~prog~DetailForm [name=~FPK_ID~]").val($("#~prog~Form [name=~FPK_ID~]").val());
+
+            form~prog~DetailData = "~PK_ID~=" + PKIDget;   //Change to suit Primary Key
+            //alert("formData is " + form~prog~DetailData);
+
+            if (PKIDget != -1) {    //Not in ADD mode, so get record details from DB
+                //alert("in display");
+                setTimeout(~prog~DetailGoToServer, 30);
+           }
+           else {
+                //in Add Mode
+                LayoutHideProgressBar();  //found in _Layout.cshtml
+                ~prog~DetailEditForm('ADD');
+            }
+
+        }
+
+
+        //Get record details from Database and then display on form
+        function ~prog~DetailGoToServer() {
+            //alert("in display");
+
+            $.ajax(~prog~DetailGetURL, {
+                type: 'GET',
+                data: form~prog~DetailData,
+                success: function (data, status, xhr) {
+                   ~prog~DetailDisplayRecord(data);
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+                }
+          
+            });
+
+        }
+
+      function ~prog~Showit()
+      {
+          $("#~prog~Showit").val("showit");  //for when showing in Detail overlay
+          LayoutHideProgressBar();  //found in _Layout.cshtml
+      }
+      function ~prog~DetailDisplayRecord(jsonScript) {
+             //alert("in display");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+
+            if (jsonScript.ReturnStatus == true) {
+                //Store Keys within Form
+                $("#~prog~DetailForm [name=~PK_ID~]").val(jsonScript.~PK_ID~);
+                //END Store keys within Form
+
+                //$("#~prog~Showit").val("showit");  //for when showing in Detail overlay
+                //setTimeout(~prog~Showit, 500);  //wait half second
+
+                ~chartypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val(jsonScript.~column1~);  
+                ~chartypecol1~$("#~prog~DetailValForm [name=~column1~_inCopy]").val(jsonScript.~column1~);
+                ~inttypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val(jsonScript.~column1~);   
+                ~inttypecol1~$("#~prog~DetailValForm [name=~column1~_inCopy]").val(jsonScript.~column1~);
+                ~dectypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val(jsonScript.~column1~);  
+                ~dectypecol1~$("#~prog~DetailValForm [name=~column1~_inCopy]").val(jsonScript.~column1~);
+                ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val(jsonScript.~column1~_Str);  
+                ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_inCopy]").val(jsonScript.~column1~_Str);
+                $('#~prog~DetailValForm [name=~column1~_in]').attr('readonly', true);
+                $("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+
+                ~chartypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val(jsonScript.~column2~);  
+                ~chartypecol2~$("#~prog~DetailValForm [name=~column2~_inCopy]").val(jsonScript.~column2~);
+                ~inttypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val(jsonScript.~column2~);   
+                ~inttypecol2~$("#~prog~DetailValForm [name=~column2~_inCopy]").val(jsonScript.~column2~);
+                ~dectypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val(jsonScript.~column2~);  
+                ~dectypecol2~$("#~prog~DetailValForm [name=~column2~_inCopy]").val(jsonScript.~column2~);
+                ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val(jsonScript.~column2~_Str);  
+                ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_inCopy]").val(jsonScript.~column2~_Str);
+                $('#~prog~DetailValForm [name=~column2~_in]').attr('readonly', true);
+                $("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+
+                ~chartypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val(jsonScript.~column3~);  
+                ~chartypecol3~$("#~prog~DetailValForm [name=~column3~_inCopy]").val(jsonScript.~column3~);
+                ~inttypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val(jsonScript.~column3~);   
+                ~inttypecol3~$("#~prog~DetailValForm [name=~column3~_inCopy]").val(jsonScript.~column3~);
+                ~dectypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val(jsonScript.~column3~);  
+                ~dectypecol3~$("#~prog~DetailValForm [name=~column3~_inCopy]").val(jsonScript.~column3~);
+                ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val(jsonScript.~column3~_Str);  
+                ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_inCopy]").val(jsonScript.~column3~_Str);
+                $('#~prog~DetailValForm [name=~column3~_in]').attr('readonly', true);
+                $("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+                //$("#~prog~DetailValForm [name=~column3~_in]").datepicker("destroy");
+
+                ~chartypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val(jsonScript.~column4~);  
+                ~chartypecol4~$("#~prog~DetailValForm [name=~column4~_inCopy]").val(jsonScript.~column4~);
+                ~inttypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val(jsonScript.~column4~);   
+                ~inttypecol4~$("#~prog~DetailValForm [name=~column4~_inCopy]").val(jsonScript.~column4~);
+                ~dectypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val(jsonScript.~column4~);  
+                ~dectypecol4~$("#~prog~DetailValForm [name=~column4~_inCopy]").val(jsonScript.~column4~);
+                ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val(jsonScript.~column4~_Str);  
+                ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_inCopy]").val(jsonScript.~column4~_Str);
+                $('#~prog~DetailValForm [name=~column4~_in]').attr('readonly', true);
+                $("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+
+                //----------------------------------------------------------------------------------------------------------------------
+                //For Checkbox processing
+                //----------------------------------------------------------------------------------------------------------------------
+                //if (jsonScript.Private_Cover == 1) {
+                    //$('#~prog~DetailValForm [name=Private_Cover_in]').attr('checked', true);     //can use attr instead of prop.
+                    //$('#~prog~DetailValForm [name=Private_Cover_inCopy]').attr('checked', true);
+                //}
+                //else {
+                    //$('#~prog~DetailValForm [name=Private_Cover_in]').attr('checked', false);    //can use attr instead of prop.
+                    //$('#~prog~DetailValForm [name=Private_Cover_inCopy]').attr('checked', false);
+                //}
+                //----------------------------------------------------------------------------------------------------------------------
+                //END For Checkbox processing
+                //----------------------------------------------------------------------------------------------------------------------
+
+                ~prog~DetailFormatFields();
+  
+                $("#btn~prog~DetailCancel").css("visibility", "visible");
+                $("#btn~prog~DetailCancel").css("display", "");
+                $("#btn~prog~DetailEdit").css("visibility", "visible");
+                $("#btn~prog~DetailEdit").css("display", "");
+           
+                $('#~prog~Detailtopdiv [name=comboCheckit]').val("False");
+               
+            }
+
+            var returnMessage = "";
+
+            var i = 0;
+            for (i = 0; i < jsonScript.ReturnMessage.length; i++) {
+                //returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "<br>";
+                returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "\n";
+            }
+
+            if (jsonScript.ReturnStatus == true) {
+               //nothing
+            }
+            else {
+                alert("" + returnMessage);
+            }
+
+        }
+
+
+        function ~prog~DetailFormatFields() {
+
+            ~chartypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("width", "100%");
+            ~chartypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("text-align", "left");
+            ~inttypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("width", "80px");
+            ~inttypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("text-align", "right");
+            ~dectypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("width", "80px");
+            ~dectypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("text-align", "right");
+            ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("width", "83px");
+            ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("text-align", "center");
+
+            ~chartypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("width", "100%");
+            ~chartypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("text-align", "left");
+            ~inttypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("width", "80px");
+            ~inttypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("text-align", "right");
+            ~dectypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("width", "80px");
+            ~dectypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("text-align", "right");
+            ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("width", "83px");
+            ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("text-align", "center");
+
+            ~chartypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("width", "100%");
+            ~chartypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("text-align", "left");
+            ~inttypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("width", "80px");
+            ~inttypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("text-align", "right");
+            ~dectypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("width", "80px");
+            ~dectypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("text-align", "right");
+            ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("width", "83px");
+            ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("text-align", "center");
+
+            ~chartypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("width", "100%");
+            ~chartypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("text-align", "left");
+            ~inttypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("width", "80px");
+            ~inttypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("text-align", "right");
+            ~dectypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("width", "80px");
+            ~dectypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("text-align", "right");
+            ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("width", "83px");
+            ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("text-align", "center");
+
+        }
+
+
+        function ~prog~DetailEditForm(opt) {
+          
+            $('#~prog~Detailtopdiv [name=comboCheckit]').val("True");
+         
+            $("#btn~prog~DetailSave").css("visibility", "visible");
+            $("#btn~prog~DetailSave").css("display", "");
+            $("#btn~prog~DetailEdit").css("visibility", "hidden");
+            $("#btn~prog~DetailEdit").css("display", "none");
+            $("#btn~prog~DetailCancel").css("visibility", "hidden");
+            $("#btn~prog~DetailCancel").css("display", "none");
+
+            if (opt != "ADD") {
+                $("#btn~prog~DetailCancelEDIT").css("visibility", "visible");
+                $("#btn~prog~DetailCancelEDIT").css("display", "");
+            }
+            else {
+                $("#~prog~DetailFormData").css("display", "");
+                $("#btn~prog~DetailCancelADD").css("visibility", "visible");
+                $("#btn~prog~DetailCancelADD").css("display", "");
+            }
+
+
+            ~chartypecol1~$('#~prog~DetailValForm [name=~column1~_in]').removeAttr('readonly');   //Allow Editing
+            ~chartypecol1~$('#~prog~DetailValForm [name=~column1~_in]').removeAttr('disabled');
+            ~chartypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~chartypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val($("#~prog~DetailValForm [name=~column1~_inCopy]").val());   //always set input to original
+
+            ~inttypecol1~$('#~prog~DetailValForm [name=~column1~_in]').removeAttr('readonly');   //Allow Editing
+            ~inttypecol1~$('#~prog~DetailValForm [name=~column1~_in]').removeAttr('disabled');
+            ~inttypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~inttypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val($("#~prog~DetailValForm [name=~column1~_inCopy]").val());   //always set input to original
+
+            ~dectypecol1~$('#~prog~DetailValForm [name=~column1~_in]').removeAttr('readonly');   //Allow Editing
+            ~dectypecol1~$('#~prog~DetailValForm [name=~column1~_in]').removeAttr('disabled');
+            ~dectypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~dectypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val($("#~prog~DetailValForm [name=~column1~_inCopy]").val());   //always set input to original
+
+            ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ffffff");  //make backgound colour White
+            ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_in]").datepicker({
+                ~datetypecol1~showOn: 'button',
+                ~datetypecol1~buttonImage: ~prog~DetailCalGif,
+                ~datetypecol1~buttonImageOnly: true,
+                ~datetypecol1~changeMonth: true,
+                ~datetypecol1~changeYear: true,
+                ~datetypecol1~dateFormat: "dd-M-yy"
+            ~datetypecol1~}).next(".ui-datepicker-trigger").css("margin", "-26px 0px 1px 86px");     //this puts calendar image on wanted coordinates
+            
+
+            ~chartypecol2~$('#~prog~DetailValForm [name=~column2~_in]').removeAttr('readonly');   //Allow Editing
+            ~chartypecol2~$('#~prog~DetailValForm [name=~column2~_in]').removeAttr('disabled');
+            ~chartypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~chartypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val($("#~prog~DetailValForm [name=~column2~_inCopy]").val());   //always set input to original
+
+            ~inttypecol2~$('#~prog~DetailValForm [name=~column2~_in]').removeAttr('readonly');   //Allow Editing
+            ~inttypecol2~$('#~prog~DetailValForm [name=~column2~_in]').removeAttr('disabled');
+            ~inttypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~inttypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val($("#~prog~DetailValForm [name=~column2~_inCopy]").val());   //always set input to original
+
+            ~dectypecol2~$('#~prog~DetailValForm [name=~column2~_in]').removeAttr('readonly');   //Allow Editing
+            ~dectypecol2~$('#~prog~DetailValForm [name=~column2~_in]').removeAttr('disabled');
+            ~dectypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~dectypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val($("#~prog~DetailValForm [name=~column2~_inCopy]").val());   //always set input to original
+
+            ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ffffff");  //make backgound colour White
+            ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_in]").datepicker({
+                ~datetypecol2~showOn: 'button',
+                ~datetypecol2~buttonImage: ~prog~DetailCalGif,
+                ~datetypecol2~buttonImageOnly: true,
+                ~datetypecol2~changeMonth: true,
+                ~datetypecol2~changeYear: true,
+                ~datetypecol2~dateFormat: "dd-M-yy"
+            ~datetypecol2~}).next(".ui-datepicker-trigger").css("margin", "-26px 0px 1px 86px");     //this puts calendar image on wanted coordinates
+            
+
+            ~chartypecol3~$('#~prog~DetailValForm [name=~column3~_in]').removeAttr('readonly');   //Allow Editing
+            ~chartypecol3~$('#~prog~DetailValForm [name=~column3~_in]').removeAttr('disabled');
+            ~chartypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~chartypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val($("#~prog~DetailValForm [name=~column3~_inCopy]").val());   //always set input to original
+
+            ~inttypecol3~$('#~prog~DetailValForm [name=~column3~_in]').removeAttr('readonly');   //Allow Editing
+            ~inttypecol3~$('#~prog~DetailValForm [name=~column3~_in]').removeAttr('disabled');
+            ~inttypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~inttypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val($("#~prog~DetailValForm [name=~column3~_inCopy]").val());   //always set input to original
+
+            ~dectypecol3~$('#~prog~DetailValForm [name=~column3~_in]').removeAttr('readonly');   //Allow Editing
+            ~dectypecol3~$('#~prog~DetailValForm [name=~column3~_in]').removeAttr('disabled');
+            ~dectypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~dectypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val($("#~prog~DetailValForm [name=~column3~_inCopy]").val());   //always set input to original
+
+            ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ffffff");  //make backgound colour White
+            ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_in]").datepicker({
+                ~datetypecol3~showOn: 'button',
+                ~datetypecol3~buttonImage: ~prog~DetailCalGif,
+                ~datetypecol3~buttonImageOnly: true,
+                ~datetypecol3~changeMonth: true,
+                ~datetypecol3~changeYear: true,
+                ~datetypecol3~dateFormat: "dd-M-yy"
+            ~datetypecol3~}).next(".ui-datepicker-trigger").css("margin", "-26px 0px 1px 86px");     //this puts calendar image on wanted coordinates
+            
+
+            ~chartypecol4~$('#~prog~DetailValForm [name=~column4~_in]').removeAttr('readonly');   //Allow Editing
+            ~chartypecol4~$('#~prog~DetailValForm [name=~column4~_in]').removeAttr('disabled');
+            ~chartypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~chartypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val($("#~prog~DetailValForm [name=~column4~_inCopy]").val());   //always set input to original
+
+            ~inttypecol4~$('#~prog~DetailValForm [name=~column4~_in]').removeAttr('readonly');   //Allow Editing
+            ~inttypecol4~$('#~prog~DetailValForm [name=~column4~_in]').removeAttr('disabled');
+            ~inttypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~inttypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val($("#~prog~DetailValForm [name=~column4~_inCopy]").val());   //always set input to original
+
+            ~dectypecol4~$('#~prog~DetailValForm [name=~column4~_in]').removeAttr('readonly');   //Allow Editing
+            ~dectypecol4~$('#~prog~DetailValForm [name=~column4~_in]').removeAttr('disabled');
+            ~dectypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ffffff");  //make backgound colour White, ready for Edit
+            ~dectypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val($("#~prog~DetailValForm [name=~column4~_inCopy]").val());   //always set input to original
+
+            ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ffffff");  //make backgound colour White
+            ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_in]").datepicker({
+                ~datetypecol4~showOn: 'button',
+                ~datetypecol4~buttonImage: ~prog~DetailCalGif,
+                ~datetypecol4~buttonImageOnly: true,
+                ~datetypecol4~changeMonth: true,
+                ~datetypecol4~changeYear: true,
+                ~datetypecol4~dateFormat: "dd-M-yy"
+            ~datetypecol4~}).next(".ui-datepicker-trigger").css("margin", "-26px 0px 1px 86px");     //this puts calendar image on wanted coordinates
+            
+
+            if (opt == "ADD") {
+                //$("#~prog~DetailValForm [name=~column3~_in]").datepicker('setDate', '+0d');   //set now as default date
+            }
+            //if ($("#~prog~DetailValForm [name=~column3~_in]").length != 0) {     
+                //$('#~prog~DetailValForm [name=~column3~_in]').focus();
+                //setTimeout(function () { $('#~prog~DetailValForm [name=~column3~_in]').focus(); }, 10);  //for IE
+            //}
+
+            ~prog~DetailFormatFields();
+
+        }
+
+
+
+      function ~prog~DetailCancelForm() {
+
+          $("#DivErr~prog~Detail~column2~_in").css("display", "none");
+          $("#DivErr~prog~Detail~column1~_in").css("display", "none");
+          $("#DivErr~prog~Detail~column4~_in").css("display", "none");
+          $("#DivErr~prog~Detail~column3~_in").css("display", "none");
+
+            $('#~prog~Detailtopdiv [name=comboCheckit]').val("False");
+            $("#DivError~prog~Detail").css("display", "none");
+
+            var datecopy = "";
+            var datecopy2 = "";
+            $("#btn~prog~DetailSave").css("visibility", "hidden");
+            $("#btn~prog~DetailSave").css("display", "none");
+            $("#btn~prog~DetailCancelEDIT").css("visibility", "hidden");
+            $("#btn~prog~DetailCancelEDIT").css("display", "none");
+
+            $("#btn~prog~DetailEdit").css("visibility", "visible");
+            $("#btn~prog~DetailEdit").css("display", "");
+            $("#btn~prog~DetailCancel").css("visibility", "visible");
+            $("#btn~prog~DetailCancel").css("display", "");
+
+            ~chartypecol1~$('#~prog~DetailValForm [name=~column1~_in]').attr('readonly', true);
+            ~chartypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~chartypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val($("#~prog~DetailValForm [name=~column1~_inCopy]").val());
+
+            ~inttypecol1~$('#~prog~DetailValForm [name=~column1~_in]').attr('readonly', true);
+            ~inttypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~inttypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val($("#~prog~DetailValForm [name=~column1~_inCopy]").val());
+
+            ~dectypecol1~$('#~prog~DetailValForm [name=~column1~_in]').attr('readonly', true);
+            ~dectypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~dectypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val($("#~prog~DetailValForm [name=~column1~_inCopy]").val());
+
+            ~datetypecol1~$('#~prog~DetailValForm [name=~column1~_in]').attr('readonly', true);
+            ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~datetypecol1~dateCopy = $("#~prog~DetailValForm [name=~column1~_inCopy]").val();
+            ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_in]").val(dateCopy);
+            ~datetypecol1~$("#~prog~DetailValForm [name=~column1~_in]").datepicker("destroy");
+
+
+            ~chartypecol2~$('#~prog~DetailValForm [name=~column2~_in]').attr('readonly', true);
+            ~chartypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~chartypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val($("#~prog~DetailValForm [name=~column2~_inCopy]").val());
+
+            ~inttypecol2~$('#~prog~DetailValForm [name=~column2~_in]').attr('readonly', true);
+            ~inttypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~inttypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val($("#~prog~DetailValForm [name=~column2~_inCopy]").val());
+
+            ~dectypecol2~$('#~prog~DetailValForm [name=~column2~_in]').attr('readonly', true);
+            ~dectypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~dectypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val($("#~prog~DetailValForm [name=~column2~_inCopy]").val());
+
+            ~datetypecol2~$('#~prog~DetailValForm [name=~column2~_in]').attr('readonly', true);
+            ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~datetypecol2~dateCopy = $("#~prog~DetailValForm [name=~column2~_inCopy]").val();
+            ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_in]").val(dateCopy);
+            ~datetypecol2~$("#~prog~DetailValForm [name=~column2~_in]").datepicker("destroy");
+
+
+            ~chartypecol3~$('#~prog~DetailValForm [name=~column3~_in]').attr('readonly', true);
+            ~chartypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~chartypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val($("#~prog~DetailValForm [name=~column3~_inCopy]").val());
+
+            ~inttypecol3~$('#~prog~DetailValForm [name=~column3~_in]').attr('readonly', true);
+            ~inttypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~inttypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val($("#~prog~DetailValForm [name=~column3~_inCopy]").val());
+
+            ~dectypecol3~$('#~prog~DetailValForm [name=~column3~_in]').attr('readonly', true);
+            ~dectypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~dectypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val($("#~prog~DetailValForm [name=~column3~_inCopy]").val());
+
+            ~datetypecol3~$('#~prog~DetailValForm [name=~column3~_in]').attr('readonly', true);
+            ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~datetypecol3~dateCopy = $("#~prog~DetailValForm [name=~column3~_inCopy]").val();
+            ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_in]").val(dateCopy);
+            ~datetypecol3~$("#~prog~DetailValForm [name=~column3~_in]").datepicker("destroy");
+
+
+            ~chartypecol4~$('#~prog~DetailValForm [name=~column4~_in]').attr('readonly', true);
+            ~chartypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~chartypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val($("#~prog~DetailValForm [name=~column4~_inCopy]").val());
+
+            ~inttypecol4~$('#~prog~DetailValForm [name=~column4~_in]').attr('readonly', true);
+            ~inttypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~inttypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val($("#~prog~DetailValForm [name=~column4~_inCopy]").val());
+
+            ~dectypecol4~$('#~prog~DetailValForm [name=~column4~_in]').attr('readonly', true);
+            ~dectypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~dectypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val($("#~prog~DetailValForm [name=~column4~_inCopy]").val());
+
+            ~datetypecol4~$('#~prog~DetailValForm [name=~column4~_in]').attr('readonly', true);
+            ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_in]").css("background-color", "#ebeff2");  //make backgound colour back
+            ~datetypecol4~dateCopy = $("#~prog~DetailValForm [name=~column4~_inCopy]").val();
+            ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_in]").val(dateCopy);
+            ~datetypecol4~$("#~prog~DetailValForm [name=~column4~_in]").datepicker("destroy");
+
+
+            //----------------------------------------------------------------------------------------------------------------------
+            //For Checkbox processing
+            //----------------------------------------------------------------------------------------------------------------------
+            //if ($('#~prog~DetailValForm [name=Private_Cover_inCopy]').is(":checked")) {
+                //$('#~prog~DetailValForm [name=Private_Cover_in]').attr('checked', true);
+            //}
+           // else
+            //{
+                //$('#~prog~DetailValForm [name=Private_Cover_in]').attr('checked', false);
+            //}
+            //$('#~prog~DetailValForm [name=Private_Cover_in]').attr("disabled", "disabled");
+           //----------------------------------------------------------------------------------------------------------------------
+           //END For Checkbox processing
+          //----------------------------------------------------------------------------------------------------------------------
+
+        }
+
+      var ~prog~DetailValidChk = "";
+      function ~prog~DetailFieldValidate()
+      {
+          ~prog~DetailValidChk = "true";
+          var returnErrMessage = "";
+
+          ~chartypecol1~var ~column1~_inVal = $("#~prog~DetailValForm [name=~column1~_in]").val();
+          ~chartypecol1~~column1~_inVal = ~column1~_inVal.trim();
+          ~chartypecol1~if (~column1~_inVal.length < 3) {
+              ~chartypecol1~returnErrMessage = "~column1~ must consist of at least 2 characters";
+              ~chartypecol1~$("#DivErr~prog~Detail~column1~_in").html(returnErrMessage);
+              ~chartypecol1~$("#DivErr~prog~Detail~column1~_in").css("display", "");
+              ~chartypecol1~~prog~DetailValidChk = "false";
+          ~chartypecol1~}
+          ~chartypecol1~if (~column1~_inVal == "") {
+              ~chartypecol1~returnErrMessage = "Please enter a ~column1~";
+              ~chartypecol1~$("#DivErr~prog~Detail~column1~_in").html(returnErrMessage);
+              ~chartypecol1~$("#DivErr~prog~Detail~column1~_in").css("display", "");
+              ~chartypecol1~~prog~DetailValidChk = "false";
+          ~chartypecol1~}
+ 
+          ~inttypecol1~var ~column1~_inVal = $("#~prog~DetailValForm [name=~column1~_in]").val();
+          ~inttypecol1~~column1~_inVal = ~column1~_inVal.trim();
+          ~inttypecol1~if (isNaN(~column1~_inVal)) {
+              ~inttypecol1~returnErrMessage = "~column1~ must be a number";
+              ~inttypecol1~$("#DivErr~prog~Detail~column1~_in").html(returnErrMessage);
+              ~inttypecol1~$("#DivErr~prog~Detail~column1~_in").css("display", "");
+              ~inttypecol1~~prog~DetailValidChk = "false";
+          ~inttypecol1~}
+  
+          ~dectypecol1~var ~column1~_inVal = $("#~prog~DetailValForm [name=~column1~_in]").val();
+          ~dectypecol1~~column1~_inVal = ~column1~_inVal.trim();
+          ~dectypecol1~if (isNaN(~column1~_inVal)) {
+              ~dectypecol1~returnErrMessage = "~column1~ must be a number";
+              ~dectypecol1~$("#DivErr~prog~Detail~column1~_in").html(returnErrMessage);
+              ~dectypecol1~$("#DivErr~prog~Detail~column1~_in").css("display", "");
+              ~dectypecol1~~prog~DetailValidChk = "false";
+          ~dectypecol1~}
+ 
+          ~datetypecol1~var ~column1~_inVal = $("#~prog~DetailValForm [name=~column1~_in]").val();
+          ~datetypecol1~~column1~_inVal = ~column1~_inVal.trim();
+          ~datetypecol1~if (~column1~_inVal == "") {
+              ~datetypecol1~returnErrMessage = "Please enter a ~column1~";
+              ~datetypecol1~$("#DivErr~prog~Detail~column1~_in").html(returnErrMessage);
+              ~datetypecol1~$("#DivErr~prog~Detail~column1~_in").css("display", "");
+              ~datetypecol1~~prog~DetailValidChk = "false";
+          ~datetypecol1~}
+ 
+
+          ~chartypecol2~var ~column2~_inVal = $("#~prog~DetailValForm [name=~column2~_in]").val();
+          ~chartypecol2~~column2~_inVal = ~column2~_inVal.trim();
+          ~chartypecol2~if (~column2~_inVal.length < 3) {
+              ~chartypecol2~returnErrMessage = "~column2~ must consist of at least 2 characters";
+              ~chartypecol2~$("#DivErr~prog~Detail~column2~_in").html(returnErrMessage);
+              ~chartypecol2~$("#DivErr~prog~Detail~column2~_in").css("display", "");
+              ~chartypecol2~~prog~DetailValidChk = "false";
+          ~chartypecol2~}
+          ~chartypecol2~if (~column2~_inVal == "") {
+              ~chartypecol2~returnErrMessage = "Please enter a ~column2~";
+              ~chartypecol2~$("#DivErr~prog~Detail~column2~_in").html(returnErrMessage);
+              ~chartypecol2~$("#DivErr~prog~Detail~column2~_in").css("display", "");
+              ~chartypecol2~~prog~DetailValidChk = "false";
+          ~chartypecol2~}
+ 
+          ~inttypecol2~var ~column2~_inVal = $("#~prog~DetailValForm [name=~column2~_in]").val();
+          ~inttypecol2~~column2~_inVal = ~column2~_inVal.trim();
+          ~inttypecol2~if (isNaN(~column2~_inVal)) {
+              ~inttypecol2~returnErrMessage = "~column2~ must be a number";
+              ~inttypecol2~$("#DivErr~prog~Detail~column2~_in").html(returnErrMessage);
+              ~inttypecol2~$("#DivErr~prog~Detail~column2~_in").css("display", "");
+              ~inttypecol2~~prog~DetailValidChk = "false";
+          ~inttypecol2~}
+  
+          ~dectypecol2~var ~column2~_inVal = $("#~prog~DetailValForm [name=~column2~_in]").val();
+          ~dectypecol2~~column2~_inVal = ~column2~_inVal.trim();
+          ~dectypecol2~if (isNaN(~column2~_inVal)) {
+              ~dectypecol2~returnErrMessage = "~column2~ must be a number";
+              ~dectypecol2~$("#DivErr~prog~Detail~column2~_in").html(returnErrMessage);
+              ~dectypecol2~$("#DivErr~prog~Detail~column2~_in").css("display", "");
+              ~dectypecol2~~prog~DetailValidChk = "false";
+          ~dectypecol2~}
+ 
+          ~datetypecol2~var ~column2~_inVal = $("#~prog~DetailValForm [name=~column2~_in]").val();
+          ~datetypecol2~~column2~_inVal = ~column2~_inVal.trim();
+          ~datetypecol2~if (~column2~_inVal == "") {
+              ~datetypecol2~returnErrMessage = "Please enter a ~column2~";
+              ~datetypecol2~$("#DivErr~prog~Detail~column2~_in").html(returnErrMessage);
+              ~datetypecol2~$("#DivErr~prog~Detail~column2~_in").css("display", "");
+              ~datetypecol2~~prog~DetailValidChk = "false";
+          ~datetypecol2~}
+ 
+
+
+          ~chartypecol3~var ~column3~_inVal = $("#~prog~DetailValForm [name=~column3~_in]").val();
+          ~chartypecol3~~column3~_inVal = ~column3~_inVal.trim();
+          ~chartypecol3~if (~column3~_inVal.length < 3) {
+              ~chartypecol3~returnErrMessage = "~column3~ must consist of at least 2 characters";
+              ~chartypecol3~$("#DivErr~prog~Detail~column3~_in").html(returnErrMessage);
+              ~chartypecol3~$("#DivErr~prog~Detail~column3~_in").css("display", "");
+              ~chartypecol3~~prog~DetailValidChk = "false";
+          ~chartypecol3~}
+          ~chartypecol3~if (~column3~_inVal == "") {
+              ~chartypecol3~returnErrMessage = "Please enter a ~column3~";
+              ~chartypecol3~$("#DivErr~prog~Detail~column3~_in").html(returnErrMessage);
+              ~chartypecol3~$("#DivErr~prog~Detail~column3~_in").css("display", "");
+              ~chartypecol3~~prog~DetailValidChk = "false";
+          ~chartypecol3~}
+ 
+          ~inttypecol3~var ~column3~_inVal = $("#~prog~DetailValForm [name=~column3~_in]").val();
+          ~inttypecol3~~column3~_inVal = ~column3~_inVal.trim();
+          ~inttypecol3~if (isNaN(~column3~_inVal)) {
+              ~inttypecol3~returnErrMessage = "~column3~ must be a number";
+              ~inttypecol3~$("#DivErr~prog~Detail~column3~_in").html(returnErrMessage);
+              ~inttypecol3~$("#DivErr~prog~Detail~column3~_in").css("display", "");
+              ~inttypecol3~~prog~DetailValidChk = "false";
+          ~inttypecol3~}
+  
+          ~dectypecol3~var ~column3~_inVal = $("#~prog~DetailValForm [name=~column3~_in]").val();
+          ~dectypecol3~~column3~_inVal = ~column3~_inVal.trim();
+          ~dectypecol3~if (isNaN(~column3~_inVal)) {
+              ~dectypecol3~returnErrMessage = "~column3~ must be a number";
+              ~dectypecol3~$("#DivErr~prog~Detail~column3~_in").html(returnErrMessage);
+              ~dectypecol3~$("#DivErr~prog~Detail~column3~_in").css("display", "");
+              ~dectypecol3~~prog~DetailValidChk = "false";
+          ~dectypecol3~}
+ 
+          ~datetypecol3~var ~column3~_inVal = $("#~prog~DetailValForm [name=~column3~_in]").val();
+          ~datetypecol3~~column3~_inVal = ~column3~_inVal.trim();
+          ~datetypecol3~if (~column3~_inVal == "") {
+              ~datetypecol3~returnErrMessage = "Please enter a ~column3~";
+              ~datetypecol3~$("#DivErr~prog~Detail~column3~_in").html(returnErrMessage);
+              ~datetypecol3~$("#DivErr~prog~Detail~column3~_in").css("display", "");
+              ~datetypecol3~~prog~DetailValidChk = "false";
+          ~datetypecol3~}
+ 
+
+          ~chartypecol4~var ~column4~_inVal = $("#~prog~DetailValForm [name=~column4~_in]").val();
+          ~chartypecol4~~column4~_inVal = ~column4~_inVal.trim();
+          ~chartypecol4~if (~column4~_inVal.length < 3) {
+              ~chartypecol4~returnErrMessage = "~column4~ must consist of at least 2 characters";
+              ~chartypecol4~$("#DivErr~prog~Detail~column4~_in").html(returnErrMessage);
+              ~chartypecol4~$("#DivErr~prog~Detail~column4~_in").css("display", "");
+              ~chartypecol4~~prog~DetailValidChk = "false";
+          ~chartypecol4~}
+          ~chartypecol4~if (~column4~_inVal == "") {
+              ~chartypecol4~returnErrMessage = "Please enter a ~column4~";
+              ~chartypecol4~$("#DivErr~prog~Detail~column4~_in").html(returnErrMessage);
+              ~chartypecol4~$("#DivErr~prog~Detail~column4~_in").css("display", "");
+              ~chartypecol4~~prog~DetailValidChk = "false";
+          ~chartypecol4~}
+ 
+          ~inttypecol4~var ~column4~_inVal = $("#~prog~DetailValForm [name=~column4~_in]").val();
+          ~inttypecol4~~column4~_inVal = ~column4~_inVal.trim();
+          ~inttypecol4~if (isNaN(~column4~_inVal)) {
+              ~inttypecol4~returnErrMessage = "~column4~ must be a number";
+              ~inttypecol4~$("#DivErr~prog~Detail~column4~_in").html(returnErrMessage);
+              ~inttypecol4~$("#DivErr~prog~Detail~column4~_in").css("display", "");
+              ~inttypecol4~~prog~DetailValidChk = "false";
+          ~inttypecol4~}
+  
+          ~dectypecol4~var ~column4~_inVal = $("#~prog~DetailValForm [name=~column4~_in]").val();
+          ~dectypecol4~~column4~_inVal = ~column4~_inVal.trim();
+          ~dectypecol4~if (isNaN(~column4~_inVal)) {
+              ~dectypecol4~returnErrMessage = "~column4~ must be a number";
+              ~dectypecol4~$("#DivErr~prog~Detail~column4~_in").html(returnErrMessage);
+              ~dectypecol4~$("#DivErr~prog~Detail~column4~_in").css("display", "");
+              ~dectypecol4~~prog~DetailValidChk = "false";
+          ~dectypecol4~}
+ 
+          ~datetypecol4~var ~column4~_inVal = $("#~prog~DetailValForm [name=~column4~_in]").val();
+          ~datetypecol4~~column4~_inVal = ~column4~_inVal.trim();
+          ~datetypecol4~if (~column4~_inVal == "") {
+              ~datetypecol4~returnErrMessage = "Please enter a ~column4~";
+              ~datetypecol4~$("#DivErr~prog~Detail~column4~_in").html(returnErrMessage);
+              ~datetypecol4~$("#DivErr~prog~Detail~column4~_in").css("display", "");
+              ~datetypecol4~~prog~DetailValidChk = "false";
+          ~datetypecol4~}
+ 
+
+
+          //x = document.getElementById("numb").value;
+          // If x is Not a Number or less than one or greater than 10
+          //if (isNaN(x) || x < 1 || x > 10) {
+             // text = "Input not valid";
+          //} else {
+             // text = "Input OK";
+         // }
+
+
+//var now = new Date();
+//var today = new Date(now.getFullYear(), now.getMonth(), now.getDay());
+//var idate = new Date('09/02/2014');
+
+      }
+
+      var ~prog~DetailformData;
+      function ~prog~DetailSaveScript() {
+          //alert("in ~prog~DetailSaveScript");
+     
+          $("#DivErr~prog~Detail~column2~_in").css("display", "none");
+          $("#DivErr~prog~Detail~column1~_in").css("display", "none");
+          $("#DivErr~prog~Detail~column3~_in").css("display", "none");
+          $("#DivErr~prog~Detail~column4~_in").css("display", "none");
+          ~prog~DetailFieldValidate();
+          if (~prog~DetailValidChk == "false")
+          {
+              return false;
+          }
+
+            LayoutShowProgressBar();  //found in _Layout.cshtml
+
+            ~chartypecol1~$("#~prog~DetailForm [name=~column1~]").val($("#~prog~DetailValForm [name=~column1~_in]").val());
+            ~inttypecol1~$("#~prog~DetailForm [name=~column1~]").val($("#~prog~DetailValForm [name=~column1~_in]").val());
+            ~dectypecol1~$("#~prog~DetailForm [name=~column1~]").val($("#~prog~DetailValForm [name=~column1~_in]").val());
+            ~datetypecol1~$("#~prog~DetailForm [name=~column1~]").val($("#~prog~DetailValForm [name=~column1~_in]").val());
+            ~datetypecol1~$("#~prog~DetailForm [name=~column1~_Str]").val($("#~prog~DetailValForm [name=~column1~_in]").val());
+
+            ~chartypecol2~$("#~prog~DetailForm [name=~column2~]").val($("#~prog~DetailValForm [name=~column2~_in]").val());
+            ~inttypecol2~$("#~prog~DetailForm [name=~column2~]").val($("#~prog~DetailValForm [name=~column2~_in]").val());
+            ~dectypecol2~$("#~prog~DetailForm [name=~column2~]").val($("#~prog~DetailValForm [name=~column2~_in]").val());
+            ~datetypecol2~$("#~prog~DetailForm [name=~column2~]").val($("#~prog~DetailValForm [name=~column2~_in]").val());
+            ~datetypecol2~$("#~prog~DetailForm [name=~column2~_Str]").val($("#~prog~DetailValForm [name=~column2~_in]").val());
+
+            ~chartypecol3~$("#~prog~DetailForm [name=~column3~]").val($("#~prog~DetailValForm [name=~column3~_in]").val());
+            ~inttypecol3~$("#~prog~DetailForm [name=~column3~]").val($("#~prog~DetailValForm [name=~column3~_in]").val());
+            ~dectypecol3~$("#~prog~DetailForm [name=~column3~]").val($("#~prog~DetailValForm [name=~column3~_in]").val());
+            ~datetypecol3~$("#~prog~DetailForm [name=~column3~]").val($("#~prog~DetailValForm [name=~column3~_in]").val());
+            ~datetypecol3~$("#~prog~DetailForm [name=~column3~_Str]").val($("#~prog~DetailValForm [name=~column3~_in]").val());
+
+            ~chartypecol4~$("#~prog~DetailForm [name=~column4~]").val($("#~prog~DetailValForm [name=~column4~_in]").val());
+            ~inttypecol4~$("#~prog~DetailForm [name=~column4~]").val($("#~prog~DetailValForm [name=~column4~_in]").val());
+            ~dectypecol4~$("#~prog~DetailForm [name=~column4~]").val($("#~prog~DetailValForm [name=~column4~_in]").val());
+            ~datetypecol4~$("#~prog~DetailForm [name=~column4~]").val($("#~prog~DetailValForm [name=~column4~_in]").val());
+            ~datetypecol4~$("#~prog~DetailForm [name=~column4~_Str]").val($("#~prog~DetailValForm [name=~column4~_in]").val());
+  
+
+            //----------------------------------------------------------------------------------------------------------------------
+            //For Checkbox processing
+            //----------------------------------------------------------------------------------------------------------------------
+            //var Checkbox_inchk = $("input[name='Private_Cover_in']:checkbox");
+            //if (Checkbox_inchk.is(":checked")) {
+                //alert("jquery Check is true");
+                //$("#~prog~DetailForm [name=Private_Cover]").val("1");
+            //}
+            //else
+            //{
+                //alert("jquery Check is false");
+                //$("#~prog~DetailForm [name=Private_Cover]").val("0");
+            //}
+            //----------------------------------------------------------------------------------------------------------------------
+            //END For Checkbox processing
+            //----------------------------------------------------------------------------------------------------------------------
+
+
+            ~prog~DetailformData = $("#~prog~DetailForm").serialize();   //sets up Primary Key 
+            //alert("formData is " + ~prog~DetailformData);
+
+            setTimeout(~prog~DetailSaveToServer, 20);
+      }
+
+
+        function ~prog~DetailSaveToServer() {
+
+            var PKIDget = $("#~prog~Form [name=~PK_ID~]").val();    //Is in ~prog~.cshtml, if -1 then ADDing new record
+           
+            if (PKIDget == "-1") {
+                //alert("Add");
+
+                var headersadd = {};
+                headersadd['MY-XSRF-TOKEN'] = $("[name='__RequestVerificationToken']").val();
+                //headersadd['MY-XSRF-TOKEN'] = "tets1234";  //to Test it, makes it fail, as token not matching with one in Controller.
+
+                //alert("gettoken is : " + $("[name='__RequestVerificationToken']").val() );
+
+                $.ajax(~prog~DetailAddURL, {
+                    type: 'POST',
+                    data: ~prog~DetailformData,
+                    datatype: 'json',
+                    headers: headersadd,
+                    success: function (data, status, xhr) {
+                        ~prog~DetailSaveComplete(data);
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+                    }
+
+                });
+
+
+                $("#~prog~Formtopdiv [name=CurrentPageNumber]").val("1");   //always set Page to 1 for an ADD of new record
+            }
+            else {
+                //alert("Update");
+                var headersupd = {};
+                headersupd['MY-XSRF-TOKEN'] = $("[name='__RequestVerificationToken']").val();
+                //headersupd['MY-XSRF-TOKEN'] = "tets1234";  //to Test it, makes it fail, as token not matching with one in Controller.
+
+                //alert("gettoken is : " + $("[name='__RequestVerificationToken']").val() );
+
+                $.ajax(~prog~DetailUpdateURL, {
+                    type: 'POST',
+                    data: ~prog~DetailformData,
+                    datatype: 'json',
+                    headers: headersupd,
+                    success: function (data, status, xhr) {
+                        ~prog~DetailSaveComplete(data);
+                        //setTimeout(~prog~DetailSaveComplete, 50, data);
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+                    }
+
+                });
+
+
+            }
+
+        }
+
+
+      function ~prog~DetailSaveComplete(jsonScript) {
+            //alert("insave");
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+
+            $("#~prog~Form [name=~PK_ID~]").val(jsonScript.~PK_ID~);  
+         
+            var returnMessage = "";
+            var i = 0;
+            for (i = 0; i < jsonScript.ReturnMessage.length; i++) {
+                //returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "<br>";
+                returnMessage = returnMessage + jsonScript.ReturnMessage[i] + "\n";
+            }
+
+            if (jsonScript.ReturnStatus == true) {    //no validation errors found
+                ~prog~PostSearchForm();
+                ~prog~DetailClosePopup();  //close dialog modal popup
+            }
+            else {
+                //alert("" + returnMessage);
+                var returnMessage2 = "";
+                var i = 0;
+                for (i = 0; i < jsonScript.ReturnMessage.length; i++) {
+                        returnMessage2 = returnMessage2 + jsonScript.ReturnMessage[i] + "\n";
+                }
+                //$("#DivError~prog~Detail").html(returnMessage2);
+                //$("#DivError~prog~Detail").css("display", "");
+              
+                //-------------------------------------------------------------------------------------------------------
+                //Show Error in correct field err div
+                //-------------------------------------------------------------------------------------------------------
+                var ~prog~FieldIndex = 0;
+                var ~prog~Field = "";
+                var ~prog~FielderrMsg = "";
+                var ik = 0;
+                try {
+                 for (ik = 0; ik < jsonScript.ReturnMessage.length; ik++) {
+                    if (jsonScript.ReturnMessage[ik].length) {
+                        ~prog~FieldLen = jsonScript.ReturnMessage[ik].length;
+                        //alert("length is " + ~prog~FieldLen);
+                        if (~prog~FieldLen > 0) {
+                            ~prog~FieldIndex = jsonScript.ReturnMessage[ik].indexOf("~");
+                            //alert("index is " + ~prog~FieldIndex);
+                            if (~prog~FieldIndex > 0) {
+                                ~prog~FielderrMsg = jsonScript.ReturnMessage[ik].substring(0, ~prog~FieldIndex);
+                                //alert("err msg is " + ~prog~FielderrMsg);
+                                ~prog~Field = jsonScript.ReturnMessage[ik].substr(~prog~FieldIndex + 1, ~prog~FieldLen - (~prog~FieldIndex + 1));
+                                //alert("~prog~Field is " + ~prog~Field);
+                            }
+                        }
+                        $("#DivErr~prog~Detail" + ~prog~Field + "_in").html(~prog~FielderrMsg);
+                        $("#DivErr~prog~Detail" + ~prog~Field + "_in").css("display", "");
+                        $("#~prog~Detail" + ~prog~Field + "OK").css("display", "none");     //delete green tick, as errored
+
+                    }    // if (jsonScript.ReturnMessage[ik].length)
+                 }   // for (ik = 0
+                }
+                catch (err) {
+                    alert("Client Error is " + err.message);
+                    alert("Server Error is " + returnMessage);
+                }
+
+                if (~prog~FielderrMsg == "")  //normal server validation error, NOT Found
+                {
+                    alert("Server Error is:- " + "\n\n" + returnMessage);
+                }
+                //-------------------------------------------------------------------------------------------------------
+                //END Show Error in correct field err div
+                //-------------------------------------------------------------------------------------------------------
+
+
+            }
+
+        }
+
+
+            //------------------------------------------------------------------------------------------------------------------------------------------------------
+            // AUTOCOMPLETE COMBO Code 
+           //------------------------------------------------------------------------------------------------------------------------------------------------------
+            function ~prog~DetailCombo1(txtbox, docombo) {
+                //alert("in ~prog~DetailCombo1 ");
+
+                //uncomment next line, if you want autocomplete combo to work
+                if (docombo != "true") {
+                    return false;
+                }
+
+                $("#~prog~Detailtopdiv [name=overlayprogressNEW]").css("visibility", "visible");
+                $("#~prog~Detailtopdiv [name=overlayprogressNEW]").css("display", "block");
+
+                var pagesrc = "";
+                pagesrc = ~prog~DetailCombo1URL + '?txtbox=replace';
+                //alert("pagesrc is " + pagesrc);
+                pagesrc = pagesrc.replace("replace", txtbox);   //always use textbox as key, target
+                //alert("pagesrc is " + pagesrc);
+
+                var iframeid = "~prog~DetailCombo1Div";             
+                var iframdiv = document.getElementById(iframeid);
+
+                var dialogWidth = 0;
+                //dialogWidth = $("#~prog~DetailValForm [name=~column1~_in]").width();
+                dialogWidth = $("#~prog~DetailValForm [name=~column1~_in]").outerWidth();
+                //dialogWidth = Number(dialogWidth) - 20;
+                document.getElementById(iframeid).style.width = dialogWidth + "px";
+                document.getElementById(iframeid).style.height = "130px";
+
+                $("#~prog~DetailCombo1Div").load(pagesrc);
+                $("#~prog~DetailCombo1Div").css("display", "block");
+
+                var p = $("#~prog~DetailValForm [name=~column1~_in]");
+                var position = p.position();
+                //document.getElementById(iframeid).style.left = position.left + "px";
+                //document.getElementById(iframeid).style.top = position.top + "px";
+                //$("#~prog~DetailCombo1Div").css("position", "absolute");
+
+                ////$("#~prog~DetailValForm [name=~column1~_in]").css("display", "none");
+
+                $("#~prog~DetailCombo1Div").position({
+                    my: "left top",
+                    at: "left top",
+                    of: $('#~prog~DetailValForm [name=~column1~_in]'),
+                    collision: "flip"
+                });
+
+            }
+
+            function ~prog~DetailPopulateCombo1(strinsert) {
+                $('#~prog~DetailValForm [name=~column1~_in]').val(strinsert);
+            }
+
+            function ~prog~DetailCloseCombo1() {
+                $('#~prog~Detailtopdiv [name=comboCheckit]').val("Close");
+                $("#~prog~DetailCombo1Div").css("display", "none");
+                $("#~prog~DetailCombo1Div").css("bottom", "10px");
+                $("#~prog~DetailCombo1Div").empty();  //erase Details in case
+
+                $("#~prog~Detailtopdiv [name=overlayprogressNEW]").css("visibility", "hidden");
+                $("#~prog~Detailtopdiv [name=overlayprogressNEW]").css("display", "none");
+
+            }
+            //------------------------------------------------------------------------------------------------------------------------------------------------------
+            // END AUTOCOMPLETE COMBO Code 
+           //------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/// START of Code from here down is fixed, which does not need any changing
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+      function ~prog~DetailClosePopup() {
+             //alert("Close");
+             if (document.getElementById("~prog~ShowShowtabs")) {     //From OpenDetail link in Grid
+                $("#Overlay~prog~Detail").empty();
+                var Expandid = "Overlay~prog~Detail";              //div in ~prog~.cshtml
+                document.getElementById(Expandid).style.display = "none";
+            }
+            else {    //using normal Modal Popup
+                //alert("close popup");
+                ~prog~CloseK();
+            }
+
+        }
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/// END of fixed code, which does not need any changing
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+

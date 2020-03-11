@@ -1,0 +1,122 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+//using System.ComponentModel.DataAnnotations;
+//using System.ComponentModel.DataAnnotations.Schema;
+
+
+namespace appMODEL
+{
+
+    public class ~prog~
+    {
+
+        public string DBConnectString { get; set; }
+
+        public long ~PK_ID~ { get; set; }
+
+         ~chartypecol1~public string ~column1~ { get; set; }
+        ~inttypecol1~public int ~column1~ { get; set; }
+        ~dectypecol1~public decimal ~column1~ { get; set; }
+        ~datetypecol1~public DateTime ~column1~ { get; set; }
+        //~datetypecol1~public DateTimeOffset ~column4~ { get; set; }       //Use when date is in Offset format
+
+        ~chartypecol2~public string ~column2~ { get; set; }
+        ~inttypecol2~public int ~column2~ { get; set; }
+        ~dectypecol2~public decimal ~column2~ { get; set; }
+        ~datetypecol2~public DateTime ~column2~ { get; set; }
+        //~datetypecol2~public DateTimeOffset ~column4~ { get; set; }       //Use when date is in Offset format
+
+        ~chartypecol3~public string ~column3~ { get; set; }
+        ~inttypecol3~public int ~column3~ { get; set; }
+        ~dectypecol3~public decimal ~column3~ { get; set; }
+        ~datetypecol3~public DateTime ~column3~ { get; set; }
+        //~datetypecol3~public DateTimeOffset ~column4~ { get; set; }       //Use when date is in Offset format
+
+        ~chartypecol4~public string ~column4~ { get; set; }
+        ~inttypecol4~public int ~column4~ { get; set; }
+        ~dectypecol4~public decimal ~column4~ { get; set; }
+        ~datetypecol4~public DateTime ~column4~ { get; set; }
+        //~datetypecol4~public DateTimeOffset ~column4~ { get; set; }       //Use when date is in Offset format
+
+        public string GlobalSearchString { get; set; }
+        public double TimeDiff { get; set; }                   //for getting real time anywhere in the world, for Offset Date
+
+        public string ~column1~_Str { get; set; }
+        public string ~column2~_Str { get; set; }
+        public string ~column3~_Str { get; set; }
+        public string ~column4~_Str { get; set; }
+
+
+        public string Date_Bought_From { get; set; }
+        public string Date_Bought_To { get; set; }
+        public string Created_By { get; set; }
+
+        public List<long> PK_IDD { get; set; }
+        public List<string> CheckBoxx { get; set; }
+
+        public string Logoimg { get; set; }
+
+        //-----------------------------------------------------------------------------
+        //For normal combo  -  Change normcombo with Table/View using
+        //-----------------------------------------------------------------------------
+        public long normcombopkid { get; set; }    
+        public string normcombocol1 { get; set; }   //Field to show on form
+        public List<~prog~normcombo> ~prog~normcomboList { get; set; }  
+        //-----------------------------------------------------------------------------
+        //END For normal combo
+        //-----------------------------------------------------------------------------
+
+        public List<~prog~Type> ~prog~Types { get; set; }   //for inner dropdown list within grid column
+
+        public long Document_ID { get; set; }    //for Upload of a Document
+        public string Risk_Level { get; set; }
+        public long Risk_Level_ID { get; set; }
+        public List<~prog~RiskLevelList> RiskTypess { get; set; }
+
+
+        //Next line is for Checkbox processing
+        public int Private_Cover { get; set; }
+
+        //Next line is for Radio processing
+        public string Sex { get; set; }
+
+    }
+
+
+    //----------------------------------------------------------------------------------------------------
+    // List for normal Combo -  Change normcombopkid & normcombocol1 with Reference Table/View definition
+    //----------------------------------------------------------------------------------------------------
+    public class ~prog~normcombo
+    {
+        public long normcombopkid { get; set; }     //PK_ID of Reference Table
+        public string normcombocol1 { get; set; }   //Field to show in combo, as well as on form
+    }
+    //----------------------------------------------------------------------------------------------------
+    // END List for normal Combo
+    //----------------------------------------------------------------------------------------------------
+
+
+    /// <summary>
+    /// List of Type
+    /// </summary>
+    public class ~prog~Type
+    {
+        public long ~prog~_Type_ID { get; set; }
+        public string ~prog~TypeName { get; set; }
+    }
+
+
+    /// <summary>
+    /// List of Risk Level List for combo
+    /// </summary>
+    public class ~prog~RiskLevelList
+    {
+        public long RiskLevelID { get; set; }
+        public string RiskLevelName { get; set; }
+    }
+
+
+
+}

@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="hidden-xs hidden-sm hidden-md visible-lg" style="height:10px;">
+    &nbsp;
+</div>
+<div class="hidden-xs hidden-sm visible-md hidden-lg" style="height:110px;">
+    &nbsp;
+</div>
+<div class="hidden-xs visible-sm hidden-md hidden-lg" style="height:120px;">
+    &nbsp;
+</div>
+<div class="visible-xs hidden-sm hidden-md hidden-lg" style="height:10px;">
+    &nbsp;
+</div>
+
+<table border="0" style="width:100%;">
+    <tr>
+        <td align="center">
+            <h4 style="color:navy;">
+                <strong>@ViewBag.Message</strong>
+
+            </h4>
+        </td>
+    </tr>
+</table>
+
+<table border="0" style="width:100%;">
+    <tr>
+        <td align="center">
+            <table border="0" style="width:100%;">
+                <tr>
+                    <td align="center">
+
+                        <table>
+                            <tr>
+                                <td align="left">
+                                    <div style="font-size: 13px;padding-top: 10px;padding-left:8px;padding-right:8px;">
+                                        A Table Grid (CRUD), and all its associated code, has been DELETED.
+                                        <br />
+                                        <div style="font-size:15px;">
+                                            <strong>Please Exit browser, Reload Solution and Test with F5 again.</strong>
+                                        </div>
+
+                                        <div style="height:18px;">
+                                            &nbsp;
+                                        </div>
+                                   
+                                        Contact:-   Kalvin Ernst:  <a href="mailto:kalvinlernst@gmail.com" target="_blank">kalvinlernst@gmail.com</a>
+                                        <br />
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<div style="font-size: 1px;color: white;height: 1px;" class="device-xs visible-xs">.</div>
+<div style="font-size: 1px;color: white;height: 1px;" class="device-sm visible-sm">.</div>
+<div style="font-size: 1px;color: white;height: 1px;" class="device-md visible-md">.</div>
+<div style="font-size: 1px;color: white;height: 1px;" class="device-lg visible-lg">.</div>
+
+
+<script type="text/javascript">
+
+    function isBreakpointGet(alias) {
+        return $('.device-' + alias).is(':visible');
+    }
+
+</script>
+
+

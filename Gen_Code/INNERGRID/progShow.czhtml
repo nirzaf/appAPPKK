@@ -1,0 +1,154 @@
+@model appAPP.Models.~prog~ViewModel
+@{
+    Layout = null;
+}
+
+<style>
+    /* Style the tab */
+    div.~prog~Showtab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: white;
+        border-top-left-radius:0px;
+        border-top-right-radius:0px;
+    }
+
+        /* Style the buttons inside the tab */
+        div.~prog~Showtab button {
+            background-color: inherit;
+            float: left;
+            border-top: 1px solid #ccc;
+            border-bottom: 0px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-top-left-radius:4px;
+            border-top-right-radius:4px;
+            outline: none;
+            cursor: pointer;
+            padding: 5px 8px;
+            transition: 0.3s;
+            font-size: 11px;
+            margin-left: 4px;
+            margin-top: 4px;
+            color: navy;
+        }
+
+            /* Change background color of buttons on hover */
+            div.~prog~Showtab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            div.~prog~Showtab button.active {
+                background-color: #ccc;
+            }
+
+    /* Style the tab content */
+    .~prog~Showtabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+
+    .~prog~Showclosebtn {
+        font-size: 17px;
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        padding-right: 7px;
+        padding-top: 3px;
+    }
+</style>
+
+
+<div id="~prog~ShowShowtabs" style="padding-top: 0px;background-color:white;">
+
+    <partial name="~prog~Detail" model="Model" />
+
+    <div class="~prog~Showtab">
+        <button class="~prog~Showtablinks" onclick="~prog~ShowOpenTab(event, '~prog~Show~childprog1~', '~childprog1~')" id="~prog~ShowdefaultOpen">Child1</button>
+        <button class="~prog~Showtablinks" onclick="~prog~ShowOpenTab(event, '~prog~Show~childprog2~', '~childprog2~')">Child2</button>
+
+      
+    </div>
+
+    <div id="~prog~Show~childprog1~" class="~prog~Showtabcontent">
+        <div id="~prog~Show~childprog1~Div">
+
+        </div>
+    </div>
+    <div id="~prog~Show~childprog2~" class="~prog~Showtabcontent">
+         <div id="~prog~Show~childprog2~Div">
+
+        </div>
+    </div>
+
+</div>
+
+<div id="~prog~ShowshowSpinPopup" data-bind="visible: isSpinning" style="display:none; position: absolute; top: 40px; left: 220px;">
+    <i class="fa fa-spinner fa-spin"></i>
+    <span class="updateProgressMessage">Processing ...</span>
+</div>
+
+
+<script language="javascript" type="text/javascript">
+
+    function ~prog~ShowOpenTab(evt, tabName, ProgName) {
+        //alert("tabname is " + tabName);
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("~prog~Showtabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("~prog~Showtablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        //alert("cityname2 is " + cityName);
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+
+        var strAction = "Display" + ProgName;
+        var strController = ProgName;
+
+        //Controller/Action
+        var ~prog~Showpagesrc = '/~prog~Showk/~prog~ShowActionk';  //new replace code example
+        ~prog~Showpagesrc = ~prog~Showpagesrc.replace("~prog~ShowActionk", strAction);
+        ~prog~Showpagesrc = ~prog~Showpagesrc.replace("~prog~Showk", strController);
+
+        //alert("pagesrc is " + ~prog~Showpagesrc);  //TEST only display
+        $("#~prog~Show" + ProgName + "Div").empty();
+        //$("#~prog~Show" + ProgName + "Div").load(~prog~Showpagesrc);
+
+        $("#~prog~Show" + ProgName + "Div").load(~prog~Showpagesrc, '', function (response, status, xhr) {
+            if (status == 'success') {
+                //alert("status text is: " + xhr.statusText);
+                //alert("response text is: " + xhr.responseText);
+            }
+            else  //error or timeout, etc..
+            {
+                alert("Show load problem is: " + xhr.statusText);
+                //alert("Show load problem text is: " + xhr.responseText);
+            }
+
+        });
+
+
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("~prog~ShowdefaultOpen").click();
+
+    //setTimeout(~prog~ShowHideProgressBar, 50);  //wait 0.05 second, optional, put back in if no Detail page above
+
+    function ~prog~ShowHideProgressBar() {
+         LayoutHideProgressBar();  //found in _Layout.cshtml
+    }
+
+
+</script>
+

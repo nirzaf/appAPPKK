@@ -1,0 +1,8 @@
+@model appAPP.Models.~prog~ViewModel
+@{
+    Layout = null;
+}
+
+     <div>
+       <partial name="~prog~ShowDetail" model="Model" />
+     </div>

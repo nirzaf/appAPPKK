@@ -1,0 +1,2431 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
+using System.Text;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+//using System.Linq.Dynamic;
+using System.Threading.Tasks;
+//using Microsoft.Office.Interop;
+using appMODEL;
+//using appBLL;
+//using System.Data.OracleClient;  //Microsoft Oracle Client (not used anymore)
+//using Oracle.DataAccess.Client;
+//using Oracle.DataAccess.Types;
+using System.IO;
+using Microsoft.VisualBasic;
+using System.Data.OleDb;
+using System.Xml;
+using System.Runtime.InteropServices;
+//using NPOI.HSSF.UserModel;
+//using NPOI.HSSF.Util;
+//using NPOI.SS.UserModel;
+//using NPOI.HPSF;
+//using NPOI.POIFS.FileSystem;
+//using NPOI.XSSF.UserModel;
+//using NPOI.XSSF.Util;
+//using NPOI.XSSF.Model;
+using System.Web;
+
+
+namespace appBLL
+{
+   
+    public class ~prog~BLL
+    {
+
+        /// <summary>
+        /// Uses PAGING GRID Query to get 1 page at a time.
+        /// By internal SQL statement
+        /// </summary>
+        public List<~prog~> ~prog~Search(
+            ~prog~ SearchValues,
+            long currentPageNumber,
+            long pageSize,
+            string sortBy,
+            string sortAscendingDescending,
+            out long totalRows,
+            out long totalPages,
+            out long pageRows,
+            out bool returnStatus,
+            out string returnErrorMessage)
+        {
+
+            long pageNumber;
+            long currentRow;
+            long result;
+
+            try
+            {
+               totalPages = 0;
+               totalRows = 0;
+               pageRows = 0;
+               double timediff = SearchValues.TimeDiff;     //getting local time difference from UTC, from javascript on client
+
+                List<~prog~> GridList = new List<~prog~>();
+                
+                DataTable scriptDataTable = Get~prog~(SearchValues,
+                    currentPageNumber,
+                    pageSize,
+                    sortBy,
+                    sortAscendingDescending,
+                    out totalRows,
+                    out returnStatus,
+                    out returnErrorMessage);
+
+                if (returnStatus == false)
+                {
+                    return GridList;
+                }
+
+                //totalRows = scriptDataTable.Rows.Count;
+                totalPages = 0;
+
+                Math.DivRem(totalRows, pageSize, out result);
+                if (result > 0)
+                    totalPages = Convert.ToInt64(totalRows / pageSize) + 1;
+                else
+                    totalPages = Convert.ToInt64(totalRows / pageSize);
+
+                currentRow = 0;
+                pageNumber = 1;
+
+                for (int i = 0; i < scriptDataTable.Rows.Count; i++)
+                {
+                        currentRow++;
+
+                        ~prog~ recList = new ~prog~();
+
+                        recList.~PK_ID~ = scriptDataTable.Rows[i]["~PK_ID~"] != DBNull.Value ? Convert.ToInt64(scriptDataTable.Rows[i]["~PK_ID~"]) : 0;
+
+                        ~chartypecol1~recList.~column1~ = scriptDataTable.Rows[i]["~column1~"] != DBNull.Value ? scriptDataTable.Rows[i]["~column1~"].ToString() : "";
+
+                        ~inttypecol1~recList.~column1~ = scriptDataTable.Rows[i]["~column1~"] != DBNull.Value ? Convert.ToInt32(scriptDataTable.Rows[i]["~column1~"]) : 0;
+                        ~dectypecol1~recList.~column1~ = scriptDataTable.Rows[i]["~column1~"] != DBNull.Value ? Convert.ToDecimal(scriptDataTable.Rows[i]["~column1~"]) : 0;
+
+                        ~datetypecol1~if (scriptDataTable.Rows[i]["~column1~"] == DBNull.Value)
+                        ~datetypecol1~{
+                            ~datetypecol1~recList.~column1~ = Convert.ToDateTime("01/01/1858");
+                            //~datetypecol1~recList.~column1~ = DateTimeOffset.Parse("01/01/1858");       //option for Date in Offset format
+                        ~datetypecol1~}
+                        ~datetypecol1~else
+                        ~datetypecol1~{
+                            ~datetypecol1~recList.~column1~ = Convert.ToDateTime(scriptDataTable.Rows[i]["~column1~"]);
+                            //~datetypecol1~recList.~column1~ = DateTimeOffset.Parse(scriptDataTable.Rows[i]["~column1~"].ToString());      //option for Date in Offset format
+                            //~datetypecol1~recList.~column1~ = recList.~column1~.AddMinutes(-timediff);                                                        //adjust to local time here    
+                        ~datetypecol1~}
+
+                        ~chartypecol2~recList.~column2~ = scriptDataTable.Rows[i]["~column2~"] != DBNull.Value ? scriptDataTable.Rows[i]["~column2~"].ToString() : "";
+
+                        ~inttypecol2~recList.~column2~ = scriptDataTable.Rows[i]["~column2~"] != DBNull.Value ? Convert.ToInt32(scriptDataTable.Rows[i]["~column2~"]) : 0;
+                        ~dectypecol2~recList.~column2~ = scriptDataTable.Rows[i]["~column2~"] != DBNull.Value ? Convert.ToDecimal(scriptDataTable.Rows[i]["~column2~"]) : 0;
+
+                        ~datetypecol2~if (scriptDataTable.Rows[i]["~column2~"] == DBNull.Value)
+                        ~datetypecol2~{
+                            ~datetypecol2~recList.~column2~ = Convert.ToDateTime("01/01/1858");
+                            //~datetypecol2~recList.~column2~ = DateTimeOffset.Parse("01/01/1858");       //option for Date in Offset format
+                        ~datetypecol2~}
+                        ~datetypecol2~else
+                        ~datetypecol2~{
+                            ~datetypecol2~recList.~column2~ = Convert.ToDateTime(scriptDataTable.Rows[i]["~column2~"]);
+                            //~datetypecol2~recList.~column2~ = DateTimeOffset.Parse(scriptDataTable.Rows[i]["~column2~"].ToString());      //option for Date in Offset format
+                            //~datetypecol2~recList.~column2~ = recList.~column2~.AddMinutes(-timediff);                                                        //adjust to local time here    
+                        ~datetypecol2~}
+
+                        ~chartypecol3~recList.~column3~ = scriptDataTable.Rows[i]["~column3~"] != DBNull.Value ? scriptDataTable.Rows[i]["~column3~"].ToString() : "";
+           
+                        ~inttypecol3~recList.~column3~ = scriptDataTable.Rows[i]["~column3~"] != DBNull.Value ? Convert.ToInt32(scriptDataTable.Rows[i]["~column3~"]) : 0;
+                        ~dectypecol3~recList.~column3~ = scriptDataTable.Rows[i]["~column3~"] != DBNull.Value ? Convert.ToDecimal(scriptDataTable.Rows[i]["~column3~"]) : 0;
+
+                        ~datetypecol3~if (scriptDataTable.Rows[i]["~column3~"] == DBNull.Value)
+                        ~datetypecol3~{
+                            ~datetypecol3~recList.~column3~ = Convert.ToDateTime("01/01/1858");
+                            //~datetypecol3~recList.~column3~ = DateTimeOffset.Parse("01/01/1858");       //option for Date in Offset format
+                        ~datetypecol3~}
+                        ~datetypecol3~else
+                        ~datetypecol3~{
+                            ~datetypecol3~recList.~column3~ = Convert.ToDateTime(scriptDataTable.Rows[i]["~column3~"]);
+                            //~datetypecol3~recList.~column3~ = DateTimeOffset.Parse(scriptDataTable.Rows[i]["~column3~"].ToString());      //option for Date in Offset format
+                            //~datetypecol3~recList.~column3~ = recList.~column3~.AddMinutes(-timediff);                                                        //adjust to local time here    
+                        ~datetypecol3~}
+
+                        ~chartypecol4~recList.~column4~ = scriptDataTable.Rows[i]["~column4~"] != DBNull.Value ? scriptDataTable.Rows[i]["~column4~"].ToString() : "";
+
+                        ~inttypecol4~recList.~column4~ = scriptDataTable.Rows[i]["~column4~"] != DBNull.Value ? Convert.ToInt32(scriptDataTable.Rows[i]["~column4~"]) : 0;
+                        ~dectypecol4~recList.~column4~ = scriptDataTable.Rows[i]["~column4~"] != DBNull.Value ? Convert.ToDecimal(scriptDataTable.Rows[i]["~column4~"]) : 0;
+
+                        ~datetypecol4~if (scriptDataTable.Rows[i]["~column4~"] == DBNull.Value)
+                        ~datetypecol4~{
+                            ~datetypecol4~recList.~column4~ = Convert.ToDateTime("01/01/1858");
+                            //~datetypecol4~recList.~column4~ = DateTimeOffset.Parse("01/01/1858");       //option for Date in Offset format
+                        ~datetypecol4~}
+                        ~datetypecol4~else
+                        ~datetypecol4~{
+                            ~datetypecol4~recList.~column4~ = Convert.ToDateTime(scriptDataTable.Rows[i]["~column4~"]);
+                            //~datetypecol4~recList.~column4~ = DateTimeOffset.Parse(scriptDataTable.Rows[i]["~column4~"].ToString());      //option for Date in Offset format
+                            //~datetypecol4~recList.~column4~ = recList.~column4~.AddMinutes(-timediff);                                                        //adjust to local time here    
+                       ~datetypecol4~}
+
+
+                        GridList.Add(recList);
+
+                }
+                
+                pageRows = currentRow;
+
+                returnErrorMessage = "";
+                returnStatus = true;
+                return GridList;
+
+            }
+            catch (Exception ex)
+            {
+                returnErrorMessage = ex.Message;
+                returnStatus = false;
+                totalPages = 0;
+                totalRows = 0;
+                pageRows = 0;
+
+                List<~prog~> GridList = new List<~prog~>();         
+             
+                return GridList;
+            }
+
+        }
+
+
+        private DataTable Get~prog~(
+            ~prog~ scriptSearchValues,
+            long currentPageNumber,
+            long pageSize,
+            string sortBy,
+            string sortAscendingDescending,
+            out long TotalRecords,
+            out bool returnStatus,
+            out string returnErrorMessage)
+        {
+
+            //UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+            //SqlConnection connection = UtilitiesBLL.CreateConnectionRMSPROD(out returnStatus, out returnErrorMessage); //SQL Server
+            //OracleConnection connection = CreateConnectionOracle(out returnStatus, out returnErrorMessage);  //Oracle
+            SqlConnection connection;
+            connection = new SqlConnection();
+
+            try
+            {
+
+                long StartPoint;
+                long EndPoint;
+                String strfilter = "";
+                bool concatmoreSQL = false;
+                bool GlobalSearchSQL = false;
+
+                DataSet scriptData = new DataSet();
+
+                //SqlConnection connection;                                                                                                        //connectionString = System.Configuration.ConfigurationManager.AppSettings["ScriptDatabase"];
+                //String connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["RMS-PROD"].ToString();
+                //String connectionString = "Server=(localdb)\\mssqllocaldb;Database=AHIM;Trusted_Connection=True;";
+                //String connectString = "Data Source=(localdb)\\mssqllocaldb;Database=AHIM;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+                String connectionString = scriptSearchValues.DBConnectString;
+
+                //connection = new SqlConnection();
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                SqlCommand scriptCommand = new SqlCommand();
+                scriptCommand.CommandType = CommandType.Text;
+                scriptCommand.Connection = connection;
+
+                String strFields = "~PK_ID~, ~column1~, ~column2~, ";
+                strFields = strFields + "~column3~, ~column4~ ";
+
+                String strTable = "~table~ ";
+               
+
+                strfilter = strfilter + " WHERE ~FPK_ID~ = @FPKID  ";                                           //using foreign key to get records
+                SqlParameter parampfk = new SqlParameter("@FPKID", SqlDbType.BigInt);
+                parampfk.Value = scriptSearchValues.~FPK_ID~;
+                scriptCommand.Parameters.Add(parampfk);
+
+
+                //Next code will have to be done manually, depending if any columns are Char
+                //if (scriptSearchValues.GlobalSearchString != null)
+                //{
+                    //GlobalSearchSQL = true;
+                    //strfilter = strfilter + " AND ( ";
+
+                    //strfilter = strfilter + " UPPER(~column1~) LIKE @ppt1 OR  ";
+                    //SqlParameter param1 = new SqlParameter("@ppt1", SqlDbType.VarChar);
+                    //param1.Value = "%" + scriptSearchValues.GlobalSearchString.ToUpper().Trim() + "%";
+                    //scriptCommand.Parameters.Add(param1);
+
+                    //strfilter = strfilter + " UPPER(~column2~) LIKE @ppt2  ";
+                    //SqlParameter param2 = new SqlParameter("@ppt2", SqlDbType.VarChar);
+                    //param2.Value = "%" + scriptSearchValues.GlobalSearchString.ToUpper().Trim() + "%";
+                    //scriptCommand.Parameters.Add(param2);
+
+                    //strfilter = strfilter + " ) ";
+                //}
+
+
+                if (GlobalSearchSQL == false)  //OK use normal individual Search strings
+                {
+                    ~chartypecol1~if (scriptSearchValues.~column1~ != null)
+                    ~chartypecol1~{
+                        ~chartypecol1~strfilter = strfilter + " AND UPPER(~column1~) LIKE @ppt1 ";
+                        ~chartypecol1~SqlParameter param1 = new SqlParameter("@ppt1", SqlDbType.VarChar);
+                        ~chartypecol1~param1.Value = "%" + scriptSearchValues.~column1~.ToUpper().Trim() + "%";
+                        ~chartypecol1~scriptCommand.Parameters.Add(param1);
+                    ~chartypecol1~}
+
+                    ~inttypecol1~if (scriptSearchValues.~column1~ != 0)
+                    ~inttypecol1~{
+                        ~inttypecol1~strfilter = strfilter + " AND ~column1~ = @ppt1 ";
+                        ~inttypecol1~SqlParameter param1 = new SqlParameter("@ppt1", SqlDbType.Int);
+                        ~inttypecol1~param1.Value = scriptSearchValues.~column1~;
+                        ~inttypecol1~scriptCommand.Parameters.Add(param1);
+                    ~inttypecol1~}
+
+                    ~dectypecol1~if (scriptSearchValues.~column1~ != 0)
+                    ~dectypecol1~{
+                        ~dectypecol1~strfilter = strfilter + " AND ~column1~ = @ppt1 ";
+                        ~dectypecol1~SqlParameter param1 = new SqlParameter("@ppt1", SqlDbType.Decimal);
+                        ~dectypecol1~param1.Value = scriptSearchValues.~column1~;
+                        ~dectypecol1~scriptCommand.Parameters.Add(param1);
+                    ~dectypecol1~}
+
+                    ~datetypecol1~if (scriptSearchValues.~column1~_Str != null)
+                    ~datetypecol1~{
+                        ~datetypecol1~strfilter = strfilter + " AND ~column1~ >= @ppt1 ";
+                        ~datetypecol1~SqlParameter paramcol1 = new SqlParameter("@ppt1", SqlDbType.DateTime);
+                        ~datetypecol1~paramcol1.Value = "" + scriptSearchValues.~column1~_Str.ToUpper().Trim() + "";
+                        ~datetypecol1~scriptCommand.Parameters.Add(paramcol1);
+                     ~datetypecol1~}
+
+
+                    ~chartypecol2~if (scriptSearchValues.~column2~ != null)
+                    ~chartypecol2~{
+                        ~chartypecol2~strfilter = strfilter + " AND UPPER(~column2~) LIKE @ppt2 ";
+                        ~chartypecol2~SqlParameter param2 = new SqlParameter("@ppt2", SqlDbType.VarChar);
+                        ~chartypecol2~param2.Value = "%" + scriptSearchValues.~column2~.ToUpper().Trim() + "%";
+                        ~chartypecol2~scriptCommand.Parameters.Add(param2);
+                    ~chartypecol2~}
+
+                    ~inttypecol2~if (scriptSearchValues.~column2~ != 0)
+                    ~inttypecol2~{
+                        ~inttypecol2~strfilter = strfilter + " AND ~column2~ = @ppt2 ";
+                        ~inttypecol2~SqlParameter param2 = new SqlParameter("@ppt2", SqlDbType.Int);
+                        ~inttypecol2~param2.Value = scriptSearchValues.~column2~;
+                        ~inttypecol2~scriptCommand.Parameters.Add(param2);
+                    ~inttypecol2~}
+
+                    ~dectypecol2~if (scriptSearchValues.~column2~ != 0)
+                    ~dectypecol2~{
+                        ~dectypecol2~strfilter = strfilter + " AND ~column2~ = @ppt2 ";
+                        ~dectypecol2~SqlParameter param2 = new SqlParameter("@ppt2", SqlDbType.Decimal);
+                        ~dectypecol2~param2.Value = scriptSearchValues.~column2~;
+                        ~dectypecol2~scriptCommand.Parameters.Add(param2);
+                    ~dectypecol2~}
+
+                    ~datetypecol2~if (scriptSearchValues.~column2~_Str != null)
+                    ~datetypecol2~{
+                        ~datetypecol2~strfilter = strfilter + " AND ~column2~ >= @ppt2 ";
+                        ~datetypecol2~SqlParameter paramcol2 = new SqlParameter("@ppt2", SqlDbType.DateTime);
+                        ~datetypecol2~paramcol2.Value = "" + scriptSearchValues.~column2~_Str.ToUpper().Trim() + "";
+                        ~datetypecol2~scriptCommand.Parameters.Add(paramcol2);
+                     ~datetypecol2~}
+
+
+                    ~chartypecol3~if (scriptSearchValues.~column3~ != null)
+                    ~chartypecol3~{
+                        ~chartypecol3~strfilter = strfilter + " AND UPPER(~column3~) LIKE @ppt3 ";
+                        ~chartypecol3~SqlParameter param3 = new SqlParameter("@ppt3", SqlDbType.VarChar);
+                        ~chartypecol3~param3.Value = "%" + scriptSearchValues.~column3~.ToUpper().Trim() + "%";
+                        ~chartypecol3~scriptCommand.Parameters.Add(param3);
+                    ~chartypecol3~}
+
+                    ~inttypecol3~if (scriptSearchValues.~column3~ != 0)
+                    ~inttypecol3~{
+                        ~inttypecol3~strfilter = strfilter + " AND ~column3~ = @ppt3 ";
+                        ~inttypecol3~SqlParameter param3 = new SqlParameter("@ppt3", SqlDbType.Int);
+                        ~inttypecol3~param3.Value = scriptSearchValues.~column3~;
+                        ~inttypecol3~scriptCommand.Parameters.Add(param3);
+                    ~inttypecol3~}
+
+                    ~dectypecol3~if (scriptSearchValues.~column3~ != 0)
+                    ~dectypecol3~{
+                        ~dectypecol3~strfilter = strfilter + " AND ~column3~ = @ppt3 ";
+                        ~dectypecol3~SqlParameter param3 = new SqlParameter("@ppt3", SqlDbType.Decimal);
+                        ~dectypecol3~param3.Value = scriptSearchValues.~column3~;
+                        ~dectypecol3~scriptCommand.Parameters.Add(param3);
+                    ~dectypecol3~}
+
+                    ~datetypecol3~if (scriptSearchValues.~column3~_Str != null)
+                    ~datetypecol3~{
+                        ~datetypecol3~strfilter = strfilter + " AND ~column3~ >= @ppt3 ";
+                        ~datetypecol3~SqlParameter paramcol3 = new SqlParameter("@ppt3", SqlDbType.DateTime);
+                        ~datetypecol3~paramcol3.Value = "" + scriptSearchValues.~column3~_Str.ToUpper().Trim() + "";
+                        ~datetypecol3~scriptCommand.Parameters.Add(paramcol3);
+                     ~datetypecol3~}
+
+
+                    ~chartypecol4~if (scriptSearchValues.~column4~ != null)
+                    ~chartypecol4~{
+                        ~chartypecol4~strfilter = strfilter + " AND UPPER(~column4~) LIKE @ppt4 ";
+                        ~chartypecol4~SqlParameter param4 = new SqlParameter("@ppt4", SqlDbType.VarChar);
+                        ~chartypecol4~param4.Value = "%" + scriptSearchValues.~column4~.ToUpper().Trim() + "%";
+                        ~chartypecol4~scriptCommand.Parameters.Add(param4);
+                    ~chartypecol4~}
+
+                    ~inttypecol4~if (scriptSearchValues.~column4~ != 0)
+                    ~inttypecol4~{
+                        ~inttypecol4~strfilter = strfilter + " AND ~column4~ = @ppt4 ";
+                        ~inttypecol4~SqlParameter param4 = new SqlParameter("@ppt4", SqlDbType.Int);
+                        ~inttypecol4~param4.Value = scriptSearchValues.~column4~;
+                        ~inttypecol4~scriptCommand.Parameters.Add(param4);
+                    ~inttypecol4~}
+
+                    ~dectypecol4~if (scriptSearchValues.~column4~ != 0)
+                    ~dectypecol4~{
+                        ~dectypecol4~strfilter = strfilter + " AND ~column4~ = @ppt4 ";
+                        ~dectypecol4~SqlParameter param4 = new SqlParameter("@ppt4", SqlDbType.Decimal);
+                        ~dectypecol4~param4.Value = scriptSearchValues.~column4~;
+                        ~dectypecol4~scriptCommand.Parameters.Add(param4);
+                    ~dectypecol4~}
+
+                    ~datetypecol4~if (scriptSearchValues.~column4~_Str != null)
+                    ~datetypecol4~{
+                        ~datetypecol4~strfilter = strfilter + " AND ~column4~ >= @ppt4 ";
+                        ~datetypecol4~SqlParameter paramcol4 = new SqlParameter("@ppt4", SqlDbType.DateTime);
+                        ~datetypecol4~paramcol4.Value = "" + scriptSearchValues.~column4~_Str.ToUpper().Trim() + "";
+                        ~datetypecol4~scriptCommand.Parameters.Add(paramcol4);
+                     ~datetypecol4~}
+
+                    //if (scriptSearchValues.~column3~_Str != null)
+                    //{
+                        //SqlParameter param11 = new SqlParameter("@ppt3", SqlDbType.DateTime);
+                        //param11.Value = "" + scriptSearchValues.~column3~_Str.ToUpper().Trim() + "";
+                        //scriptCommand.Parameters.Add(param11);
+
+                       // if (scriptSearchValues.~column4~_Str != null)
+                       // {
+                           // sqlWhereClause.Append(" AND ~column3~ BETWEEN @ppt3 AND @ppt4 ");
+                            //SqlParameter param12 = new SqlParameter("@ppt4", SqlDbType.DateTime);
+                            //param12.Value = "" + scriptSearchValues.~column4~_Str.ToUpper().Trim() + "";
+                            //scriptCommand.Parameters.Add(param12);
+                        //}
+                    //}
+
+                }
+
+
+                String strWherePK = "WHERE ~PK_ID~ = @PKID ";
+                SqlParameter parampk = new SqlParameter("@PKID", SqlDbType.BigInt);
+                parampk.Value = scriptSearchValues.~PK_ID~;
+                scriptCommand.Parameters.Add(parampk);
+
+
+                String strsort = "";
+                if (sortBy == "~prog~FirstCol")
+                {
+                    strsort = strsort + " ORDER BY ~PK_ID~ ";
+                }
+                else if (sortBy == "~prog~SecondCol")
+                {
+                    strsort = strsort + " ORDER BY ~column1~ ";
+                }
+                else if (sortBy == "~prog~ThirdCol")
+                {
+                    strsort = strsort + " ORDER BY ~column2~ ";
+                }
+                else if (sortBy == "~prog~FourthCol")
+                {
+                    strsort = strsort + " ORDER BY ~column3~ ";
+                }
+                else if (sortBy == "~prog~FifthCol")
+                {
+                    strsort = strsort + " ORDER BY ~column4~ ";
+                }
+                else if (sortBy == "~prog~SixthCol")
+                {
+                    //strsort = strsort + " ORDER BY ~column4~ ";
+                }
+                else
+                {
+                    strsort = strsort + " ORDER BY ~column4~ ";
+                }
+
+                if (sortAscendingDescending == "DESC")
+                {
+                    strsort = strsort + " DESC ";
+                }
+               
+                
+
+                if (currentPageNumber == 1)
+                {
+                    StartPoint = 1;
+                }
+                else
+                {
+                    StartPoint = ((currentPageNumber - 1) * pageSize) + 1;
+                }
+                EndPoint = currentPageNumber * pageSize;
+
+                String strSQL = "";
+
+                TotalRecords = 0;
+                strSQL = "SELECT count(*) FROM " + strTable + strfilter;
+                scriptCommand.CommandText = strSQL;
+                TotalRecords = Convert.ToInt64(scriptCommand.ExecuteScalar());
+
+
+                //if PageSize = -1, then creating PDF Report instead, so get all records.
+                if (pageSize == -1)
+                {
+                    EndPoint = TotalRecords;
+                }
+
+
+                //Check if PK_ID exists, that means coming back from Update/Add popup. PK_ID is 0 for normal grid paging
+                strSQL = "";
+                if (scriptSearchValues.~PK_ID~ != 0)
+                {
+                    strSQL = "SELECT  " + strFields + " FROM " + strTable + strWherePK;
+                    strSQL = strSQL + " UNION ";
+                    if (TotalRecords == 0)   //going to show only 1 record
+                    {
+                        TotalRecords = 1;  //so as to show the one record in grid at least
+                    }
+                }
+
+              
+                strSQL = strSQL + "SELECT  " + strFields + " FROM ";
+                strSQL = strSQL + " (SELECT TOP (@Endit) ROW_NUMBER() OVER (" + strsort + ") ";
+                //strSQL = strSQL + " (SELECT TOP " + EndPoint + " ROW_NUMBER() OVER (" + strsort + ") ";
+                strSQL = strSQL + " AS Row, " + strFields + " FROM " + strTable + strfilter + ") ";
+                strSQL = strSQL + " AS LogWithRowNumbers ";
+                strSQL = strSQL + " WHERE Row >= @Startit AND Row <= @Endit " + " ";
+                //strSQL = strSQL + " WHERE Row >= " + StartPoint + " AND Row <= " + EndPoint + " ";
+                strSQL = strSQL + strsort + " ";
+
+
+                scriptCommand.CommandText = strSQL;
+
+                scriptCommand.Parameters.AddWithValue("Startit", StartPoint);
+                scriptCommand.Parameters.AddWithValue("Endit", EndPoint);
+
+                SqlDataAdapter sqlAdapter = new SqlDataAdapter(scriptCommand);
+
+                sqlAdapter.Fill(scriptData);
+
+               
+                //strSQL = "SELECT count(*) FROM " + strTable + strfilter;
+                //scriptCommand.CommandText = strSQL;
+                //TotalRecords = Convert.ToInt64(scriptCommand.ExecuteScalar());
+
+
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+
+                returnErrorMessage = "";
+                returnStatus = true;
+
+                return scriptData.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                TotalRecords = 0;
+                returnStatus = false;
+                returnErrorMessage = ex.Message;
+                //print ("error message is: " + returnErrorMessage);
+                //Console.WriteLine("error message is: " + returnErrorMessage);
+
+                DataTable scriptData = new DataTable();
+                return scriptData;
+            }
+            finally
+            {
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// Get Detail Information
+        /// </summary>
+        public ~prog~ Get~prog~Detail(long PK_ID, string DBconnectString,
+            out bool returnStatus,
+            out string returnErrorMessage,
+            out List<string> returnMessages)
+        {
+
+           //UtilitiesBLL UtilitiesBLLget = new UtilitiesBLL();
+           //SqlConnection connection = UtilitiesBLLget.CreateConnectionRMSPROD(out returnStatus, out returnErrorMessage); //SQL Server
+           SqlConnection connection;
+           connection = new SqlConnection();
+
+            try
+            {
+
+                //List<RiskLevelList> ptypeList = new List<RiskLevelList>();
+
+                string sqlString = "SELECT * FROM ~table~ WHERE ~PK_ID~ = @PK_ID";
+
+                returnErrorMessage = "";
+
+                //SqlConnection connection;                                                                                                        //connectionString = System.Configuration.ConfigurationManager.AppSettings["ScriptDatabase"];
+                //String connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["RMS-PROD"].ToString();
+                //String connectionString = "Server=(localdb)\\mssqllocaldb;Database=AHIM;Trusted_Connection=True;";
+                //String connectString = "Data Source=(localdb)\\mssqllocaldb;Database=AHIM;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+                String connectionString = DBconnectString;
+
+                //connection = new SqlConnection();
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Connection = connection;
+                sqlCommand.CommandText = sqlString;
+
+                SqlParameter param1 = new SqlParameter("@PK_ID", SqlDbType.VarChar);
+                param1.Value = PK_ID;
+                //param1.Value = 312;
+                sqlCommand.Parameters.Add(param1);
+
+                SqlDataAdapter sqlAdapter = new SqlDataAdapter(sqlCommand);
+
+                DataSet scriptData = new DataSet();
+                sqlAdapter.Fill(scriptData);
+
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+                List<string> outputMessages = new List<string>();
+                outputMessages.Add("~table~ Information Retrieved");
+
+                returnStatus = true;
+                returnMessages = outputMessages;
+
+                DateTime dateResult;
+                string dateCheck = "";
+
+                ~prog~ script = new ~prog~();
+
+                script.~PK_ID~ = Convert.ToInt64(scriptData.Tables[0].Rows[0]["~PK_ID~"]);
+
+                //~chartypecol1~script.~column1~ = UtilitiesBLL.ConvertToString(scriptData.Tables[0].Rows[0]["~column1~"]);
+                //~inttypecol1~script.~column1~ = Convert.ToInt32(scriptData.Tables[0].Rows[0]["~column1~"]);
+                //~dectypecol1~script.~column1~ = Convert.ToDecimal(scriptData.Tables[0].Rows[0]["~column1~"]);
+
+                 ~chartypecol1~script.~column1~ = scriptData.Tables[0].Rows[0]["~column1~"] != DBNull.Value ? scriptData.Tables[0].Rows[0]["~column1~"].ToString() : "";
+
+                 ~inttypecol1~script.~column1~ = scriptData.Tables[0].Rows[0]["~column1~"] != DBNull.Value ? Convert.ToInt32(scriptData.Tables[0].Rows[0]["~column1~"]) : 0;
+                 ~dectypecol1~script.~column1~ = scriptData.Tables[0].Rows[0]["~column1~"] != DBNull.Value ? Convert.ToDecimal(scriptData.Tables[0].Rows[0]["~column1~"]) : 0;
+
+                ~datetypecol1~dateCheck = UtilitiesBLL.ConvertToString(scriptData.Tables[0].Rows[0]["~column1~"]);
+                ~datetypecol1~if (scriptData.Tables[0].Rows[0]["~column1~"] == DBNull.Value)
+                ~datetypecol1~{
+                    ~datetypecol1~script.~column1~ = Convert.ToDateTime("01/01/1858");
+                    ~datetypecol1~script.~column1~_Str = "";    //display on form
+                ~datetypecol1~}
+                ~datetypecol1~else
+                ~datetypecol1~{
+                    ~datetypecol1~if (DateTime.TryParse(dateCheck, out dateResult) == true)
+                    ~datetypecol1~{
+                        ~datetypecol1~script.~column1~ = Convert.ToDateTime(scriptData.Tables[0].Rows[0]["~column1~"]);
+                        ~datetypecol1~script.~column1~_Str = UtilitiesBLL.FormatDate(script.~column1~);   //display on form
+                        //~datetypecol1~script.~column1~ = DateTimeOffset.Parse(scriptData.Tables[0].Rows[0]["~column1~"].ToString());   //optional display Offset Date on form
+                        //~datetypecol1~script.~column1~_Str = UtilitiesBLL.FormatDateOffsetTime(script.~column1~);                                           //optional display Offset Date on form
+                    ~datetypecol1~}
+                    ~datetypecol1~else
+                    ~datetypecol1~{
+                        ~datetypecol1~script.~column1~_Str = "";
+                    ~datetypecol1~}
+               ~datetypecol1~}
+
+                //~chartypecol2~script.~column2~ = UtilitiesBLL.ConvertToString(scriptData.Tables[0].Rows[0]["~column2~"]);
+                //~inttypecol2~script.~column2~ = Convert.ToInt32(scriptData.Tables[0].Rows[0]["~column2~"]);
+                //~dectypecol2~script.~column2~ = Convert.ToDecimal(scriptData.Tables[0].Rows[0]["~column2~"]);
+
+                 ~chartypecol2~script.~column2~ = scriptData.Tables[0].Rows[0]["~column2~"] != DBNull.Value ? scriptData.Tables[0].Rows[0]["~column2~"].ToString() : "";
+
+                 ~inttypecol2~script.~column2~ = scriptData.Tables[0].Rows[0]["~column2~"] != DBNull.Value ? Convert.ToInt32(scriptData.Tables[0].Rows[0]["~column2~"]) : 0;
+                 ~dectypecol2~script.~column2~ = scriptData.Tables[0].Rows[0]["~column2~"] != DBNull.Value ? Convert.ToDecimal(scriptData.Tables[0].Rows[0]["~column2~"]) : 0;
+
+                ~datetypecol2~dateCheck = UtilitiesBLL.ConvertToString(scriptData.Tables[0].Rows[0]["~column2~"]);
+                ~datetypecol2~if (scriptData.Tables[0].Rows[0]["~column2~"] == DBNull.Value)
+                ~datetypecol2~{
+                    ~datetypecol2~script.~column2~ = Convert.ToDateTime("01/01/1858");
+                    ~datetypecol2~script.~column2~_Str = "";    //display on form
+                ~datetypecol2~}
+                ~datetypecol2~else
+                ~datetypecol2~{
+                    ~datetypecol2~if (DateTime.TryParse(dateCheck, out dateResult) == true)
+                    ~datetypecol2~{
+                        ~datetypecol2~script.~column2~ = Convert.ToDateTime(scriptData.Tables[0].Rows[0]["~column2~"]);
+                        ~datetypecol2~script.~column2~_Str = UtilitiesBLL.FormatDate(script.~column2~);   //display on form
+                        //~datetypecol2~script.~column2~ = DateTimeOffset.Parse(scriptData.Tables[0].Rows[0]["~column2~"].ToString());   //optional display Offset Date on form
+                        //~datetypecol2~script.~column2~_Str = UtilitiesBLL.FormatDateOffsetTime(script.~column2~);                                           //optional display Offset Date on form
+                    ~datetypecol2~}
+                    ~datetypecol2~else
+                    ~datetypecol2~{
+                        ~datetypecol2~script.~column2~_Str = "";
+                    ~datetypecol2~}
+               ~datetypecol2~}
+
+                //~chartypecol3~script.~column3~ = UtilitiesBLL.ConvertToString(scriptData.Tables[0].Rows[0]["~column3~"]);
+                //~inttypecol3~script.~column3~ = Convert.ToInt32(scriptData.Tables[0].Rows[0]["~column3~"]);
+                //~dectypecol3~script.~column3~ = Convert.ToDecimal(scriptData.Tables[0].Rows[0]["~column3~"]);
+
+                 ~chartypecol3~script.~column3~ = scriptData.Tables[0].Rows[0]["~column3~"] != DBNull.Value ? scriptData.Tables[0].Rows[0]["~column3~"].ToString() : "";
+
+                 ~inttypecol3~script.~column3~ = scriptData.Tables[0].Rows[0]["~column3~"] != DBNull.Value ? Convert.ToInt32(scriptData.Tables[0].Rows[0]["~column3~"]) : 0;
+                 ~dectypecol3~script.~column3~ = scriptData.Tables[0].Rows[0]["~column3~"] != DBNull.Value ? Convert.ToDecimal(scriptData.Tables[0].Rows[0]["~column3~"]) : 0;
+
+                ~datetypecol3~dateCheck = UtilitiesBLL.ConvertToString(scriptData.Tables[0].Rows[0]["~column3~"]);
+                ~datetypecol3~if (scriptData.Tables[0].Rows[0]["~column3~"] == DBNull.Value)
+                ~datetypecol3~{
+                    ~datetypecol3~script.~column3~ = Convert.ToDateTime("01/01/1858");
+                    ~datetypecol3~script.~column3~_Str = "";    //display on form
+                ~datetypecol3~}
+                ~datetypecol3~else
+                ~datetypecol3~{
+                    ~datetypecol3~if (DateTime.TryParse(dateCheck, out dateResult) == true)
+                    ~datetypecol3~{
+                        ~datetypecol3~script.~column3~ = Convert.ToDateTime(scriptData.Tables[0].Rows[0]["~column3~"]);
+                        ~datetypecol3~script.~column3~_Str = UtilitiesBLL.FormatDate(script.~column3~);   //display on form
+                        //~datetypecol3~script.~column3~ = DateTimeOffset.Parse(scriptData.Tables[0].Rows[0]["~column3~"].ToString());   //optional display Offset Date on form
+                        //~datetypecol3~script.~column3~_Str = UtilitiesBLL.FormatDateOffsetTime(script.~column3~);                                           //optional display Offset Date on form
+                    ~datetypecol3~}
+                    ~datetypecol3~else
+                    ~datetypecol3~{
+                        ~datetypecol3~script.~column3~_Str = "";
+                    ~datetypecol3~}
+               ~datetypecol3~}
+
+                //~chartypecol4~script.~column4~ = UtilitiesBLL.ConvertToString(scriptData.Tables[0].Rows[0]["~column4~"]);
+                //~inttypecol4~script.~column4~ = Convert.ToInt32(scriptData.Tables[0].Rows[0]["~column4~"]);
+                //~dectypecol4~script.~column4~ = Convert.ToDecimal(scriptData.Tables[0].Rows[0]["~column4~"]);
+
+                 ~chartypecol4~script.~column4~ = scriptData.Tables[0].Rows[0]["~column4~"] != DBNull.Value ? scriptData.Tables[0].Rows[0]["~column4~"].ToString() : "";
+
+                 ~inttypecol4~script.~column4~ = scriptData.Tables[0].Rows[0]["~column4~"] != DBNull.Value ? Convert.ToInt32(scriptData.Tables[0].Rows[0]["~column4~"]) : 0;
+                 ~dectypecol4~script.~column4~ = scriptData.Tables[0].Rows[0]["~column4~"] != DBNull.Value ? Convert.ToDecimal(scriptData.Tables[0].Rows[0]["~column4~"]) : 0;
+
+                ~datetypecol4~dateCheck = UtilitiesBLL.ConvertToString(scriptData.Tables[0].Rows[0]["~column4~"]);
+                ~datetypecol4~if (scriptData.Tables[0].Rows[0]["~column4~"] == DBNull.Value)
+                ~datetypecol4~{
+                    ~datetypecol4~script.~column4~ = Convert.ToDateTime("01/01/1858");
+                    ~datetypecol4~script.~column4~_Str = "";    //display on form
+                ~datetypecol4~}
+                ~datetypecol4~else
+                ~datetypecol4~{
+                    ~datetypecol4~if (DateTime.TryParse(dateCheck, out dateResult) == true)
+                    ~datetypecol4~{
+                        ~datetypecol4~script.~column4~ = Convert.ToDateTime(scriptData.Tables[0].Rows[0]["~column4~"]);
+                        ~datetypecol4~script.~column4~_Str = UtilitiesBLL.FormatDate(script.~column4~);   //display on form
+                        //~datetypecol4~script.~column4~ = DateTimeOffset.Parse(scriptData.Tables[0].Rows[0]["~column4~"].ToString());   //optional display Offset Date on form
+                        //~datetypecol4~script.~column4~_Str = UtilitiesBLL.FormatDateOffsetTime(script.~column4~);                                           //optional display Offset Date on form
+                    ~datetypecol4~}
+                    ~datetypecol4~else
+                    ~datetypecol4~{
+                        ~datetypecol4~script.~column4~_Str = "";
+                    ~datetypecol4~}
+                ~datetypecol4~}
+
+
+                //get Risk Levels List for combo
+                //ptypeList = GetRiskLevels(out returnStatus,
+                //                                       out returnErrorMessage);
+                //script.RiskTypess = ptypeList;
+                //END get Risk Levels list
+
+
+                return script;
+
+            }
+            catch (Exception ex)
+            {
+
+                List<string> outputMessages = new List<string>();
+
+                returnStatus = false;
+                returnErrorMessage = ex.Message;
+                returnMessages = outputMessages;
+
+                ~prog~ script = new ~prog~();
+
+                return script;
+            }
+            finally
+            {
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+            }
+
+        }
+
+
+
+        /// <summary>
+        /// Format Detail Data
+        /// </summary>
+        public void FormatScriptData(ref ~prog~ scriptInformation, 
+            out bool returnStatus,                                    
+            out string returnErrorMessage)
+        {
+
+            try
+            {
+                ~chartypecol1~if (scriptInformation.~column1~ == null) scriptInformation.~column1~ = "";
+                ~chartypecol2~if (scriptInformation.~column2~ == null) scriptInformation.~column2~ = "";
+                ~chartypecol3~if (scriptInformation.~column3~ == null) scriptInformation.~column3~ = "";
+                ~chartypecol4~if (scriptInformation.~column4~ == null) scriptInformation.~column4~ = "";
+
+                //if (scriptInformation.Company == null) scriptInformation.Company = "";
+                //if (scriptInformation.Script_Code == null) scriptInformation.Script_Code = "";
+
+                //scriptInformation.Script_Name = scriptInformation.Script_Name.ToUpper().Trim();
+                //scriptInformation.Company = scriptInformation.Company.ToUpper().Trim();
+                //scriptInformation.Script_Code = scriptInformation.Script_Code.ToUpper().Trim();
+
+                returnErrorMessage = "";
+                returnStatus = true;
+
+            }
+            catch (Exception ex)
+            {
+                returnErrorMessage = ex.Message;
+                returnStatus = false;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Validate Detail
+        /// </summary>
+        public bool ValidateScript(~prog~ scriptInformation, 
+            out List<string> Messages, 
+            out bool returnStatus, 
+            out string returnErrorMessage)
+        {
+
+            try
+            {
+
+                bool validPatient = true;
+
+                List<string> outputMessages = new List<string>();
+
+                ~chartypecol1~if (scriptInformation.~column1~ == null || scriptInformation.~column1~.Trim().Length == 0)
+                ~chartypecol1~{
+                    ~chartypecol1~outputMessages.Add("~column1~ is required.~~column1~");
+                    ~chartypecol1~validPatient = false;
+                ~chartypecol1~}
+
+                ~datetypecol1~if (appBLL.UtilitiesBLL.IsValidDate(scriptInformation.~column1~_Str) == false)
+                ~datetypecol1~{
+                    ~datetypecol1~outputMessages.Add("~column1~ is invalid.~~column1~");
+                    ~datetypecol1~validPatient = false;
+                ~datetypecol1~}
+
+                ~datetypecol1~if (appBLL.UtilitiesBLL.IsDateSupplied(scriptInformation.~column1~_Str) == false)
+                ~datetypecol1~{
+                    ~datetypecol1~outputMessages.Add("~column1~ is required.~~column1~");
+                    ~datetypecol1~validPatient = false;
+                ~datetypecol1~}
+
+
+                ~chartypecol2~if (scriptInformation.~column2~ == null || scriptInformation.~column2~.Trim().Length == 0)
+                ~chartypecol2~{
+                    ~chartypecol2~outputMessages.Add("~column2~ is required.~~column2~");
+                    ~chartypecol2~validPatient = false;
+                ~chartypecol2~}
+
+                ~datetypecol2~if (appBLL.UtilitiesBLL.IsValidDate(scriptInformation.~column2~_Str) == false)
+                ~datetypecol2~{
+                    ~datetypecol2~outputMessages.Add("~column2~ is invalid.~~column2~");
+                    ~datetypecol2~validPatient = false;
+                ~datetypecol2~}
+
+                ~datetypecol2~if (appBLL.UtilitiesBLL.IsDateSupplied(scriptInformation.~column2~_Str) == false)
+                ~datetypecol2~{
+                    ~datetypecol2~outputMessages.Add("~column2~ is required.~~column2~");
+                    ~datetypecol2~validPatient = false;
+                ~datetypecol2~}
+
+
+                ~chartypecol3~if (scriptInformation.~column3~ == null || scriptInformation.~column3~.Trim().Length == 0)
+                ~chartypecol3~{
+                    ~chartypecol3~outputMessages.Add("~column3~ is required.~~column3~");
+                    ~chartypecol3~validPatient = false;
+                ~chartypecol3~}
+
+                ~datetypecol3~if (appBLL.UtilitiesBLL.IsValidDate(scriptInformation.~column3~_Str) == false)
+                ~datetypecol3~{
+                    ~datetypecol3~outputMessages.Add("~column3~ is invalid.~~column3~");
+                    ~datetypecol3~validPatient = false;
+                ~datetypecol3~}
+
+                ~datetypecol3~if (appBLL.UtilitiesBLL.IsDateSupplied(scriptInformation.~column3~_Str) == false)
+                ~datetypecol3~{
+                    ~datetypecol3~outputMessages.Add("~column3~ is required.~~column3~");
+                    ~datetypecol3~validPatient = false;
+                ~datetypecol3~}
+
+
+                ~chartypecol4~if (scriptInformation.~column4~ == null || scriptInformation.~column4~.Trim().Length == 0)
+                ~chartypecol4~{
+                    ~chartypecol4~outputMessages.Add("~column4~ is required.~~column4~");
+                    ~chartypecol4~validPatient = false;
+                ~chartypecol4~}
+
+                ~datetypecol4~if (appBLL.UtilitiesBLL.IsValidDate(scriptInformation.~column4~_Str) == false)
+                ~datetypecol4~{
+                    ~datetypecol4~outputMessages.Add("~column4~ is invalid.~~column4~");
+                    ~datetypecol4~validPatient = false;
+                ~datetypecol4~}
+
+                ~datetypecol4~if (appBLL.UtilitiesBLL.IsDateSupplied(scriptInformation.~column4~_Str) == false)
+                ~datetypecol4~{
+                    ~datetypecol4~outputMessages.Add("~column4~ is required.~~column4~");
+                    ~datetypecol4~validPatient = false;
+                ~datetypecol4~}
+
+                //Check for Duplicates
+                /*
+                if (scriptInformation.~PK_ID~ != null && scriptInformation.~column1~ != null)
+                {
+                    bool duplicateVehicle = DuplicateVehicle(
+                        scriptInformation.~PK_ID~,
+                        scriptInformation.~column1~, 
+                        out returnStatus, 
+                        out returnErrorMessage);
+
+                    if (returnStatus == false)
+                    {
+                        outputMessages.Add(returnErrorMessage);
+                        Messages = outputMessages;
+                        return false;
+                    }
+
+                    if (duplicateVehicle == true)
+                    {
+                        outputMessages.Add("Duplicate ~PK_ID~ and/or ~column1~");
+                        validPatient = false;
+                    }
+                }
+                */
+
+
+                Messages = outputMessages;
+
+                returnStatus = true;
+                returnErrorMessage = "";
+
+                return validPatient;
+            }
+            catch (Exception ex)
+            {
+                List<string> outputMessages = new List<string>();
+                Messages = outputMessages;
+
+                returnStatus = false;
+                returnErrorMessage = ex.Message;
+                
+                return false;
+            }
+
+        }
+
+    
+        /// <summary>
+        /// Check For Duplicate Detail
+        /// </summary>
+        public bool DuplicateVehicle(long vehicleID, 
+            string vehicleName, 
+            out bool returnStatus, 
+            out string returnErrorMessage)
+        {
+
+           //UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+           //SqlConnection connection = UtilitiesBLL.CreateConnectionRMSPROD(out returnStatus, out returnErrorMessage);
+           SqlConnection connection;
+           connection = new SqlConnection();
+
+            try
+            {
+
+                string sqlString = "SELECT ~PK_ID~ FROM ~table~ ";
+                sqlString = sqlString + " WHERE ~column1~ = @Name ";
+ 
+                if (vehicleID > 0)
+                {
+                    sqlString = sqlString + " AND ~PK_ID~ <> @VEHICLE_ID";
+                }
+
+                //SqlConnection connection;                                                                                                        //connectionString = System.Configuration.ConfigurationManager.AppSettings["ScriptDatabase"];
+                //String connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["RMS-PROD"].ToString();
+                //String connectionString = "Server=(localdb)\\mssqllocaldb;Database=AHIM;Trusted_Connection=True;";
+                String DBconnectString = "Data Source=(localdb)\\mssqllocaldb;Database=AHIM;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+                String connectionString = DBconnectString;
+
+                //connection = new SqlConnection();
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Connection = connection;
+                sqlCommand.CommandText = sqlString;
+
+                SqlParameter param1 = new SqlParameter("@Name", SqlDbType.VarChar);
+                param1.Value = vehicleName;
+                sqlCommand.Parameters.Add(param1);
+
+                if (vehicleID > 0)
+                {
+                    SqlParameter param3 = new SqlParameter("@VEHICLE_ID", SqlDbType.BigInt);
+                    param3.Value = vehicleID;
+                    sqlCommand.Parameters.Add(param3);
+                }
+
+                bool duplicatePatient = false;
+
+                IDataReader dataReader = sqlCommand.ExecuteReader();
+                if (dataReader.Read())
+                {
+                    duplicatePatient = true;
+                }
+
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+                returnStatus = true;
+                returnErrorMessage = "";
+
+                return duplicatePatient;
+
+            }
+            catch (Exception ex)
+            {               
+                returnStatus = false;
+                returnErrorMessage = ex.Message;
+
+                return false;
+            }
+            finally
+            {
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+            }
+
+        }
+     
+        
+         
+        /// <summary>
+        /// Add Detail
+        /// </summary>
+        public ~prog~ Add~prog~(~prog~ scriptInformation, 
+            out long returnPageNumber,
+            out long returnRowNumber,
+            out List<string>returnMessages, 
+            out bool returnStatus,
+            out string returnErrorMessage)
+        {
+
+            //UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+            //SqlConnection connection = UtilitiesBLL.CreateConnectionRMSPROD(out returnStatus, out returnErrorMessage);
+            SqlConnection connection;
+            connection = new SqlConnection();
+
+            try
+            {
+
+                String connectionString = scriptInformation.DBConnectString;
+
+                //connection = new SqlConnection();
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                returnPageNumber = -1;
+                returnRowNumber = -2;
+          
+                //StringBuilder sqlBuilder = new StringBuilder();
+
+                List<string> messages;
+
+                FormatScriptData(ref scriptInformation, out returnStatus, out returnErrorMessage);
+
+                bool validScript = ValidateScript(
+                    scriptInformation,
+                    out messages,
+                    out returnStatus,
+                    out returnErrorMessage);
+
+                if (validScript == false)
+                {
+                    returnStatus = false;
+                    returnMessages = messages;
+                    scriptInformation.~PK_ID~ = -1;  //if validation error, make sure sent back json PK_ID is still set to -1 (for Add)
+                    return scriptInformation;
+                }
+
+
+                string sqlString = "INSERT INTO ~table~ ( ";
+                sqlString = sqlString + " ~column1~, ~column2~, ";
+                sqlString = sqlString + " ~column3~, ~column4~, ~FPK_ID~) VALUES ( ";
+                sqlString = sqlString + " @Colum1, @Colum2, ";
+                sqlString = sqlString + " @Colum3, @Colum4, @Colum5)";
+                sqlString = sqlString + " select SCOPE_IDENTITY()";
+
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Connection = connection;
+                sqlCommand.CommandText = sqlString;
+
+                ~chartypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.VarChar);
+                ~chartypecol1~param1.Value = scriptInformation.~column1~;
+                ~chartypecol1~sqlCommand.Parameters.Add(param1);
+
+                ~inttypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.Int);
+                ~inttypecol1~param1.Value = scriptInformation.~column1~;
+                ~inttypecol1~sqlCommand.Parameters.Add(param1);
+
+                ~dectypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.Decimal);
+                ~dectypecol1~param1.Value = scriptInformation.~column1~;
+                ~dectypecol1~sqlCommand.Parameters.Add(param1);
+
+                ~datetypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.DateTime);
+                //~datetypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.DateTimeOffset);    //optional for Offset Date format
+                ~datetypecol1~param1.Value = scriptInformation.~column1~;
+                ~datetypecol1~sqlCommand.Parameters.Add(param1);
+
+
+                ~chartypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.VarChar);
+                ~chartypecol2~param2.Value = scriptInformation.~column2~;
+                ~chartypecol2~sqlCommand.Parameters.Add(param2);
+
+                ~inttypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.Int);
+                ~inttypecol2~param2.Value = scriptInformation.~column2~;
+                ~inttypecol2~sqlCommand.Parameters.Add(param2);
+
+                ~dectypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.Decimal);
+                ~dectypecol2~param2.Value = scriptInformation.~column2~;
+                ~dectypecol2~sqlCommand.Parameters.Add(param2);
+
+                ~datetypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.DateTime);
+                //~datetypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.DateTimeOffset);    //optional for Offset Date format
+                ~datetypecol2~param2.Value = scriptInformation.~column2~;
+                ~datetypecol2~sqlCommand.Parameters.Add(param2);
+
+
+                ~chartypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.VarChar);
+                ~chartypecol3~param3.Value = scriptInformation.~column3~;
+                ~chartypecol3~sqlCommand.Parameters.Add(param3);
+
+                ~inttypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.Int);
+                ~inttypecol3~param3.Value = scriptInformation.~column3~;
+                ~inttypecol3~sqlCommand.Parameters.Add(param3);
+
+                ~dectypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.Decimal);
+                ~dectypecol3~param3.Value = scriptInformation.~column3~;
+                ~dectypecol3~sqlCommand.Parameters.Add(param3);
+
+                ~datetypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.DateTime);
+                //~datetypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.DateTimeOffset);    //optional for Offset Date format
+                ~datetypecol3~param3.Value = scriptInformation.~column3~;
+                ~datetypecol3~sqlCommand.Parameters.Add(param3);
+
+
+                ~chartypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.VarChar);
+                ~chartypecol4~param4.Value = scriptInformation.~column4~;
+                ~chartypecol4~sqlCommand.Parameters.Add(param4);
+
+                ~inttypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.Int);
+                ~inttypecol4~param4.Value = scriptInformation.~column4~;
+                ~inttypecol4~sqlCommand.Parameters.Add(param4);
+
+                ~dectypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.Decimal);
+                ~dectypecol4~param4.Value = scriptInformation.~column4~;
+                ~dectypecol4~sqlCommand.Parameters.Add(param4);
+
+                ~datetypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.DateTime);
+                //~datetypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.DateTimeOffset);    //optional for Offset Date format
+                ~datetypecol4~param4.Value = scriptInformation.~column4~;
+                ~datetypecol4~sqlCommand.Parameters.Add(param4);
+
+                SqlParameter param5 = new SqlParameter("@Colum5", SqlDbType.BigInt);
+                param5.Value = scriptInformation.~FPK_ID~;
+                sqlCommand.Parameters.Add(param5);
+
+                
+                scriptInformation.~PK_ID~ = Convert.ToInt64(sqlCommand.ExecuteScalar());
+
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+                List<string> outputMessages = new List<string>();
+                outputMessages.Add("~table~ has been added.");
+
+                returnStatus = true;
+                returnErrorMessage = "";
+                returnMessages = outputMessages;
+
+                return scriptInformation;
+            }
+            catch (Exception ex)
+            {
+                List<string> outputMessages = new List<string>();
+                outputMessages.Add(ex.Message);
+        
+                returnPageNumber = -1;
+                returnRowNumber = -2;
+                returnStatus = false;
+                returnErrorMessage = ex.Message;
+                returnMessages = outputMessages;
+                scriptInformation.~PK_ID~ = -1;  //if validation error, make sure sent back json PK_ID is still set to -1 (for Add)
+              
+                return scriptInformation;
+            }
+            finally
+            {
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+            }
+
+        }
+
+       
+
+
+        /// <summary>
+        /// Update Detail
+        /// </summary>
+        public ~prog~ Update~prog~(~prog~ scriptInformation, 
+            out long returnPageNumber,
+            out long returnRowNumber,
+            out bool returnStatus,          
+            out List<string> returnMessages)
+        {
+
+            string returnErrorMessage;
+
+            //UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+            //SqlConnection connection = UtilitiesBLL.CreateConnectionRMSPROD(out returnStatus, out returnErrorMessage);
+            SqlConnection connection;
+            connection = new SqlConnection();
+
+            try
+            {
+
+                String connectionString = scriptInformation.DBConnectString;
+
+                //connection = new SqlConnection();
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                returnPageNumber = -1;  //could be changed if sort field changed, later down in code
+                returnRowNumber = -2;   //could be changed if sort field changed, later down in code
+
+                //StringBuilder sqlBuilder = new StringBuilder();
+
+                List<string> messages;
+
+                FormatScriptData(ref scriptInformation, out returnStatus, out returnErrorMessage);
+
+                bool validPatient = ValidateScript(
+                    scriptInformation,
+                    out messages,
+                    out returnStatus,
+                    out returnErrorMessage);
+
+                if (returnStatus == false)
+                {
+                    returnStatus = false;
+                    messages.Add(returnErrorMessage);
+                    returnMessages = messages;
+                    return scriptInformation;
+                }
+
+                if (validPatient == false)
+                {
+                    returnStatus = false;                   
+                    returnMessages = messages;
+                    return scriptInformation;
+                }
+            
+                string sqlString = "UPDATE ~table~ SET ";
+                sqlString = sqlString + " ~column1~ = @Colum1, ";
+                sqlString = sqlString + " ~column2~ = @Colum2, ";
+                sqlString = sqlString + " ~column3~ = @Colum3, ";
+                sqlString = sqlString + " ~column4~ = @Colum4 ";
+                sqlString = sqlString + " WHERE ~PK_ID~ = @PK_ID ";
+
+                //string sqlString = sqlBuilder.ToString();
+
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Connection = connection;
+                sqlCommand.CommandText = sqlString;
+
+                SqlParameter paramPatientID = new SqlParameter("@PK_ID", SqlDbType.BigInt);
+                paramPatientID.Value = scriptInformation.~PK_ID~;
+                sqlCommand.Parameters.Add(paramPatientID);
+
+                ~chartypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.VarChar);
+                ~chartypecol1~param1.Value = scriptInformation.~column1~;
+                ~chartypecol1~sqlCommand.Parameters.Add(param1);
+
+                ~inttypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.Int);
+                ~inttypecol1~param1.Value = scriptInformation.~column1~;
+                ~inttypecol1~sqlCommand.Parameters.Add(param1);
+
+                ~dectypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.Decimal);
+                ~dectypecol1~param1.Value = scriptInformation.~column1~;
+                ~dectypecol1~sqlCommand.Parameters.Add(param1);
+
+                ~datetypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.DateTime);
+                //~datetypecol1~SqlParameter param1 = new SqlParameter("@Colum1", SqlDbType.DateTimeOffset);    //optional for Offset Date format
+                ~datetypecol1~param1.Value = scriptInformation.~column1~;
+                ~datetypecol1~sqlCommand.Parameters.Add(param1);
+
+
+                ~chartypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.VarChar);
+                ~chartypecol2~param2.Value = scriptInformation.~column2~;
+                ~chartypecol2~sqlCommand.Parameters.Add(param2);
+
+                ~inttypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.Int);
+                ~inttypecol2~param2.Value = scriptInformation.~column2~;
+                ~inttypecol2~sqlCommand.Parameters.Add(param2);
+
+                ~dectypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.Decimal);
+                ~dectypecol2~param2.Value = scriptInformation.~column2~;
+                ~dectypecol2~sqlCommand.Parameters.Add(param2);
+
+                ~datetypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.DateTime);
+                //~datetypecol2~SqlParameter param2 = new SqlParameter("@Colum2", SqlDbType.DateTimeOffset);    //optional for Offset Date format
+                ~datetypecol2~param2.Value = scriptInformation.~column2~;
+                ~datetypecol2~sqlCommand.Parameters.Add(param2);
+
+
+                ~chartypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.VarChar);
+                ~chartypecol3~param3.Value = scriptInformation.~column3~;
+                ~chartypecol3~sqlCommand.Parameters.Add(param3);
+
+                ~inttypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.Int);
+                ~inttypecol3~param3.Value = scriptInformation.~column3~;
+                ~inttypecol3~sqlCommand.Parameters.Add(param3);
+
+                ~dectypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.Decimal);
+                ~dectypecol3~param3.Value = scriptInformation.~column3~;
+                ~dectypecol3~sqlCommand.Parameters.Add(param3);
+
+                ~datetypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.DateTime);
+                //~datetypecol3~SqlParameter param3 = new SqlParameter("@Colum3", SqlDbType.DateTimeOffset);    //optional for Offset Date format
+                ~datetypecol3~param3.Value = scriptInformation.~column3~;
+                ~datetypecol3~sqlCommand.Parameters.Add(param3);
+
+
+                ~chartypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.VarChar);
+                ~chartypecol4~param4.Value = scriptInformation.~column4~;
+                ~chartypecol4~sqlCommand.Parameters.Add(param4);
+
+                ~inttypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.Int);
+                ~inttypecol4~param4.Value = scriptInformation.~column4~;
+                ~inttypecol4~sqlCommand.Parameters.Add(param4);
+
+                ~dectypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.Decimal);
+                ~dectypecol4~param4.Value = scriptInformation.~column4~;
+                ~dectypecol4~sqlCommand.Parameters.Add(param4);
+
+                ~datetypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.DateTime);
+                //~datetypecol4~SqlParameter param4 = new SqlParameter("@Colum4", SqlDbType.DateTimeOffset);    //optional for Offset Date format
+                ~datetypecol4~param4.Value = scriptInformation.~column4~;
+                ~datetypecol4~sqlCommand.Parameters.Add(param4);
+
+
+                sqlCommand.ExecuteNonQuery();
+
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+                List<string> outputMessages = new List<string>();
+                outputMessages.Add("~table~ has been updated.");
+
+                returnStatus = true;
+                returnErrorMessage = "";
+                returnMessages = outputMessages;
+
+                return scriptInformation;
+            }
+            catch (Exception ex)
+            {
+                List<string> outputMessages = new List<string>();
+
+                returnPageNumber = -1;
+                returnRowNumber = -2;
+
+                returnStatus = false;
+                outputMessages.Add(ex.Message);
+                returnMessages = outputMessages;
+
+                return scriptInformation;
+
+            }
+            finally
+            {
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+            }
+
+
+        }
+
+
+        /// <summary>
+        /// Delete Detail record
+        /// </summary>
+        public ~prog~ Del~prog~(~prog~ scriptInformation,
+            out long returnPageNumber,
+            out long returnRowNumber,
+            out bool returnStatus,
+            out List<string> returnMessages)
+        {
+           string returnErrorMessage;
+
+           //UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+           //SqlConnection connection = UtilitiesBLL.CreateConnectionRMSPROD(out returnStatus, out returnErrorMessage);
+           SqlConnection connection;
+           connection = new SqlConnection();
+
+            try
+            {
+
+                String connectionString = scriptInformation.DBConnectString;
+
+                //connection = new SqlConnection();
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                returnPageNumber = -1;  //could be changed if sort field changed, later down in code
+                returnRowNumber = -2;   //could be changed if sort field changed, later down in code
+
+                //StringBuilder sqlBuilder = new StringBuilder();
+
+                List<string> messages;
+    
+                string sqlString = "DELETE ~table~ ";
+                sqlString = sqlString + " WHERE ~PK_ID~ = @PK_ID ";
+              
+                //string sqlString = sqlBuilder.ToString();
+
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Connection = connection;
+                sqlCommand.CommandText = sqlString;
+
+
+                SqlParameter paramPatientID = new SqlParameter("@PK_ID", SqlDbType.BigInt);
+                paramPatientID.Value = scriptInformation.~PK_ID~;
+                sqlCommand.Parameters.Add(paramPatientID);
+
+
+                sqlCommand.ExecuteNonQuery();
+
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+                List<string> outputMessages = new List<string>();
+                outputMessages.Add("~table~ has been deleted.");
+
+                returnStatus = true;
+                returnErrorMessage = "";
+                returnMessages = outputMessages;
+
+                return scriptInformation;
+            }
+            catch (Exception ex)
+            {
+                List<string> outputMessages = new List<string>();
+
+                returnPageNumber = -1;
+                returnRowNumber = -2;
+
+                returnStatus = false;
+                outputMessages.Add(ex.Message);
+                returnMessages = outputMessages;
+
+                return scriptInformation;
+            }
+            finally
+            {
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+            }
+
+
+        }
+
+
+
+        /// <summary>
+        /// Delete Detail records in a List
+        /// </summary>
+        public ~prog~ Del~prog~ALL(~prog~ scriptInformation,
+            out long returnPageNumber,
+            out long returnRowNumber,
+            out bool returnStatus,
+            out List<string> returnMessages)
+        {
+
+            string returnErrorMessage;
+
+            //UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+            //SqlConnection connection = UtilitiesBLL.CreateConnectionRMSPROD(out returnStatus, out returnErrorMessage);
+            SqlConnection connection;
+            connection = new SqlConnection();
+
+            try
+            {
+
+                String connectionString = scriptInformation.DBConnectString;
+
+                //connection = new SqlConnection();
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                returnPageNumber = -1;  //could be changed if sort field changed, later down in code
+                returnRowNumber = -2;   //could be changed if sort field changed, later down in code
+
+                //StringBuilder sqlBuilder = new StringBuilder();
+
+                string sqlString = "";
+
+                List<string> messages;
+ 
+                //string sqlString = sqlBuilder.ToString();
+
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Connection = connection;
+                sqlCommand.CommandText = sqlString;
+
+                //next loop goes around all checked rows and then delete each record
+                string Chkstr;
+                int counterk2 = 0;
+
+                //foreach (var recList in scriptInformation.Chk)
+                foreach (var recList in scriptInformation.PK_IDD)
+                {
+                    Chkstr = scriptInformation.CheckBoxx[counterk2];
+                    //Chkstr = scriptInformation.Chk.ToString();
+                    //Chkstr = recList.ToString();
+                    if (Chkstr == "on")
+                    {
+                        sqlString = sqlString + "DELETE ~table~ ";
+                        sqlString = sqlString + " WHERE ~PK_ID~ = @PK_IDDD ";
+
+                        SqlParameter param1 = new SqlParameter("@PK_IDDD", SqlDbType.BigInt);
+                        param1.Value = scriptInformation.PK_IDD[counterk2];
+                        sqlCommand.Parameters.Add(param1);
+
+
+                        //sqlString = sqlBuilder.ToString();
+                        sqlCommand.CommandText = sqlString;
+                        sqlCommand.ExecuteNonQuery();
+                        sqlCommand.Parameters.Remove(param1);
+
+                        sqlString = "";
+                        //sqlBuilder = new StringBuilder();
+
+                    }
+
+                    counterk2 = counterk2 + 1;
+                }
+
+
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+                List<string> outputMessages = new List<string>();
+                outputMessages.Add("~table~/s has been deleted.");
+
+                returnStatus = true;
+                returnErrorMessage = "";
+                returnMessages = outputMessages;
+
+                return scriptInformation;
+            }
+            catch (Exception ex)
+            {
+                List<string> outputMessages = new List<string>();
+
+                returnPageNumber = -1;
+                returnRowNumber = -2;
+
+                returnStatus = false;
+                outputMessages.Add(ex.Message);
+                returnMessages = outputMessages;
+
+                return scriptInformation;
+
+            }
+            finally
+            {
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+            }
+
+        }
+
+
+        public List<~prog~RiskLevelList> GetRiskLevels(out bool returnStatus,
+            out string returnErrorMessage)
+        {
+
+           UtilitiesBLL UtilitiesBLLget = new UtilitiesBLL();
+           SqlConnection connection = UtilitiesBLLget.CreateConnectionRMSPROD(out returnStatus, out returnErrorMessage); //SQL Server
+
+            try
+            {
+                //StringBuilder sqlBuilder = new StringBuilder();
+
+                //sqlBuilder.Append("SELECT Worker_ID, LastName FROM WORKER ORDER BY LastName");
+                string sqlString = "SELECT Worker_ID, LastName FROM WORKER ORDER BY LastName";
+
+                //string sqlString = sqlBuilder.ToString();
+
+                SqlCommand sqlCommand = new SqlCommand();
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Connection = connection;
+                sqlCommand.CommandText = sqlString;
+
+
+                //UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+                //OracleConnection connection = UtilitiesBLL.CreateConnectionOracle(out returnStatus, out returnErrorMessage);
+
+                //OracleConnection connection = CreateConnectionOracle(out returnStatus, out returnErrorMessage);
+                //if (returnStatus == false) return null;
+
+                //OracleCommand sqlCommand = new OracleCommand();
+                //sqlCommand.CommandType = CommandType.Text;
+                //sqlCommand.Connection = connection;
+                //sqlCommand.CommandText = sqlString;
+
+                ~prog~RiskLevelList vtype;
+
+                List<~prog~RiskLevelList> vtypeList = new List<~prog~RiskLevelList>();
+
+                SqlDataReader dataReader = sqlCommand.ExecuteReader();
+
+                while (dataReader.Read() == true)
+                //if (dataReader.Read())   //for first record only
+                {
+                    vtype = new ~prog~RiskLevelList();
+
+                    vtype.RiskLevelID = Convert.ToInt64(dataReader["Worker_ID"]);
+                    vtype.RiskLevelName = Convert.ToString(dataReader["LastName"]);
+
+                    vtypeList.Add(vtype);
+
+                }
+
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+                returnStatus = true;
+                returnErrorMessage = "";
+
+                return vtypeList;
+
+            }
+            catch (Exception ex)
+            {
+                List<~prog~RiskLevelList> vtypeList = new List<~prog~RiskLevelList>();
+                returnStatus = false;
+                returnErrorMessage = ex.Message;
+
+                return vtypeList;
+
+            }
+            finally
+            {
+                //connection.Close();
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+               
+            }
+
+
+        }
+
+
+
+
+        /// Uses XLS Export Query to get All pages at a time.
+        public MemoryStream ~prog~SearchXLS(
+            ~prog~ SearchValues,
+            string sortBy,
+            string sortAscendingDescending,
+            out bool returnStatus,
+            out string returnErrorMessage)
+        {
+
+            long currentPageNumber = 1;
+            long pageSize = -1;  //to indicate it is XLS export (ie export all records)
+
+            try
+            {
+                long totalPages = 0;
+                long totalRows = 0;
+                long pageRows = 0;
+                MemoryStream msout = new MemoryStream();
+              
+                //DataTable scriptDataTable = Get~prog~(SearchValues,
+                 //   currentPageNumber,
+                  //  pageSize,
+                  //  sortBy,
+                 //   sortAscendingDescending,
+                 //   out totalRows,
+                  //  out returnStatus,
+                 //   out returnErrorMessage);
+
+              List<~prog~> scripts = ~prog~Search(
+                SearchValues,
+                currentPageNumber,
+                pageSize,
+                sortBy,
+                sortAscendingDescending,
+                out totalRows,
+                out totalPages,
+                out pageRows,
+                out returnStatus,
+                out returnErrorMessage);
+
+                if (returnStatus == false)
+                {
+                    return msout;
+                }
+
+                var scriptDataTable = CreateDataTable(scripts);
+
+                //totalRows = scriptDataTable.Rows.Count;
+                UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+
+                //DataTable listDataOut = new DataTable();
+                //Write table out to XLS
+                string[] ColOrderk = new string[5] { "~PK_ID~", "~column1~", "~column2~", "~column3~", "~column4~" };   //must match column names
+                string[] ColNamek = new string[5] { "~PK_ID~", "~column1~", "~column2~", "~column3~", "~column4~" };
+                //msout = UtilitiesBLL.TableToXLSms(scriptDataTable, ColOrderk, ColNamek, true, "c:/AP/~prog~List.xls");  //works OK
+                msout = UtilitiesBLL.TableToXLSXms(scriptDataTable, ColOrderk, ColNamek, true, "c:/AP/~prog~List.xlsx");  //works OK
+
+
+                //searchType = "";
+                //searchTypeOut = searchType;
+                returnErrorMessage = "";
+                returnStatus = true;
+                return msout;
+
+            }
+            catch (Exception ex)
+            {
+                returnErrorMessage = ex.Message;
+                returnStatus = false;
+              
+                MemoryStream mserr = new MemoryStream();
+                //byte[] BLOBbyterr;
+                //mserr.Write(BLOBbyterr, 0, BLOBbyterr.Length);
+                return mserr;
+            }
+
+        }
+
+
+
+        /// Uses XLSX Export Query to get All pages at a time.
+        public MemoryStream ~prog~SearchXLSX(
+            ~prog~ SearchValues,
+            string sortBy,
+            string sortAscendingDescending,
+            out bool returnStatus,
+            out string returnErrorMessage)
+        {
+
+            long currentPageNumber = 1;
+            long pageSize = -1;  //to indicate it is XLS export (ie export all records)
+
+            try
+            {
+                long totalPages = 0;
+                long totalRows = 0;
+                long pageRows = 0;
+                MemoryStream msout = new MemoryStream();
+              
+                //DataTable scriptDataTable = Get~prog~(SearchValues,
+                 //   currentPageNumber,
+                  //  pageSize,
+                  //  sortBy,
+                 //   sortAscendingDescending,
+                 //   out totalRows,
+                  //  out returnStatus,
+                 //   out returnErrorMessage);
+
+              List<~prog~> scripts = ~prog~Search(
+                SearchValues,
+                currentPageNumber,
+                pageSize,
+                sortBy,
+                sortAscendingDescending,
+                out totalRows,
+                out totalPages,
+                out pageRows,
+                out returnStatus,
+                out returnErrorMessage);
+
+                if (returnStatus == false)
+                {
+                    return msout;
+                }
+
+                var scriptDataTable = CreateDataTable(scripts);
+
+                //totalRows = scriptDataTable.Rows.Count;
+                UtilitiesBLL UtilitiesBLL = new UtilitiesBLL();
+
+                //DataTable listDataOut = new DataTable();
+                //Write table out to XLS
+                string[] ColOrderk = new string[5] { "~PK_ID~", "~column1~", "~column2~", "~column3~", "~column4~" };   //must match column names
+                string[] ColNamek = new string[5] { "~PK_ID~", "~column1~", "~column2~", "~column3~", "~column4~" };
+                //msout = UtilitiesBLL.TableToXLSms(scriptDataTable, ColOrderk, ColNamek, true, "c:/AP/~prog~List.xls");  //works OK
+                msout = UtilitiesBLL.TableToXLSXms(scriptDataTable, ColOrderk, ColNamek, true, "c:/AP/~prog~List.xlsx");  //works OK
+
+
+                //searchType = "";
+                //searchTypeOut = searchType;
+                returnErrorMessage = "";
+                returnStatus = true;
+                return msout;
+
+            }
+            catch (Exception ex)
+            {
+                returnErrorMessage = ex.Message;
+                returnStatus = false;
+              
+                MemoryStream mserr = new MemoryStream();
+                //byte[] BLOBbyterr;
+                //mserr.Write(BLOBbyterr, 0, BLOBbyterr.Length);
+                return mserr;
+            }
+
+        }
+
+
+        /// Uses PDF Report Query to get All pages at a time.
+        public string ~prog~SearchPDF(
+            ~prog~ SearchValues,
+            long currentPageNumber,
+            long pageSize,
+            string sortBy,
+            string sortAscendingDescending,
+            out long totalRows,
+            out long totalPages,
+            out bool returnStatus,
+            out string returnErrorMessage)
+        {
+
+            long loopcount = -1;
+            long pageSizeReal = pageSize;
+
+            try
+            {
+                totalPages = 0;
+                totalRows = 0;
+                long pageRows = 0;
+                //pageSize = 10000; //make large, so as to get all records
+                pageSize = -1; //make large, so as to get all records
+                string strTable = "";
+                string trbgcolor = "#D3DCE5";
+                string ImagePathSrc = SearchValues.Logoimg;   //Logo to display 
+
+                //DataTable scriptDataTable = Get~prog~(SearchValues,
+                //    currentPageNumber,
+                 //   pageSize,
+                //    sortBy,
+                 //   sortAscendingDescending,
+                 //   out totalRows,
+                 //   out returnStatus,
+                 //   out returnErrorMessage);
+
+              List<~prog~> scripts = ~prog~Search(
+                SearchValues,
+                currentPageNumber,
+                pageSize,
+                sortBy,
+                sortAscendingDescending,
+                out totalRows,
+                out totalPages,
+                out pageRows,
+                out returnStatus,
+                out returnErrorMessage);
+
+                if (returnStatus == false)
+                {
+                    //return GridList;
+                }
+
+              var scriptDataTable = CreateDataTable(scripts); 
+
+                if (totalRows == 0)
+                {
+                    strTable = strTable + " <div align='center' style='font-family: Arial; font-size: 12px; color: #0000FF; border: 1px solid #000000;'> ";
+                    strTable = strTable + " No Data found.";
+                    strTable = strTable + " </div> ";
+                }
+
+
+                strTable = strTable + "<table border='0' align='center' style='width: 590px;'>";
+        
+                /*
+                //Setup Header ROW
+                strTable = strTable + "<tr bgcolor='#DCEDEA' >";
+
+                strTable = strTable + "<th width='12%' align='left'> ";
+                strTable = strTable + " <div align='left' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                strTable = strTable + " ~PK_ID~";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</th>";
+
+                strTable = strTable + "<th width='22%' align='left'> ";
+                strTable = strTable + " <div align='left' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                strTable = strTable + " ~column1~";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</th>";
+
+                strTable = strTable + "<th width='22%' align='left'> ";
+                strTable = strTable + " <div align='left' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                strTable = strTable + " ~column2~";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</th>";
+
+                strTable = strTable + "<th width='21%' align='center'> ";
+                strTable = strTable + " <div align='center' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                strTable = strTable + " ~column3~";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</th>";
+
+                strTable = strTable + "<th width='23%' align='center'> ";
+                strTable = strTable + " <div align='center' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                strTable = strTable + " ~column4~";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</th>";
+ 
+                strTable = strTable + "</tr>";
+                //END of Header ROW
+                */
+
+                for (int i = 0; i < scriptDataTable.Rows.Count; i++)
+                {
+                    //currentRow++;
+
+                    if (i % 2 == 0)
+                    {
+                        trbgcolor = "#D3DCE5";
+                    }
+                    else
+                    {
+                        trbgcolor = "#ebeff2";
+                    }
+
+
+                        ~prog~ recList = new ~prog~();
+
+                        recList.~PK_ID~ = scriptDataTable.Rows[i]["~PK_ID~"] != DBNull.Value ? Convert.ToInt64(scriptDataTable.Rows[i]["~PK_ID~"]) : 0;
+
+                        ~chartypecol1~recList.~column1~ = scriptDataTable.Rows[i]["~column1~"] != DBNull.Value ? scriptDataTable.Rows[i]["~column1~"].ToString() : "";
+                     
+                        ~inttypecol1~recList.~column1~ = scriptDataTable.Rows[i]["~column1~"] != DBNull.Value ? Convert.ToInt32(scriptDataTable.Rows[i]["~column1~"]) : 0;
+                        ~dectypecol1~recList.~column1~ = scriptDataTable.Rows[i]["~column1~"] != DBNull.Value ? Convert.ToDecimal(scriptDataTable.Rows[i]["~column1~"]) : 0;
+
+                        ~datetypecol1~if (scriptDataTable.Rows[i]["~column1~"] == DBNull.Value)
+                        ~datetypecol1~{
+                            ~datetypecol1~recList.~column1~ = DateTime.MinValue;
+                        ~datetypecol1~}
+                        ~datetypecol1~else
+                        ~datetypecol1~{
+                            ~datetypecol1~recList.~column1~ = Convert.ToDateTime(scriptDataTable.Rows[i]["~column1~"]);
+                            //~datetypecol1~recList.~column1~ = DateTimeOffset.Parse(scriptDataTable.Rows[i]["~column1~"].ToString());      //option for Date in Offset format
+                        ~datetypecol1~}
+
+
+                        ~chartypecol2~recList.~column2~ = scriptDataTable.Rows[i]["~column2~"] != DBNull.Value ? scriptDataTable.Rows[i]["~column2~"].ToString() : "";
+                    
+                        ~inttypecol2~recList.~column2~ = scriptDataTable.Rows[i]["~column2~"] != DBNull.Value ? Convert.ToInt32(scriptDataTable.Rows[i]["~column2~"]) : 0;
+                        ~dectypecol2~recList.~column2~ = scriptDataTable.Rows[i]["~column2~"] != DBNull.Value ? Convert.ToDecimal(scriptDataTable.Rows[i]["~column2~"]) : 0;
+
+                        ~datetypecol2~if (scriptDataTable.Rows[i]["~column2~"] == DBNull.Value)
+                        ~datetypecol2~{
+                            ~datetypecol2~recList.~column2~ = DateTime.MinValue;
+                        ~datetypecol2~}
+                        ~datetypecol2~else
+                        ~datetypecol2~{
+                            ~datetypecol2~recList.~column2~ = Convert.ToDateTime(scriptDataTable.Rows[i]["~column2~"]);
+                            //~datetypecol2~recList.~column2~ = DateTimeOffset.Parse(scriptDataTable.Rows[i]["~column2~"].ToString());      //option for Date in Offset format
+                        ~datetypecol2~}
+
+
+                        ~chartypecol3~recList.~column3~ = scriptDataTable.Rows[i]["~column3~"] != DBNull.Value ? scriptDataTable.Rows[i]["~column3~"].ToString() : "";
+                     
+                        ~inttypecol3~recList.~column3~ = scriptDataTable.Rows[i]["~column3~"] != DBNull.Value ? Convert.ToInt32(scriptDataTable.Rows[i]["~column3~"]) : 0;
+                        ~dectypecol3~recList.~column3~ = scriptDataTable.Rows[i]["~column3~"] != DBNull.Value ? Convert.ToDecimal(scriptDataTable.Rows[i]["~column3~"]) : 0;
+
+                        ~datetypecol3~if (scriptDataTable.Rows[i]["~column3~"] == DBNull.Value)
+                        ~datetypecol3~{
+                            ~datetypecol3~recList.~column3~ = DateTime.MinValue;
+                        ~datetypecol3~}
+                        ~datetypecol3~else
+                        ~datetypecol3~{
+                            ~datetypecol3~recList.~column3~ = Convert.ToDateTime(scriptDataTable.Rows[i]["~column3~"]);
+                            //~datetypecol3~recList.~column3~ = DateTimeOffset.Parse(scriptDataTable.Rows[i]["~column3~"].ToString());      //option for Date in Offset format
+                        ~datetypecol3~}
+
+
+                        ~chartypecol4~recList.~column4~ = scriptDataTable.Rows[i]["~column4~"] != DBNull.Value ? scriptDataTable.Rows[i]["~column4~"].ToString() : "";
+                     
+                        ~inttypecol4~recList.~column4~ = scriptDataTable.Rows[i]["~column4~"] != DBNull.Value ? Convert.ToInt32(scriptDataTable.Rows[i]["~column4~"]) : 0;
+                        ~dectypecol4~recList.~column4~ = scriptDataTable.Rows[i]["~column4~"] != DBNull.Value ? Convert.ToDecimal(scriptDataTable.Rows[i]["~column4~"]) : 0;
+
+                        ~datetypecol4~if (scriptDataTable.Rows[i]["~column4~"] == DBNull.Value)
+                        ~datetypecol4~{
+                            ~datetypecol4~recList.~column4~ = DateTime.MinValue;
+                        ~datetypecol4~}
+                        ~datetypecol4~else
+                        ~datetypecol4~{
+                            ~datetypecol4~recList.~column4~ = Convert.ToDateTime(scriptDataTable.Rows[i]["~column4~"]);
+                            //~datetypecol4~recList.~column4~ = DateTimeOffset.Parse(scriptDataTable.Rows[i]["~column4~"].ToString());      //option for Date in Offset format
+                        ~datetypecol4~}
+
+                    loopcount = loopcount + 1;
+                    if (loopcount == pageSizeReal)    //write out a Page of Data
+                    {
+
+                        /*
+                        strTable = strTable + "</table>";
+
+                        strTable = strTable + "<div style='page-break-after: always;'/> </div>";
+
+                        strTable = strTable + "<table border='0' style='width: 100%;'>";
+                        //Setup Header ROW
+                        strTable = strTable + "<tr bgcolor='#DCEDEA' >";
+
+                        strTable = strTable + "<td width='12%' align='left'> ";
+                        strTable = strTable + " <div align='left' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                        strTable = strTable + " ~PK_ID~";
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        strTable = strTable + "<td width='22%' align='left'> ";
+                        strTable = strTable + " <div align='left' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                        strTable = strTable + " ~column1~";
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        strTable = strTable + "<td width='22%' align='left'> ";
+                        strTable = strTable + " <div align='left' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                        strTable = strTable + " ~column2~";
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        strTable = strTable + "<td width='21%' align='center'> ";
+                        strTable = strTable + " <div align='center' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                        strTable = strTable + " ~column3~";
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        strTable = strTable + "<td width='23%' align='center'> ";
+                        strTable = strTable + " <div align='center' style='font-family: Arial; font-weight: bold; font-size: 8px; color: #000000;'> ";
+                        strTable = strTable + " ~column4~";
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        //END of Header ROW
+                        strTable = strTable + "</tr>";
+                        strTable = strTable + "</table>";
+
+                        strTable = strTable + "<table border='0' style='width: 100%;'>";
+                        */
+
+                        loopcount = 0;  //reset count again
+                    }
+
+
+                        strTable = strTable + "<tr bgcolor='" + trbgcolor + "' >";
+
+                        strTable = strTable + "<td align='left'> ";
+                        //strTable = strTable + " <div align='left' style='font-weight: normal; font-family: Arial; font-size: 8px;'> ";
+                        strTable = strTable + " <div align='left' style='font-size: 8px; width: 82px;'> ";
+                        strTable = strTable + recList.~PK_ID~;
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        strTable = strTable + "<td align='left'> ";
+                        //strTable = strTable + " <div align='left' style='font-weight: normal; font-family: Arial; font-size: 8px;'> ";
+                        strTable = strTable + " <div align='left' style='font-size: 8px; width: 154px;'> ";
+                        ~chartypecol1~strTable = strTable + recList.~column1~;
+                        ~inttypecol1~strTable = strTable + recList.~column1~;
+                        ~dectypecol1~strTable = strTable + recList.~column1~;
+                        ~datetypecol1~strTable = strTable + UtilitiesBLL.FormatDate(recList.~column1~);
+                        //~datetypecol1~strTable = strTable + UtilitiesBLL.FormatDateOffsetTime(recList.~column1~);     //optional for Offset Date
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        strTable = strTable + "<td align='left'> ";
+                        //strTable = strTable + " <div align='left' style='font-weight: normal; font-family: Arial; font-size: 8px;'> ";
+                        strTable = strTable + " <div align='left' style='font-size: 8px; width: 154px;'> ";
+                        ~chartypecol2~strTable = strTable + recList.~column2~;
+                        ~inttypecol2~strTable = strTable + recList.~column2~;
+                        ~dectypecol2~strTable = strTable + recList.~column2~;
+                        ~datetypecol2~strTable = strTable + UtilitiesBLL.FormatDate(recList.~column2~);
+                        //~datetypecol2~strTable = strTable + UtilitiesBLL.FormatDateOffsetTime(recList.~column2~);     //optional for Offset Date
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        strTable = strTable + "<td align='center'> ";
+                        //strTable = strTable + " <div align='center' style='font-weight: normal; font-family: Arial; font-size: 8px;'> ";
+                        strTable = strTable + " <div align='center' style='font-size: 8px; width: 100px;'> ";
+                        ~chartypecol3~strTable = strTable + recList.~column3~;
+                        ~inttypecol3~strTable = strTable + recList.~column3~;
+                        ~dectypecol3~strTable = strTable + recList.~column3~;
+                        ~datetypecol3~strTable = strTable + UtilitiesBLL.FormatDate(recList.~column3~);
+                        //~datetypecol3~strTable = strTable + UtilitiesBLL.FormatDateOffsetTime(recList.~column3~);     //optional for Offset Date
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        strTable = strTable + "<td align='center'> ";
+                        //strTable = strTable + " <div align='center' style='font-weight: normal; font-family: Arial; font-size: 8px;'> ";
+                        strTable = strTable + " <div align='center' style='font-size: 8px; width: 100px;'> ";
+                        ~chartypecol4~strTable = strTable + recList.~column4~;
+                        ~inttypecol4~strTable = strTable + recList.~column4~;
+                        ~dectypecol4~strTable = strTable + recList.~column4~;
+                        ~datetypecol4~strTable = strTable + UtilitiesBLL.FormatDate(recList.~column4~);
+                        //~datetypecol4~strTable = strTable + UtilitiesBLL.FormatDateOffsetTime(recList.~column4~);     //optional for Offset Date
+                        strTable = strTable + " </div> ";
+                        strTable = strTable + "</td>";
+
+                        //END of data ROW
+                        strTable = strTable + "</tr>";
+
+
+                }
+            
+                strTable = strTable + "</table>";
+
+                /*
+                //------------------------------------------------------------------------------------------------------
+                //Next is just a TEST, for showing formatting options. Borders, font-weight, font-family do not work for CSS on DIV in iText 7.
+                //------------------------------------------------------------------------------------------------------
+                strTable = strTable + "<div style='page-break-after: always;'/> </div>";
+
+                strTable = strTable + "<table border='0' cellpadding='3' cellspacing='3' >";
+                strTable = strTable + "<tr border='1' bgcolor='#777777' color='#ffffff'>";
+
+                strTable = strTable + "<td colspan='1'>";
+                strTable = strTable + " <div align='center' style='font-family: Arial; font-size: 16px; color: #000000; border: 2px solid #000000;'> ";
+                strTable = strTable + " Environmental Management Charge";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+
+                strTable = strTable + "</tr>";
+
+                strTable = strTable + "<tr>";
+
+                strTable = strTable + "<td colspan='1'>";
+                strTable = strTable + " <div align='left' style='font-family: Arial; font-size: 12px; color: #0000FF; border: 1px solid #000000;'> ";
+                strTable = strTable + " Environmental Management Charge22";
+                strTable = strTable + " </div> ";
+                strTable = strTable + "</td>";
+
+                strTable = strTable + "</tr>";
+
+                strTable = strTable + "</table>";
+                //------------------------------------------------------------------------------------------------------
+                //END TEST 
+                //------------------------------------------------------------------------------------------------------
+                */
+
+
+                returnErrorMessage = "";
+                returnStatus = true;
+              
+                return strTable;
+
+            }
+            catch (Exception ex)
+            {
+                returnErrorMessage = ex.Message;
+                returnStatus = false;
+                totalPages = 0;
+                totalRows = 0;
+
+                string errstr = "";
+                errstr = errstr + " <div align='center' style='font-family: Arial; font-size: 12px; color: #0000FF; border: 1px solid #000000;'> ";
+                errstr = errstr + " Error Found: " + returnErrorMessage;
+                errstr = errstr + " </div> ";
+
+                return errstr;
+
+            }
+
+        }
+
+
+
+
+
+        private bool IsNumeric(object value)
+        {
+            bool Result = false;
+
+            try
+            {
+                long i = Convert.ToInt64(value);
+                Result = true;
+            }
+            catch
+            {
+                // Ignore errors 
+            }
+            return Result;
+        }
+
+
+        private bool IsDouble(object value)
+        {
+            bool Result = false;
+
+            try
+            {
+                double i = Convert.ToDouble(value);
+                Result = true;
+            }
+            catch
+            {
+                // Ignore errors 
+            }
+            return Result;
+        }
+
+
+        private bool IsDecimal(object value)
+        {
+            bool Result = false;
+
+            try
+            {
+                decimal i = Convert.ToDecimal(value);
+                Result = true;
+            }
+            catch
+            {
+                // Ignore errors 
+            }
+            return Result;
+        }
+
+
+
+    public DataSet CreateDataSet<T>(List<T> list)
+    {
+         //list is nothing or has nothing, return nothing (or add exception handling)
+         if (list == null || list.Count == 0) { return null; }
+     
+         //get the type of the first obj in the list
+         var obj = list[0].GetType();
+     
+         //now grab all properties
+         var properties = obj.GetProperties();
+         
+         //make sure the obj has properties, return nothing (or add exception handling)
+         if (properties.Length == 0) { return null; }
+         
+         //it does so create the dataset and table
+         var dataSet = new DataSet();
+         var dataTable = new DataTable();
+         
+         //now build the columns from the properties
+         var columns = new DataColumn[properties.Length];
+         for (int i = 0; i < properties.Length; i++)
+         {
+              columns[i] = new DataColumn(properties[i].Name, properties[i].PropertyType);
+         }
+         
+         //add columns to table
+         dataTable.Columns.AddRange(columns);
+         
+         //now add the list values to the table
+         foreach (var item in list)
+         {
+              //create a new row from table
+              var dataRow = dataTable.NewRow();
+         
+              //now we have to iterate thru each property of the item and retrieve it's value for the corresponding row's cell
+              var itemProperties = item.GetType().GetProperties();
+         
+              for (int i = 0; i < itemProperties.Length; i++)
+              {
+                   dataRow[i] = itemProperties[i].GetValue(item, null);
+              }
+         
+              //now add the populated row to the table
+              dataTable.Rows.Add(dataRow);
+         }
+         
+         //add table to dataset
+         dataSet.Tables.Add(dataTable);
+    
+         return dataSet;
+    }
+
+public DataTable CreateDataTable<T>(List<T> list)
+    {
+         //list is nothing or has nothing, return nothing (or add exception handling)
+         if (list == null || list.Count == 0) { return null; }
+     
+         //get the type of the first obj in the list
+         var obj = list[0].GetType();
+     
+         //now grab all properties
+         var properties = obj.GetProperties();
+         
+         //make sure the obj has properties, return nothing (or add exception handling)
+         if (properties.Length == 0) { return null; }
+         
+         //it does so create the dataset and table
+         var dataSet = new DataSet();
+         var dataTable = new DataTable();
+         
+         //now build the columns from the properties
+         var columns = new DataColumn[properties.Length];
+         for (int i = 0; i < properties.Length; i++)
+         {
+              columns[i] = new DataColumn(properties[i].Name, properties[i].PropertyType);
+         }
+         
+         //add columns to table
+         dataTable.Columns.AddRange(columns);
+         
+         //now add the list values to the table
+         foreach (var item in list)
+         {
+              //create a new row from table
+              var dataRow = dataTable.NewRow();
+         
+              //now we have to iterate thru each property of the item and retrieve it's value for the corresponding row's cell
+              var itemProperties = item.GetType().GetProperties();
+         
+              for (int i = 0; i < itemProperties.Length; i++)
+              {
+                   dataRow[i] = itemProperties[i].GetValue(item, null);
+              }
+         
+              //now add the populated row to the table
+              dataTable.Rows.Add(dataRow);
+         }
+         
+         //add table to dataset
+         //dataSet.Tables.Add(dataTable);
+         
+         //return dataset
+         return dataTable;
+    }
+
+
+
+
+    }
+
+}

@@ -1,0 +1,218 @@
+
+//Code between these comments can be changed-  &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+function ~prog~StartSearch() {
+        //alert("in ~prog~StartSearch");
+         
+       //--------------------------------------------------------------------------------------------
+       //workout time difference in minutes
+        var dtime = new Date();
+        var ndiff = dtime.getTimezoneOffset();
+        $("#~prog~Formtopdiv [name=TimeDiff]").val(ndiff);   //difference between UTC(GMT) time and local time
+  
+       //END workout time difference in minutes
+       //--------------------------------------------------------------------------------------------
+
+        $("#~prog~Formtopdiv [name=CurrentPageNumber]").val("1");
+        $("#~prog~Formtopdiv [name=CurrentRowNumber]").val("0");
+        $("#~prog~Formtopdiv [name=~PK_ID~]").val("0");
+  
+        //var FPKGET = $("#~topprog~Formtopdiv [name=~FPK_ID~]").val();    //foreign key to get linked records. 
+        var FPKGET = $("#ChildGeneralDiv [name=PK_ID]").val();    //Parent key to get linked records.
+         $("#~prog~Formtopdiv [name=~FPK_ID~]").val(FPKGET);
+
+        if ($("#~prog~Formtopdiv [name=PageSizeNEW]").length != 0) {     
+            var intPagesize = $("#~prog~Formtopdiv [name=PageSizeNEW]").val();
+            $("#~prog~Formtopdiv [name=PageSize]").val(intPagesize);
+        }
+        else {
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            $("#~prog~Formtopdiv [name=PageSize]").val("24");  //Change here to set page default size
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        }
+
+        $("#~prog~Formtopdiv [name=SortAscendingDescending]").val("ASC");    //default starting Sort. Change here to DESC, for starting sort.
+        $("#~prog~Formtopdiv [name=SortBy]").val("~prog~FourthCol");    //default starting Sort Column 
+
+        ~prog~PostSearchForm();       //Further down in this code
+    }
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//Take out columns not used
+function ~prog~ResetPage() {
+    //reset search criteria
+    $("#~prog~Formtopdiv [name=GlobalSearchString]").val("");
+
+      $("#~prog~Formtopdiv [name=Discipline]").val("");
+
+       $("#~prog~Formtopdiv [name=Client_Status]").val("");
+
+       $("#~prog~Formtopdiv [name=First_Date_of_Contact_Str]").val("");
+
+        $("#~prog~Formtopdiv [name=Discharge_Date_Str]").val("");
+
+    ~prog~StartSearch();
+}
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//Not much change needed really, but depends on how many columns. This code does 6 by default
+function ~prog~EnableGridSorting() {
+    $("#~prog~Formtopdiv [name=SortByFirstCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortByFirstCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortBySecondCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortBySecondCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortByThirdCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortByThirdCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortByFourthCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortByFourthCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortByFifthCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortByFifthCol]").css("display", "block");
+
+    $("#~prog~Formtopdiv [name=SortBySixthCol]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=SortBySixthCol]").css("display", "block");
+}
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+
+
+function ~prog~SetPagingLinks(currentPageNumber, totalPages) {
+    $("#~prog~Formtopdiv [name=PagingLinks]").css("visibility", "visible");
+    $("#~prog~Formtopdiv [name=PagingLinks]").css("display", "block");
+
+    var currPageNumber = parseFloat(currentPageNumber);
+    totalPages = parseFloat(totalPages);
+
+    $("#~prog~firstpagee").hide();
+    $("#~prog~prevpagee").hide();
+    $("#~prog~nextpagee").hide();
+    $("#~prog~lastpagee").hide();
+
+    if (currPageNumber == 1) {
+        $("#~prog~firstpagee").hide();
+        $("#~prog~prevpagee").hide();
+        $("#~prog~nextpagee").hide();
+        $("#~prog~lastpagee").hide();
+    }
+    if (currPageNumber > 1) {
+        $("#~prog~firstpagee").show();
+        $("#~prog~prevpagee").show();
+
+        if (document.getElementById("idDiv~prog~TBody")) {
+                    var newht = 110
+                    newht = 140 - 25;   //110 must match ~prog~Results(110px)
+                    document.getElementById("idDiv~prog~TBody").style.height = newht + "px";
+         }
+
+    }
+    if (currPageNumber < totalPages && totalPages > 0) {
+        $("#~prog~nextpagee").show();
+        $("#~prog~lastpagee").show();
+
+        if (document.getElementById("idDiv~prog~TBody")) {
+                    var newht2 = 110
+                    newht2 = 140 - 25;   //110 must match ~prog~Results(110px)
+                    document.getElementById("idDiv~prog~TBody").style.height = newht2 + "px";
+         }
+
+    }
+    if (currPageNumber == totalPages && totalPages > 0) {
+        $("#~prog~nextpagee").hide();
+        $("#~prog~lastpagee").hide();
+    }
+
+    ~prog~EnableGridSorting();  
+}
+
+function ~prog~NavigateToPage(action) {
+    var currentPage = $("#~prog~Formtopdiv [name=CurrentPageNumber]").val();
+    currentPage = parseFloat(currentPage);
+
+    if (action == "next")
+        currentPage = currentPage + 1;
+    else if (action == "prev")
+        currentPage = currentPage - 1;
+    else if (action == "last")
+        currentPage = $("#~prog~Formtopdiv [name=TotalPages]").val();
+    else if (action == "first")
+        currentPage = 1;
+
+    $("#~prog~Formtopdiv [name=CurrentPageNumber]").val(currentPage);
+    $("#~prog~Formtopdiv [name=CurrentRowNumber]").val("0");   //row number will always be 0 on new page
+
+    $("#~prog~Formtopdiv [name=~PK_ID~]").val("0");
+
+    ~prog~PostSearchForm();      //Further down in this code
+}
+
+function ~prog~NextPage() {
+    ~prog~NavigateToPage("next");
+}
+function ~prog~PrevPage() {
+    ~prog~NavigateToPage("prev");
+}
+function ~prog~LastPage() {
+    ~prog~NavigateToPage("last");
+}
+function ~prog~FirstPage() {
+    ~prog~NavigateToPage("first");
+}
+
+function ~prog~SortGrid(sortBy) {
+    var currentSortBy = $("#~prog~Formtopdiv [name=SortBy]").val();
+    var currentSortAsc = $("#~prog~Formtopdiv [name=SortAscendingDescending]").val();
+
+    if (currentSortBy == sortBy) {
+        if (currentSortAsc == "ASC")
+            currentSortAsc = "DESC";
+        else
+            currentSortAsc = "ASC";
+    }
+    else {
+        currentSortAsc = "ASC";
+    }
+
+    $("#~prog~Formtopdiv [name=SortAscendingDescending]").val(currentSortAsc);
+    $("#~prog~Formtopdiv [name=SortBy]").val(sortBy);
+
+    $("#~prog~Formtopdiv [name=CurrentRowNumber]").val("0");   //row number will always be 0 on new page
+    $("#~prog~Formtopdiv [name=~PK_ID~]").val("0");  //set Primary Key
+
+    ~prog~PostSearchForm();      //Further down in this code
+}
+
+
+var ~prog~ListformData;
+function ~prog~PostSearchForm() {
+    LayoutShowProgressBar();  //found in _Layout.cshtml
+
+    ~prog~ListformData = $("#~prog~Formtopdiv :input").serialize();  //get input values from div via class name
+    //alert("formData is " + ~prog~ListformData);
+
+    setTimeout(~prog~PostSearchToServer, 70);
+}
+
+
+function ~prog~DisableForm() {
+    $('#~prog~Form').css("cursor", "wait");  //HourGlass
+}
+function ~prog~EnableForm() {
+    $('#~prog~Form').css("cursor", "default");
+}
+
+       
+function ~prog~AdvancedSearch() {
+    var el = $("#~prog~Formtopdiv [name=~prog~AdvancedSearch]")[0];
+    el.style.display = (el.style.display == "block") ? "none" : "block";
+}
+function ~prog~SearchOption() {
+    var el = $("#~prog~Formtopdiv [name=~prog~SearchOption]")[0];
+    if (el.style.display == "block") {
+        ~prog~ResetPage();
+    }
+    el.style.display = (el.style.display == "block") ? "none" : "block";
+}
+

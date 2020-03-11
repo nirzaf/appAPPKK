@@ -1,0 +1,424 @@
+@model appAPP.Models.~prog~ViewModel
+
+<style type="text/css">
+
+    #ui-datepicker-div {
+        z-index: 9999999;
+    }
+
+    select {
+	width: auto; /*Width of select dropdown to give space for arrow image*/
+	border-radius: 4px;
+	padding: 2px;
+	box-shadow: inset 0 0 5px rgba(000,000,000, 0.5);
+    }
+
+    
+ .modalBackgroundit
+        {
+	        background-color: gray;
+	        filter:alpha(opacity=40);
+	         -moz-opacity: 0.40;   
+	        opacity: 0.40;
+            z-index: 900;
+        }
+
+a:hover {
+    text-decoration: none;
+}
+
+
+/*
+  Start of input Slider css
+*/
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 0px 0px 7px 0px;
+  width: 100%;
+  padding: 0px;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3.0px;
+  cursor: pointer;
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  background: navy;
+  border-radius: 25px;
+  border: 0px solid #000101;
+}
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  border: 5px solid lightblue;
+  height: 25px;
+  width: 25px;
+  border-radius: 50px;
+  background: navy;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -9.6px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: navy;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 3.0px;
+  cursor: pointer;
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  background: navy;
+  border-radius: 25px;
+  border: 0px solid #000101;
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  border: 5px solid lightblue;
+  height: 25px;
+  width: 25px;
+  border-radius: 50px;
+  background: navy;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 3.0px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 18px 0;
+  color: transparent;
+  padding: 0px;
+}
+input[type=range]::-ms-fill-lower {
+  background: navy;
+  border: 0px solid red;
+  border-radius: 50px;
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  padding: 0px;
+}
+input[type=range]::-ms-fill-upper {
+  background: navy;
+  border: 0px solid green;
+  border-radius: 50px;
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  padding: 0px;
+}
+input[type=range]::-ms-thumb {
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  border: 5px solid lightblue;
+  height: 25px;
+  width: 25px;
+  border-radius: 50px;
+  background: navy;
+  cursor: pointer;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: navy;
+  padding: 0px;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: navy;
+  padding: 0px;
+}
+input[type=range]::-ms-tooltip {
+  display: none;
+}
+
+/*
+  End of input Slider css
+*/
+
+
+/*
+  Start of input checkbox css
+*/
+.regular-checkbox {
+    display: none;
+}
+.regular-checkbox + label {
+    -webkit-appearance: none;
+    background-color: #e1e1e1;
+    border: 4px solid #e1e1e1;
+    border-radius: 50px;
+    width: 100%;
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+}
+.regular-checkbox:checked + label {
+    background: blue;
+    border: 4px solid #e1e1e1;
+}
+/*
+  END of input checkbox css
+*/
+
+
+/*
+  Start of input radio css
+*/
+.regular-radio {
+    display: none;
+}
+.regular-radio + label {
+    -webkit-appearance: none;
+    background-color: #e1e1e1;
+    border: 4px solid #e1e1e1;
+    border-radius: 50px;
+    width: 100%;
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+}
+.regular-radio:checked + label {
+    background: blue;
+    border: 4px solid #e1e1e1;
+}
+
+/*
+  End of input radio css
+*/
+
+</style>
+
+  <script src="../js/~prog~ShowDetail.js?v=@(Guid.NewGuid())" type="text/javascript"></script>
+
+  <script language="javascript" type="text/javascript">
+
+      var ~prog~DetailCalGif = '@Url.Content("~/images/cal.gif")';
+
+      var ~prog~DetailGetURL = '@Url.Action("Get~prog~Detail","~prog~")';
+      var ~prog~DetailGetAddURL = '@Url.Action("Get~prog~DetailAdd","~prog~")';
+      var ~prog~DetailAddURL = '@Url.Action("Add~prog~", "~prog~")';
+      var ~prog~DetailUpdateURL = '@Url.Action("Update~prog~", "~prog~")';
+
+      var ~prog~DetailCombo1URL = '@Url.Action("Displaycombo1", "combo1")';     //change combo1 to combo URL
+
+      function ~prog~showValue(newValue) {
+          document.getElementById("~prog~range").innerHTML = newValue;
+      }
+
+  </script>
+
+    <div id="~prog~Detailtopdiv" style="background-color: white;border:1px solid silver;">
+
+       <table border="0" style="height:100%;width:100%;border: 0px solid #C0C0C0;">
+            <tr>
+                <td valign="top">
+
+        <input name="~prog~Showit" type="hidden" id="~prog~Showit" value="" />
+
+        <div align="center" style="color: #696969; font-weight: bold; font-family: Arial; font-size: 12px; padding: 1px 0px 1px 0px; display:block;">
+            ~prog~ Details
+        </div>
+
+        <div id="~prog~DetailFormData" style="height: auto; overflow-y:auto; -webkit-overflow-scrolling: touch; background-color: #F7F9F9; font-family: Arial; width: 100%; font-size: 4px; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px">
+
+            <form id="~prog~DetailValForm" action="./" method="post">
+
+                <table style="background-color: #F7F9F9; width: 100%; border: solid 1px #ebeff2">
+                    <tr>
+                        <td colspan="1" style="padding: 4px 0px 4px 0px;width: 50%;">
+                            <label style="font-size: 11px;" for="~column2~_in">~column2~</label>
+                            <div id="~prog~Detail~column2~OK" style="display:none;">
+                                <img style="display:inline-block;padding-left:3px;padding-bottom:4px;" src="@(Url.Content("~/images/GreenTick12x12.png"))" alt="OK" />
+                            </div>
+                            <input placeholder="~column2~" autocomplete="off" style="font-size: 10px; height: 20px; padding: 2px 2px;" class="form-control input-sm" name="~column2~_in" type="text" value="" onkeyup="javascript: ~prog~DetailFieldValidate();" onchange="javascript: ~prog~DetailFieldValidate();" />
+                            <input style="font-size: 10px; display:none; width: 80px" type="text" name="~column2~_inCopy" value="" />
+                            <div id="DivErr~prog~Detail~column2~_in" style="display: block;font-family: Arial; font-size: 10px;color: red;">
+                              &nbsp;
+                            </div>
+                        </td>
+                        <td colspan="1" style="padding: 4px 0px 4px 8px;width: 50%;">
+                            <label style="font-size: 11px;" for="~column1~_in">~column1~</label>
+                            <div id="~prog~Detail~column1~OK" style="display:none;">
+                                <img style="display:inline-block;padding-left:3px;padding-bottom:4px;" src="@(Url.Content("~/images/GreenTick12x12.png"))" alt="OK" />
+                            </div>
+                            <input placeholder="~column1~" autocomplete="off" style="font-size: 10px;height: 20px;padding: 2px 2px;display: block;" class="form-control input-sm" name="~column1~_in" type="text" value="" onclick="javascript: ~prog~DetailCombo1('~column1~_in', 'false');" onkeyup="javascript: ~prog~DetailFieldValidate();"  onchange="javascript: ~prog~DetailFieldValidate();" />
+                            <img style="float:right;position:relative;top:-17px;display:none;margin-bottom:-15px;" name="~column1~Pic" src="@(Url.Content("~/images/AutoCombo.jpg"))" alt="" onclick="javascript: ~prog~DetailCombo1('~column1~_in', 'false');" />
+                            <input style="font-size: 10px; display:none; width: 80px" type="text" name="~column1~_inCopy" value="" />
+                            <div id="DivErr~prog~Detail~column1~_in" style="display: block;font-family: Arial; font-size: 10px;color: red;">
+                             &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 0px 4px 0px;width: 50%;">
+                            <label style="font-size: 11px;" for="~column3~_in">~column3~</label>
+                            <div id="~prog~Detail~column3~OK" style="display:none;">
+                                <img style="display:inline-block;padding-left:3px;padding-bottom:4px;" src="@(Url.Content("~/images/GreenTick12x12.png"))" alt="OK" />
+                            </div>
+                            <input autocomplete="off" style="font-size: 10px; height: 20px; padding: 2px 2px;" class="form-control input-sm" name="~column3~_in" type="text" value="" onkeyup="javascript: ~prog~DetailFieldValidate();" onchange="javascript: ~prog~DetailFieldValidate();" />
+                            <input style="font-size: 10px; display:none; width: 80px" type="text" name="~column3~_inCopy" value="" />
+                            <div id="DivErr~prog~Detail~column3~_in" style="display: block;font-family: Arial; font-size: 10px;color: red;">
+                             &nbsp;
+                            </div>
+                        </td>
+                        <td style="padding: 4px 0px 4px 8px;width: 50%;">
+                            <label style="font-size: 11px;" for="~column4~_in">~column4~</label>
+                            <div id="~prog~Detail~column4~OK" style="display:none;">
+                                <img style="display:inline-block;padding-left:3px;padding-bottom:4px;" src="@(Url.Content("~/images/GreenTick12x12.png"))" alt="OK" />
+                            </div>
+                            <input autocomplete="off" style="font-size: 10px; height: 20px; padding: 2px 2px;" class="form-control input-sm" name="~column4~_in" type="text" value="" onkeyup="javascript: ~prog~DetailFieldValidate();" onchange="javascript: ~prog~DetailFieldValidate();" />
+                            <input style="font-size: 10px; display:none; width: 80px" type="text" name="~column4~_inCopy" value="" />
+                            <div id="DivErr~prog~Detail~column4~_in" style="display: block;font-family: Arial; font-size: 10px;color: red;">
+                              &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1" style="padding: 4px 0px 4px 0px;width: 50%;display:none;">
+                           
+                            <input type="checkbox" id="~prog~checkbox-1" name="Private_Cover_in" class="regular-checkbox" value="" disabled="disabled" />
+                            <label for="~prog~checkbox-1"><span style="position:relative;bottom:1px;font-weight:normal;left:30px;font-size:16px;">&nbsp;Private_Cover</span></label><br />
+                            <input style="font-size: 10px; display:none;" type="checkbox" name="Private_Cover_inCopy" value="" />
+
+                        </td>
+                        <td colspan="1" style="padding: 4px 0px 4px 8px;width: 50%;display:none;">
+
+                            <!--Combo Normal list way-->
+                            <label style="font-size: 11px; margin: 0px 0px 2px 0px;" for="WorkerType_in">Worker Type</label>
+
+                            <input autocomplete="off" style="font-size: 11px; height: 20px; padding: 2px 2px;" class="form-control input-sm" name="WorkerType_in" type="text" value="" />
+                            <input style="font-size: 10px; display:none; width: 80px" type="text" name="WorkerType_inCopy" value="" />
+
+                            <!-- EDIT mode list (gets existing)-->
+                            <select name="~prog~normcomboEDITCombo"
+                                    style="border:1px solid #AAA; font-size: 11px; width:150px; display: none; margin:0px 0px 0px 0px"></select>
+
+                            <!-- ADD mode list(whole list Note:- change Worker_Type_ID to Worker_Type for TEXT)-->
+                            <select name="~prog~normcomboADDCombo" style="width:150px; border:1px solid #AAA; font-size: 11px; display:none;">
+                                <option value=""></option>
+                            </select>
+
+                            <!--END Combo Normal list way-->
+
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1" style="padding: 4px 0px 4px 0px;width: 50%;display:none;">
+                           <div style="padding:0px;display:block;">
+                                <input type="range" min="0" max="100" value="0" step="1" onchange="~prog~showValue(this.value)" />
+                            </div>
+                        </td>
+                        <td colspan="1" style="padding: 4px 0px 4px 8px;width: 50%;display:none;">
+                             
+                            <input type="radio" id="~prog~radio1" name="radio-2-set" class="regular-radio" disabled="disabled" />
+                            <label for="~prog~radio1"><span style="position:relative;bottom:1px;font-weight:normal;left:30px;font-size:16px;">&nbsp;Male</span></label><br>
+                            <input type="radio" id="~prog~radio2" name="radio-2-set" class="regular-radio" disabled="disabled" />
+                            <label for="~prog~radio2"><span style="position:relative;bottom:1px;font-weight:normal;left:30px;font-size:16px;">&nbsp;Female</span></label><br />
+                            <input type="radio" id="~prog~radio3" name="radio-2-set" class="regular-radio" disabled="disabled" />
+                            <label for="~prog~radio3"><span style="position:relative;bottom:1px;font-weight:normal;left:30px;font-size:16px;">&nbsp;Other</span></label><br />
+                            <input style="font-size: 10px; display:none;" type="radio" id="~prog~Radio1_inCopy" value="" />
+                            <input style="font-size: 10px; display:none;" type="radio" id="~prog~Radio2_inCopy" value="" />
+                            <input style="font-size: 10px; display:none;" type="radio" id="~prog~Radio3_inCopy" value="" />
+
+                        </td>
+                    </tr>
+                </table>
+
+            </form> 
+            <div id="~prog~range" style="font-size:10px;height:24px; display:none;">0</div>
+
+            <div id="DivError~prog~Detail" style="display: none;font-family: Arial; font-size: 10px;color: red;">
+            </div>
+
+        </div>
+      </td>
+      </tr>
+       <tr>
+          <td valign="bottom">
+        <table style="background-color: #F7F9F9; margin-top: 7px; width: 100%;margin-bottom:5px;margin-left: 1px;">
+            <tr>
+                <td>
+                    <input style="font-size:10px; float:left; display:none;" id="btn~prog~DetailCancelEDIT" class="btn btn-danger btn-xs" type="button" value="Cancel" onclick="~prog~DetailCancelForm();" />
+                    <input style="font-size:10px; float:left; display:none;" id="btn~prog~DetailCancelADD" class="btn btn-danger btn-xs" type="button" value="Cancel" onclick="~prog~DetailClosePopup();" />
+                    <input style="font-size:10px; float:left; display:none;" id="btn~prog~DetailSave" class="btn btn-success btn-xs" type="button" onclick="~prog~DetailSaveScript(); return false;" value="Save" />
+
+                    <input style="font-size:10px; float:left; display:none;" id="btn~prog~DetailCancel" class="btn btn-danger btn-xs" type="button" value="Cancel" onclick="~prog~DetailClosePopup();" />
+                    <input style="font-size:10px; float:left; display:none;" id="btn~prog~DetailEdit" class="btn btn-primary btn-xs" type="button" value="Edit" onclick="~prog~DetailEditForm('Date');" />
+
+                </td>
+            </tr>
+        </table>
+
+                </td>
+            </tr>
+        </table>
+
+        <div style="font-family: Arial; font-size: 10px; height: 1px; border-bottom: 0px solid #d4d4d1; ">
+            &nbsp;
+        </div>
+
+
+        <div id="~prog~DetailCombo1Div" style="display: block;position:absolute;top:0px;left:0px;z-index: 400;">
+        </div>
+        <div id="~prog~DetailCombo2Div" style="display: block;position:absolute;top:0px;left:0px;z-index: 400;">
+        </div>
+
+        <form method="post" action="./" id="~prog~DetailForm">
+
+            @Html.AntiForgeryToken()
+
+            <div style="font-size: 1px;color: white;height: 1px;" class="device-xs visible-xs">.</div>
+
+            <input name="~PK_ID~" type="hidden" value="" />
+
+            <input name="~column1~" type="hidden" value="" />
+            <input name="~column1~_Str" type="hidden" value="" />
+
+            <input name="~column2~" type="hidden" value="" />
+            <input name="~column2~_Str" type="hidden" value="" />
+
+            <input name="~column3~" type="hidden" value="" />
+            <input name="~column3~_Str" type="hidden" value="" />
+
+            <input name="~column4~" type="hidden" value="" />
+            <input name="~column4~_Str" type="hidden" value="" />
+
+            <input name="normcombopkid" type="hidden" value="" />
+            <input name="normcombocol1" type="hidden" value="" />
+   
+            <input name="Private_Cover" type="hidden" value="" />
+            <input name="Sex" type="hidden" value="" />
+          
+        </form>
+
+        
+       
+        <!--Next 2 divs are for Progress Bar display-->
+        <div name="overlayprogressNEW" style="position: absolute; left: 0px; visibility: hidden; display:none;
+        top: 0px; height: 900px; width: 900px; z-index: 300">
+            <img src="@(Url.Content("~/images/PNG_1000x1000.png"))" alt="" onclick="javascript: ~prog~DetailCloseCombo1();" />
+        </div>
+
+        <div name="overlayprogress" class="modalBackgroundit" style="position: absolute; left: 0px; background-color: #D8D8D8;
+        visibility: hidden; top: 0px; height: 100%; width: 100%; z-index: 300">
+        </div>
+       <div align="center" name="pnlpopupprogress" class="updateProgress2new" style="position: fixed; display: none; top: 200px; left: 50%;margin: -10px 0 0 -75px; z-index: 400;">
+            <div align="center" style="margin-top: 12px;display:none; ">
+                <img src="@(Url.Content("~/images/simple.gif"))" alt="Progress" />
+                <span class="updateProgressMessage">Processing ...</span>
+            </div>
+            <div name="showSpin" data-bind="visible: isSpinning" style="display:none; margin-top: 12px;">
+                <i class="fa fa-spinner fa-spin"></i>
+                <span class="updateProgressMessage">Processing ...</span>
+            </div>
+        </div>
+
+        <input style="font-size: 10px; display:none;" name="comboCheckit" type="text" value="" />
+
+        <div id="~prog~DetailSpinPopup" data-bind="visible: isSpinning" style="display:none; position: absolute; top: 100px; left: 150px;">
+            <i class="fa fa-spinner fa-spin"></i>
+            <span class="updateProgressMessage">Processing ...</span>
+        </div>
+
+        <div class="device-sm visible-sm"></div>
+        <div class="device-md visible-md"></div>
+        <div class="device-lg visible-lg"></div>
+
+    </div>

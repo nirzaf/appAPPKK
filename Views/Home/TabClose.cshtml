@@ -1,0 +1,43 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+
+ <script language="javascript" type="text/javascript">
+
+
+     $(pageReady);
+
+     function pageReady() {
+         //alert("start PortSumTab");
+         //HidePanel();  //so as to get record via PK_ID
+         setTimeout(HidePanel, 30);
+         //$.ajaxSetup({ cache: false });   //stop caching, as querying current database data everytime of a POST, not what has been cached
+
+     }
+
+     function HidePanel() {
+         //alert("HidePanel");
+         var row_ID = parent.document.getElementById('CurrentRowNumber').value;
+         //alert("rowID is " + row_ID);
+         parent.HideChild(1, row_ID, '');
+
+     }
+
+ </script>
+
+</head>
+<body>
+    <div style="position: absolute; top: 10px; left: 100px; width: 100px; font-family: Arial; font-size: 12px; color: #0000FF; font-weight: bold">
+        Close Tab
+         <a style="color: black; font-weight: bold; font-size: 15px; text-decoration: none;"
+                            title="Close" href="javascript:HidePanel()">x</a>
+
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,65 @@
+@model appAPP.Models.~prog~ViewModel
+@{
+    Layout = null;
+}
+
+<script language="javascript" type="text/javascript">
+  
+        $(~prog~pageReady);
+
+        function ~prog~pageReady() {
+      
+            //NOTE:- Start of searching processing
+            ~prog~StartSearch();  // Is in ~prog~.cshtml
+
+            $.ajaxSetup({ cache: false });   //stop caching, as querying current database data everytime of a POST, not what has been cached
+
+            // jQuery Date setup in Search criteria form
+            $(function () {
+
+                 ~datetypecol1~$("#~prog~Formtopdiv [name=~column1~_Str]").datepicker({
+                     ~datetypecol1~showOn: 'button',
+                     ~datetypecol1~buttonImage: '@(Url.Content("~/images/cal.gif"))',
+                     ~datetypecol1~buttonImageOnly: true,
+                     ~datetypecol1~changeMonth: true,
+                     ~datetypecol1~changeYear: true,
+                     ~datetypecol1~dateFormat: "dd-M-yy"
+                 ~datetypecol1~}).next(".ui-datepicker-trigger").css("margin", "1px 0px 3px 1px");     //this puts calendar image on wanted coordinates
+                
+                 ~datetypecol2~$("#~prog~Formtopdiv [name=~column2~_Str]").datepicker({
+                    ~datetypecol2~showOn: 'button',
+                    ~datetypecol2~buttonImage: '@(Url.Content("~/images/cal.gif"))',
+                    ~datetypecol2~buttonImageOnly: true,
+                    ~datetypecol2~changeMonth: true,
+                    ~datetypecol2~changeYear: true,
+                    ~datetypecol2~dateFormat: "dd-M-yy"
+                ~datetypecol2~}).next(".ui-datepicker-trigger").css("margin", "1px 0px 3px 1px");     //this puts calendar image on wanted coordinates
+                
+                ~datetypecol3~$("#~prog~Formtopdiv [name=~column3~_Str]").datepicker({
+                     ~datetypecol3~showOn: 'button',
+                     ~datetypecol3~buttonImage: '@(Url.Content("~/images/cal.gif"))',
+                     ~datetypecol3~buttonImageOnly: true,
+                     ~datetypecol3~changeMonth: true,
+                     ~datetypecol3~changeYear: true,
+                     ~datetypecol3~dateFormat: "dd-M-yy"
+                 ~datetypecol3~}).next(".ui-datepicker-trigger").css("margin", "1px 0px 3px 1px");     //this puts calendar image on wanted coordinates
+                
+                 ~datetypecol4~$("#~prog~Formtopdiv [name=~column4~_Str]").datepicker({
+                    ~datetypecol4~showOn: 'button',
+                    ~datetypecol4~buttonImage: '@(Url.Content("~/images/cal.gif"))',
+                    ~datetypecol4~buttonImageOnly: true,
+                    ~datetypecol4~changeMonth: true,
+                    ~datetypecol4~changeYear: true,
+                    ~datetypecol4~dateFormat: "dd-M-yy"
+                ~datetypecol4~}).next(".ui-datepicker-trigger").css("margin", "1px 0px 3px 1px");     //this puts calendar image on wanted coordinates
+             
+                //$("#~prog~Formtopdiv [name=~column4~_Str]").datepicker('setDate', '+0d');   //set now as default date
+     
+            });
+
+        }
+        //END of pageReady
+    
+    </script>
+
+    <partial name="~prog~" model="Model" />

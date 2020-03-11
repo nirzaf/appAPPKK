@@ -1,0 +1,705 @@
+
+    //Code between these comments can be changed-  &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // NOTE:- Adjust Grid height if needed in,  function AdjustDivWidth~prog~() 
+
+    /// ~prog~PopDialog
+    /// <summary>Next function is for Edit popup of record in Grid
+    /// </summary> 
+    function ~prog~PopDialog(PKID, row_ID) {
+         LayoutShowProgressBar();  //found in _Layout.cshtml
+
+        $("#~prog~Formtopdiv [name=~PK_ID~]").val(PKID);   //Primary Key
+        $("#ChildGeneralDiv [name=PK_ID]").val(PKID);          //Store Primary Key for later processing in Child
+
+        var putTitle = "";
+        if (PKID == -1) {
+            putTitle = "Add ~prog~";
+        }
+        else {
+            putTitle = "Edit ~prog~";
+            ~prog~resetablebg();
+            ~prog~rowhighlight(row_ID);
+        }
+
+        var pagesrc = ~prog~DetailURL; 
+        //alert("pagesrc is " + pagesrc);
+
+        var dialogWidth = 0;
+        var dialogHeight = 0;
+        var deviceHeight = (typeof window.outerHeight != 'undefined') ? Math.max(window.outerHeight, $(window).height()) : $(window).height();
+        //alert("deviceHeight " + deviceHeight);
+        if (isBreakpointGet('xs')) {   //in Mobile device. Getting this from ~topprog~.cshtml now
+            //dialogHeight = Number(deviceHeight) - 328;
+            dialogHeight = Number(deviceHeight) / 1.6;
+        }
+        else {
+            //dialogHeight = Number(deviceHeight) - 350;  //so as cope with desktop window top part
+            dialogHeight = Number(deviceHeight) / 1.7;
+        }
+
+        $("#~topprog~Modalk").css("display", "block");
+        $("#~topprog~modalkTitle").text(putTitle);
+
+        var Expandid = "Modal~topprog~OverlayK";              //div in ~topprog~.cshtml
+      
+        var Expandheightpx = dialogHeight + "px";
+        document.getElementById(Expandid).style.height = Expandheightpx;
+
+        $("#Modal~topprog~OverlayK").empty();
+
+        if ($("#Modal~topprog~OverlayK").length == 0) {   //check if load destination div exists, first
+            //it doesn't exist
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            alert("Div not found, for load. Check load statement. ");
+        }
+        else {
+
+            $('#Modal~topprog~OverlayK').load(pagesrc, '', function (response, status, xhr) {
+                //alert("status is " + status);   //can be ("success", "notmodified", "error", "timeout", or "parsererror")
+                if (status == 'success') {
+                    //alert("status text is: " + xhr.statusText);
+                    //alert("response text is: " + xhr.responseText);
+                    LayoutHideProgressBar();  //found in _Layout.cshtml
+                }
+                else  //error or timeout, etc..
+                {
+                    LayoutHideProgressBar();  //found in _Layout.cshtml
+                    alert("Edit load problem is: " + xhr.statusText);
+                    alert("Edit load problem text is: " + xhr.responseText);
+                }
+
+            });
+
+        }
+
+    }
+    function ~prog~CloseK() {
+        //alert("~prog~closeK");
+        $("#Modal~topprog~OverlayK").empty();
+        $("#~topprog~Modalk").css("display", "none");
+        $(".modal-contentk").css("width", "85%");   //so as set back to original size
+    }
+ 
+
+
+    /// ~prog~OpenDetails
+    /// <summary>Next function is for Detail button of record in Grid, to overlay page on top of Parent Grid
+    /// </summary> 
+    function ~prog~OpenDetails(PKID, row_ID, arrayname) {
+        //alert("~prog~OpenDetails");
+        LayoutShowProgressBar();  //found in _Layout.cshtml
+
+        ~prog~resetablebg();
+        ~prog~rowhighlight(row_ID);
+
+        $("#~prog~Formtopdiv [name=~PK_ID~]").val(PKID);
+        $("#ChildGeneralDiv [name=PK_ID]").val(PKID);       //Store Primary Key for later processing in GrandChild
+
+        //next line, ONLY works for non IOS devices (ie Windows, Android, etc)
+        var deviceHeight = (typeof window.outerHeight != 'undefined') ? Math.max(window.outerHeight, $(window).height()) : $(window).height();
+        var frameheightis = Number(deviceHeight);
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            frameheightis = window.screen.height;  //only for IOS
+        }
+      
+        var pos = $("#~topprog~Formtopdiv").position();   //get position on screen, even if scrolled down.
+        var topsetchr = Number(pos.top - 1) + "px";          //Adjust if necessary
+        var leftsetchr = Number(pos.left) + "px";
+
+        var newwidth = $("#~topprog~Formtopdiv").outerWidth();
+        var newheight = $("#~topprog~Formtopdiv").outerHeight();
+        var heightsetchr = Number(newheight + 0) + "px";
+        var widthsetchr = Number(newwidth - 0) + "px";
+
+        var Expandid = "Overlay~prog~Detail";
+        //show div in right position
+        //document.getElementById(Expandid).style.display = "block";  //done down further
+        document.getElementById(Expandid).style.position = "fixed";
+        //document.getElementById(Expandid).style.position = "absolute";
+        document.getElementById(Expandid).style.top = topsetchr;
+        document.getElementById(Expandid).style.left = leftsetchr;
+        //END new code
+
+        document.getElementById(Expandid).style.width = widthsetchr;
+        document.getElementById(Expandid).style.height = heightsetchr;
+        //document.getElementById(Expandid).style.height = "520px";
+
+        var pagesrc = ~prog~DetailShowURL;
+        //alert("pagesrc is " + pagesrc);
+
+        $("#Modal~topprog~OverlayK").empty();   //clear modal popup as well
+        $("#Overlay~prog~Detail").empty();
+
+        if ($("#Overlay~prog~Detail").length == 0) {   //check if load destination div exists, first
+            //it doesn't exist
+            LayoutHideProgressBar();  //found in _Layout.cshtml
+            alert("Div not found, for load. Check load statement. ");
+        }
+        else {
+
+            $('#Overlay~prog~Detail').load(pagesrc, '', function (response, status, xhr) {
+                //alert("status is " + status);   //can be ("success", "notmodified", "error", "timeout", or "parsererror")
+                if (status == 'success') {
+                    //alert("status text is: " + xhr.statusText);
+                    //alert("response text is: " + xhr.responseText);
+                    setTimeout(Show~prog~Load, 50);
+                }
+                else  //error or timeout, etc..
+                {
+                    LayoutHideProgressBar();  //found in _Layout.cshtml
+                    alert("Detail load problem is: " + xhr.statusText);
+                    alert("Detail load problem text is: " + xhr.responseText);
+                }
+
+            });
+
+        }
+
+    }
+   function Show~prog~Load() {
+        try {
+            var Expandid = "Overlay~prog~Detail";
+            document.getElementById(Expandid).style.display = "block";
+        }
+        catch (err) {
+            //alert("err message " + err.message);
+        }
+
+    }
+   
+  
+
+
+    /// ~prog~DelDetails
+    /// <summary>Next function is to Delete a record on Grid
+    /// </summary>  
+    function ~prog~DelDetails(PKID, row_ID, arrayname) {
+        ~prog~resetablebg();
+        ~prog~rowhighlight(row_ID);
+
+        var putTitle = "";
+        putTitle = "Delete";
+
+        $("#~topprog~Modalk").css("display", "block");
+        $(".modal-contentk").css("width", "220px");   
+        $("#~topprog~modalkTitle").text(putTitle);
+
+        var Expandid = "Modal~topprog~OverlayK";        //div in ~topprog~.cshtml
+       
+        var dialogHeight = "80";
+        var Expandheightpx = dialogHeight + "px";
+        document.getElementById(Expandid).style.height = Expandheightpx;
+      
+        $("#Modal~topprog~OverlayK").empty();
+        var strTextDel = "<div style='font-size:12px;color:black;padding-bottom: 9px;padding-top:6px;'>Do you want to Delete this record?</div>";
+        var strSubmit = '<input style="font-size:11px;color:black;display:inline-block;font-weight:bold;margin-right:9px;" class="btn btn-sm" type="button" value="Yes" onclick="~prog~DelRecord(' + PKID + ');~prog~CloseK();" />';
+        var strCancel = '<input style="font-size:10px;color:red;display:inline-block;" class="btn btn-xs" type="button" value="Cancel" onclick="~prog~CloseK();" />';
+        $("#Modal~topprog~OverlayK").html(strTextDel + strSubmit + strCancel);
+
+    }
+
+
+
+    /// ~prog~DeleteALL
+    /// <summary>Next function is to multi Delete selected record/s on Grid
+    /// </summary>  
+    function ~prog~DeleteALL() {
+        var pagsiz = $("#~prog~Formtopdiv [name=PageSizeNEW]").val();
+        var contin = "No";
+        for (var r = 0; r < pagsiz + 1; r++) {
+            if (document.getElementById('~prog~Chk' + r) != null) {
+                if (document.getElementById('~prog~Chk' + r).checked == true) {
+                    contin = "Yes";
+                    document.getElementById('~prog~CheckB' + r).value = "on";
+                }
+                else {
+                    document.getElementById('~prog~CheckB' + r).value = "off";
+                }
+            }
+        }
+
+
+        var putTitle = "";
+        putTitle = "Delete";
+
+        $("#~topprog~Modalk").css("display", "block");
+        $(".modal-contentk").css("width", "220px");   
+        $("#~topprog~modalkTitle").text(putTitle);
+
+        var Expandid = "Modal~topprog~OverlayK";              //div in ~topprog~.cshtml
+     
+        var dialogHeight = "80";
+        var Expandheightpx = dialogHeight + "px";
+        document.getElementById(Expandid).style.height = Expandheightpx;
+      
+        $("#Modal~topprog~OverlayK").empty();
+        var strTextDel = "<div style='font-size:12px;color:black;padding-bottom: 9px;padding-top:6px;'>Do you want to Delete this record?</div>";
+        var strSubmit = '<input style="font-size:11px;color:black;display:inline-block;font-weight:bold;margin-right:9px;" class="btn btn-sm" type="button" value="Yes" onclick="~prog~DeleteSelected();~prog~CloseK();" />';
+        var strCancel = '<input style="font-size:10px;color:red;display:inline-block;" class="btn btn-xs" type="button" value="Cancel" onclick="~prog~CloseK();" />';
+        $("#Modal~topprog~OverlayK").html(strTextDel + strSubmit + strCancel);
+
+    }
+
+
+
+
+    /// ~prog~XLS
+    /// <summary>Next function is to Export all or filtered grid records to a spreadsheet (ie XLS or XLSX)
+    /// </summary>  
+    function ~prog~XLS() {
+        //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        var PgSize = $("#~prog~Formtopdiv [name=PageSize]").val();
+        var Sortt = $("#~prog~Formtopdiv [name=SortBy]").val();
+        var DescAsc = $("#~prog~Formtopdiv [name=SortAscendingDescending]").val();
+        var Criteria1 = $("#~prog~Form [name=GlobalSearchString]").val();
+
+        var CriteriaFK = $("#~prog~Form [name=~FPK_ID~]").val();
+
+        //alert("Sortt " + Sortt);
+        $("#~prog~RepXLS [name=SortBy2]").val(Sortt);
+        $("#~prog~RepXLS [name=SortAscendingDescending2]").val(DescAsc);
+        $("#~prog~RepXLS [name=PageSize2]").val(PgSize);
+        $("#~prog~RepXLS [name=GlobalSearchString]").val(Criteria1);
+
+        $("#~prog~RepXLS [name=~FPK_ID~]").val(CriteriaFK);
+  
+        LayoutShowProgressBar();  //found in _Layout.cshtml
+
+        setTimeout(~prog~SubmitRepXLS, 150);
+ 
+    }
+    //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+    function ~prog~finishDownloadXLS() {
+        //alert("in finishDownload");
+        LayoutHideProgressBar();  //found in _Layout.cshtml
+    }
+
+
+    function ~prog~SubmitRepXLS() {
+
+     var token = new Date().getTime(); //use the current timestamp as the token value
+     //alert("token is " + token);
+     $("#~prog~RepXLS [name=download_token_value]").val(token);
+
+     var FormtoDO = $('#~prog~RepXLS');
+
+     $.ajax({
+        type: 'POST',
+        url: FormtoDO.attr('action'),
+        data: FormtoDO.serialize(),
+        success: function (response) {
+            //alert("done " + response.filename);
+            ~prog~finishDownloadXLS();
+            //alert("done " + response.fileName);
+            window.location.href = "/~prog~/~prog~DownloadXLSX?file=" + response.filename;  //works
+
+            setTimeout(~prog~SubmitDelXLSX, 500, response.filename);  //Deletes XLSX file on Server, wait half a second
+
+        },
+        error: function (jqXhr, textStatus, errorMessage) {
+            alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+        }
+
+      });
+
+    }
+
+
+    function ~prog~SubmitDelXLSX(filenamee) {
+
+     var GetDelURLL = '/~prog~/~prog~DownloadXLSXDel';
+     //alert("GetDelURLL " + GetDelURLL);
+
+     $.ajax({
+        type: 'POST',
+        url: GetDelURLL,
+        data: { file: filenamee },
+        success: function (response) {
+            //alert("done " + response.filename);
+
+        },
+        error: function (jqXhr, textStatus, errorMessage) {
+            alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+        }
+
+     });
+
+    }
+
+
+
+
+
+
+
+    //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    function ~prog~PDF() {
+
+        var PgSize = $("#~prog~Formtopdiv [name=PageSize]").val();
+        var Sortt = $("#~prog~Formtopdiv [name=SortBy]").val();
+        var DescAsc = $("#~prog~Formtopdiv [name=SortAscendingDescending]").val();
+        var Criteria1 = $("#~prog~Form [name=GlobalSearchString]").val();
+
+        var CriteriaFK = $("#~prog~Form [name=~FPK_ID~]").val();
+
+        $("#~prog~RepPDF [name=SortBy2]").val(Sortt);
+        $("#~prog~RepPDF [name=SortAscendingDescending2]").val(DescAsc);
+        $("#~prog~RepPDF [name=PageSize2]").val(PgSize);
+        $("#~prog~RepPDF [name=GlobalSearchString]").val(Criteria1);
+
+        $("#~prog~RepPDF [name=~FPK_ID~]").val(CriteriaFK);
+  
+        LayoutShowProgressBar();  //found in _Layout.cshtml
+
+        setTimeout(~prog~SubmitRepPDF, 150);
+ 
+    }
+    //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+    function ~prog~finishDownload() {
+        //alert("in finishDownload");
+        LayoutHideProgressBar();  //found in _Layout.cshtml
+    }
+
+
+   function ~prog~SubmitRepPDF() {
+
+     var token = new Date().getTime(); //use the current timestamp as the token value
+     //alert("token is " + token);
+     $("#~prog~RepPDF [name=download_token_value]").val(token);
+
+     var FormtoDO = $('#~prog~RepPDF');
+
+     $.ajax({
+        type: 'POST',
+        url: FormtoDO.attr('action'),
+        data: FormtoDO.serialize(),
+        success: function (response) {
+            //alert("done " + response.filename);
+            ~prog~finishDownload();
+            //alert("done " + response.fileName);
+            window.location.href = "/~prog~/~prog~DownloadPDF?file=" + response.filename;  //works
+
+            setTimeout(~prog~SubmitDelPDF, 500, response.filename);  //Deletes PDF file on Server
+          
+        },
+        error: function (jqXhr, textStatus, errorMessage) {
+            alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+        }
+
+     });
+
+    }
+
+
+    function ~prog~SubmitDelPDF(filenamee) {
+
+     var GetDelURLL = '/~prog~/~prog~DownloadPDFDel';
+     //alert("GetDelURLL " + GetDelURLL);
+
+     $.ajax({
+        type: 'POST',
+        url: GetDelURLL,
+        data: {file: filenamee},
+        success: function (response) {
+            //alert("done " + response.filename);
+
+        },
+        error: function (jqXhr, textStatus, errorMessage) {
+            alert(" errorMessage is:- " + errorMessage + "\n Xhr.status is :- " + jqXhr.status + "\n Xhr.responseText is :- " + jqXhr.responseText + "\n textStatus is :- " + textStatus);
+        }
+
+     });
+
+    }
+
+
+
+
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/// START of Code from here down is fixed, which does not need any changing
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/// <summary>Runs everytime for Grid scrolling.
+/// </summary>  
+    function ~prog~myTimer() {
+        //alert("in ~prog~myTimer");
+        var scrola = $("#idDiv~prog~TBody").scrollLeft();
+        //alert("scrola is " + scrola);
+        $("#idDiv~prog~TBody2").scrollLeft(scrola);
+        //$("#idDiv~prog~TFooter").scrollLeft(scrola);
+        
+        //$("#idyy").scrollLeft(scrola);
+    }
+
+    // This part is for scrolling grid table and auto adjust when screen is resized
+    AdjustDivWidth~prog~();
+
+    function AdjustDivWidth~prog~() {
+        //alert("AdjustDivWidth~prog~");
+
+        if (document.getElementById("idDiv~prog~TBody")) {
+            var idDiv~prog~TBodyNew = document.getElementById("idDiv~prog~TBody").clientWidth;
+            var idDiv~prog~TBodyNewoff = document.getElementById("idDiv~prog~TBody").offsetWidth;
+            var idscrolWidth = idDiv~prog~TBodyNewoff - idDiv~prog~TBodyNew;
+            //alert("Scroll bar width is " + (idDiv~prog~TBodyNewoff - idDiv~prog~TBodyNew));
+            $("#~prog~Formtopdiv [name=ScrollWidthh]").val(idscrolWidth);
+            $("#~prog~Formtopdiv [name=OrigScreenWidthh]").val(idDiv~prog~TBodyNewoff);  //keep original table width
+
+            //var resetWidth = Number(document.getElementById("idDiv~prog~TBody").offsetWidth - idscrolWidth);
+            //var resetWidthList = Number(document.getElementById("idDiv~prog~TBody").offsetWidth);
+            var resetWidth = 0;
+            var resetWidthH = 0;
+            var newwidthUse = $("#~topprog~Formtopdiv").outerWidth();
+            var newwidthUseH = $("#~topprog~Formtopdiv").outerWidth();
+            //newwidthUse = Number(newwidthUse) - 43;  //scrolling width each side, change to suit if needed
+            //newwidthUseH = Number(newwidthUseH) - 94;  //scrolling width each side, change to suit if needed
+
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            newwidthUse = Number(newwidthUse) - (Number(idscrolWidth) + 26);  //scrolling width each side, change to suit if needed
+            newwidthUseH = Number(newwidthUseH) - (Number(idscrolWidth) + 69);  //For when going into Tab page option. Change as needed. See parent grid progResults.js (function ShowChild() - 43)
+           //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+            resetWidth = newwidthUse;
+            resetWidthH = newwidthUseH;
+
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            //Height adjusted for Tab. Change as needed.
+            document.getElementById("idDiv~prog~TBody").style.height = "140px";  //must match ~prog~(SetPagingLinks)
+            //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        }
+
+        if (document.getElementById("id~prog~Header")) {
+            document.getElementById("id~prog~Header").style.width = resetWidth + "px";
+        }
+
+        if (document.getElementById("id~prog~Header2")) {
+            document.getElementById("id~prog~Header2").style.width = resetWidth + "px";
+            document.getElementById("idDiv~prog~TBody2").style.width = resetWidth + "px";
+            try {
+                if (document.getElementById("~topprog~Showtabtab")) {     //From + Tabs option in Grid row
+                    document.getElementById("id~prog~Header2").style.width = resetWidthH + "px";   //for when in TAB only
+                    document.getElementById("idDiv~prog~TBody2").style.width = resetWidthH + "px";
+                }
+            }
+            catch (err) {
+                //alert("err message " + err.message);
+            }
+          
+        }
+
+        if (document.getElementById("id~prog~Footer")) {
+            //document.getElementById("id~prog~Footer").style.width = resetWidth + "px";
+            //document.getElementById("idDiv~prog~TFooter").style.width = resetWidth + "px";
+            //try {
+              //  if (document.getElementById("~topprog~Showtabtab")) {     //From + Tabs option in Grid row
+                  //  document.getElementById("id~prog~Footer").style.width = resetWidthH + "px";   //for when in TAB only
+                 //   document.getElementById("idDiv~prog~TFooter").style.width = resetWidthH + "px";
+              //  }
+           // }
+           // catch (err) {
+                ////alert("err message " + err.message);
+           // }
+
+        }
+
+    }
+    // END part is for scrolling grid table and auto adjust when screen is resized
+  
+
+    function ~prog~resetablebg() {
+        var table = document.getElementById('~prog~Table');
+        var rowsss = table.getElementsByTagName('tr');
+        var rowidstr;
+        var tr;
+        var backgr = "#D3DCE5";
+        if (table) {
+            tr = $('#~prog~Table').find('tr');
+            $.each(tr, function (index, item) {
+                //alert("index is " + index);
+                try {
+                    rowidstr = rowsss[index].id;
+                }
+                catch (e) {
+                    //break;
+                    //throw e;
+                }
+                //rowidstr = rowsss[index].id;
+                //alert("row idd is " + rowidstr);
+                if (rowidstr.indexOf("~prog~master") != -1) {    //only pickup rows with id of 'master' as prefix
+                    document.getElementById(rowidstr).style.backgroundColor = backgr;
+                    if (backgr == "#D3DCE5") {
+                        backgr = "#ebeff2";
+                    }
+                    else {
+                        backgr = "#D3DCE5";
+                    }
+
+                }
+
+            });
+        }
+
+    }
+
+    //Show selected row on page
+    function ~prog~rowhighlight(row_ID) {
+        ~prog~resetablebg();
+        var table = document.getElementById('~prog~Table');
+        if (table) {
+            //alert("hightlight row");
+            //table.rows[row_ID].style.backgroundColor = "#F3F3F3";
+            $("#~prog~Formtopdiv [name=CurrentRowNumber]").val(row_ID);  //change form name to suit
+        }
+
+        row_ID = row_ID - 1;
+        var imasterrowid = "~prog~master" + row_ID;
+        document.getElementById(imasterrowid).style.backgroundColor = "silver";
+    }
+
+
+    //Used for Highlighting a Sorted Column
+    function ~prog~HighlightCol(colname) {
+        if (document.getElementById('~prog~Table') != null) {
+            var table = document.getElementById('~prog~Table');
+            var rowss = table.getElementsByTagName('tr');
+            var colss = table.getElementsByTagName('td');
+            var colhh = table.getElementsByTagName('th');
+
+            if (table) {
+                for (var r = 0; r < colss.length; r++) {
+                    //alert("id is " + colss[r].id);
+                    if (colss[r].id == colname) {
+                        colss[r].style.backgroundColor = "#D3DCE5";
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    function ~prog~CheckALLs() {
+        //alert("in CheckALLs");
+        if (document.getElementById('~prog~CheckALL').checked == false) {
+            $("input[name^=~prog~Chk]").prop("checked", false);
+        }
+
+        if (document.getElementById('~prog~CheckALL').checked == true) {
+            $("input[name^=~prog~Chk]").prop("checked", true);
+        }
+
+    }
+
+
+    function ~prog~ShowColumn(row_ID, colnam) {
+        ~prog~HideColumnALL(colnam);
+
+        var ik = Number(row_ID - 2);
+        var tippp = colnam + "tipp" + ik;
+        $("#~prog~Formtopdiv [name=" + tippp + "]").css("display", "none");
+
+        var minusignid = "minusign" + colnam + row_ID;
+        var plusignid = "plusign" + colnam + row_ID;
+        $("#~prog~Formtopdiv [name=" + minusignid + "]").css("display", "inline-block");
+        $("#~prog~Formtopdiv [name=" + plusignid + "]").css("display", "none");
+    }
+
+    function ~prog~HideColumn(row_ID, colnam) {
+        var ik = Number(row_ID - 2);
+        var tippp = colnam + "tipp" + ik;
+        $("#~prog~Formtopdiv [name=" + tippp + "]").css("display", "");
+
+        var minusignid = "minusign" + colnam + row_ID;
+        var plusignid = "plusign" + colnam + row_ID;
+        $("#~prog~Formtopdiv [name=" + minusignid + "]").css("display", "none");
+        $("#~prog~Formtopdiv [name=" + plusignid + "]").css("display", "inline-block");
+    }
+
+    function ~prog~HideColumnALL(colnam) {
+        var tippp = colnam + "tipp";
+        //$("span[id^=" + tippp + "]").css("display", "");
+        $("#~prog~Formtopdiv [name=" + tippp + "]").css("display", "");
+
+        var minusignid = "minusign" + colnam;
+        var plusignid = "plusign" + colnam;
+
+        $("#~prog~Formtopdiv [name=" + minusignid + "]").css("display", "none");
+        $("#~prog~Formtopdiv [name=" + plusignid + "]").css("display", "inline-block");
+    }
+
+
+    //Show row on page via traversing all grid rows
+    function ~prog~newrowhighlight() {
+        //alert("in newrowhighlight");
+        ~prog~resetablebg();
+        var table = document.getElementById('~prog~Table');
+        var rowsss = table.getElementsByTagName('tr');
+        var dValue;
+        var addval;
+        var IDId;
+        var indx;
+        var rowidstr;
+        var tr;
+        indx = 1;
+        var rowCount = $('#~prog~Table tr').length;
+        //alert("rowcount is " + rowCount);
+        if (table) {
+            for (var r = 0; r < rowCount; r++) {
+                try {
+                    rowidstr = rowsss[r].id;
+                }
+                catch (e) {
+                    break;
+                    //throw e;
+                }
+
+                //rowidstr = rowsss[r].id;
+                //alert("row id is " + rowidstr);
+                if (rowidstr.indexOf("~prog~master") != -1) {    //only pickup rows with id of 'master' as prefix
+                    //alert("r is " + r);
+                    dValue = document.getElementById('~prog~PK_IDD' + indx).value;
+                    //alert("dValue is " + dValue);
+                    if ($("#~prog~Formtopdiv [name=~PK_ID~]").val() == dValue) {
+                        //alert("dValue is " + dValue);
+                        document.getElementById(rowidstr).style.backgroundColor = "silver";
+                        break;
+                    }
+
+                    indx = indx + 1;
+
+                }
+
+            }
+        }
+
+        //new code, to auto scroll to row in scrollable DIV. This used for Update or Add ONLY.
+        var row_ID2 = indx + 1;
+        var imasterrowid2 = "~prog~master" + row_ID2;
+        var selectedPosy = 0;
+        //selectedPosx = document.getElementById(imasterrowid2).offsetLeft;
+        if (document.getElementById(imasterrowid2)) {
+            selectedPosy = document.getElementById(imasterrowid2).offsetTop;
+            //alert("selectedPosy is " + selectedPosy);
+            if (Number(selectedPosy > 400))    //Note:- 400 is the Height of Grid Table (ie idDiv~prog~TBody)
+            {
+                $("#idDiv~prog~TBody").scrollTop(selectedPosy);
+            }
+
+
+            //$("#idDiv~prog~TBody").scrollTop(selectedPosy);
+        }
+        //END new code, to auto scroll to row in scrollable DIV
+    }
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/// END of fixed code, which does not need any changing
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

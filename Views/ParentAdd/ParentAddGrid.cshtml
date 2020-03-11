@@ -1,0 +1,23 @@
+@model appAPP.Models.ParentAddViewModel
+
+@{
+    ViewBag.Title = "Scripts";
+}
+
+<script language="javascript" type="text/javascript">
+
+    $(ParentAddpageReady);
+
+    function ParentAddpageReady() {
+
+        $.ajaxSetup({ cache: false });   //stop caching, as querying current database data everytime of a POST, not what has been cached
+
+    }
+        //END of pageReady
+
+
+</script>
+
+<partial name="ParentAdd" model="Model" />
+
+

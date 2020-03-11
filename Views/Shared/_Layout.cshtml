@@ -1,0 +1,281 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Kal1Dog WebTech</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0" />
+
+    <meta name="description" content="ASP.NET SPA Build Code Tool">
+    <meta name="keywords" content="SPA,ASP.NET,MVC,innovative solution">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Add to Home">
+
+    <link rel="icon" href="@(Url.Content("~/images/favicon2.png"))" type="image/png">
+    <link rel="shortcut icon" href="@(Url.Content("~/images/favicon2.png"))" type="image/png">
+    <link rel="apple-touch-icon-precomposed" href="@(Url.Content("~/images/favicon2.png"))" type="image/png">
+    <link rel="apple-touch-icon" href="@(Url.Content("~/images/favicon2.png"))" type="image/png">
+    <link rel="android-touch-icon" href="@(Url.Content("~/images/favicon2.png"))" type="image/png">
+
+    <link href="@Url.Content("~/css/bootstrap.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/MyStyle.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/font-awesome/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+
+    <script src="@Url.Content("~/js/jquery-3.2.1.min.js")" type="text/javascript"></script>
+    <link href="@Url.Content("~/css/themes/base/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/js/jquery-ui-1.12.1.min.js")" type="text/javascript"></script>
+
+    <script language="javascript" type="text/javascript">
+
+    //The next function are for starting immediately a progressbar from a left side menu item
+    function LayoutShowProgressBar() {
+        //Progress Bar Display.
+        $("#overlayprogress").css("visibility", "visible");
+        $("#overlayprogress").css("display", "block");
+
+        $("#showSpin").css("display", "block");
+        //End Progress Bar
+    }
+    //The next function is called from the above left side menu item TOPGRID (ie Names.cshtml -> PostSearchToServer())
+    function LayoutHideProgressBar() {
+        //alert("LayoutHide");
+        //Hide Progress Bar Display.
+        $("#overlayprogress").css("visibility", "hidden");
+        $("#overlayprogress").css("display", "none");
+
+        $("#showSpin").css("display", "none");
+        //End Hide Progress Bar
+    }
+
+    </script>
+
+    <style>
+     body {
+         padding-top: 55px;
+     }
+
+
+#logindisplay
+    {
+        font-size: 12px;
+        display:block;
+        text-align:left;
+        margin:1px;
+        color: Navy;
+    }
+
+#logindisplay a:link
+    {
+        color: Navy;
+        text-decoration: underline;
+    }
+
+#logindisplay a:visited
+    {
+        color: Blue;
+        text-decoration: underline;
+    }
+
+#logindisplay a:hover
+    {
+        color: Blue;
+        text-decoration: none;
+    }
+
+    </style>
+
+</head>
+<body>
+
+    <div style="margin-left: 0px;overflow: hidden;">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-left: 0px;">
+            <div class="container" style="margin-left: 0px;">
+                <div class="row" style="margin-left: 0px;">
+                    <div class="col-sm-3 col-md-2 col-lg-2 navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="/Home/Index" style="font-family: Arial; font-size: 15px; font-weight: bold; color: #800080">SPA Generator</a>
+                    </div>
+                    <div class="col-sm-9 col-md-10 col-lg-10 navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-left">
+                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                           
+                            <li><a style="color:blue;display:none;" href="/Home/About">About</a></li>
+                            <li><a style="color:blue;" href="/Home/Contact">Contact</a></li>
+                           
+
+                            <li>@Html.ActionLink("Add/Delete Parent Table", "DisplayParentAdd", "ParentAdd", null, new { onclick = "return LayoutShowProgressBar();" })</li>
+                            <li style="display: none;">@Html.ActionLink("Charts", "About", "Home")</li>
+                            <li style="display: none;">@Html.ActionLink("Charts", "About", "Home")</li>
+
+                            <!--ADDLINKHERE-->
+                          
+                            <li>
+
+                                <partial name="_LoginPartial" />
+
+                            </li>
+
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container" style="margin-left: -11px;overflow: hidden;">
+            <div class="row" style="margin-left: 0px;overflow: hidden;">
+                @RenderBody()
+            </div>
+        </div>
+
+        <div class="container" style="margin-left: 0px;overflow: hidden;">
+            <div class="row" style="margin-left: 0px;margin-top: 14px;overflow: hidden;">
+                <div class="span12" style="text-align: left; font-family: Arial; font-size: 11px;overflow: hidden;">
+                    &copy; Copyright Kal1Dog <span id="copyYear"></span>
+                    &nbsp;&nbsp;<img src="@(Url.Content("~/images/favicon2.png"))" alt="favicon" />
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+    <div id="overlayprogress" class="modalBackground2" style="position: absolute; left: 0px; background-color: #D8D8D8;overflow: hidden;
+    visibility: hidden; top: 0px; height: 100%; width: 100%; z-index: 300">
+    </div>
+    <div id="showSpin" data-bind="visible: isSpinning"
+         style="position: absolute;top: 40%;margin: 5px auto 0;left: 45%;background-color:white;border-radius: 5px;display:none;border:1px solid silver">
+        <div style="height:17px;">
+            &nbsp;
+        </div>
+        &nbsp;<i class="fa fa-spinner fa-spin"></i>
+              <span style="font-size: 14px;color:navy;">&nbsp;&nbsp;Processing ...&nbsp;&nbsp;&nbsp;</span>
+        <div style="height:20px;">
+            &nbsp;
+        </div>
+    </div>
+
+
+    <script src="@Url.Content("~/js/jquery-3.2.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/js/jquery-ui-1.12.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/js/bootstrap.min.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        //next is for firefox, when using the Browser Back
+        window.onbeforeunload = function () {
+            //alert("onbeforeunload");
+        }
+
+
+        //Disable Browser Back and Forward buttons - ORIGINAL code
+        //history.pushState(null, null, location.href);
+        //window.onpopstate = function () {
+        //history.go(1);
+        //};
+
+
+
+        //window.history.pushState(null, "", window.location.href);
+        //window.onpopstate = function () {
+        //window.history.pushState(null, "", window.location.href);
+        //};
+
+        //$(window).trigger('hashchange');
+        $(window).on('hashchange', hashchangeit);  //use this
+        function hashchangeit() {
+            var histlen = history.length;
+            //alert("hist length is " + histlen);
+            var urlit = window.location.hash;
+            //alert("hashchange url is " + urlit);
+            if (urlit != "") {
+                //var runfunction = urlit.replace("#", "");
+                //history.go(-1);
+                //alert("runfunction is " + runfunction);
+            }
+            else {
+                var chkreload = "true";
+                //Check any modal displayed
+                if ($('.modalk').css('display') != 'none') {
+                    //alert('modal is not hidden');
+                    chkreload = "false";
+                    location.reload();
+                }
+
+                //check if topdetail overlay displayed, is then always do reload
+                if ($('.__topdetailk').css('display') != 'none') {
+                    //alert('top detail is not hidden');
+                    chkreload = "false";
+                    location.reload();
+                }
+
+                if ($('.__toptabtabk').css('display') == 'block') {
+                    //alert('top child is not hidden');
+                    chkreload = "false";
+                    location.reload();
+                }
+
+
+                if (chkreload == "true") {
+                    //alert("hist length is " + histlen);
+                    history.go(-1);
+                }
+            }
+
+
+        }
+
+
+        function GoHistforward1() {
+            history.go(1);
+        }
+
+        function myFunction() {
+            if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) {
+                alert('Opera');
+            }
+            else if (navigator.userAgent.indexOf("Chrome") != -1) {
+                alert('Chrome');
+            }
+            else if (navigator.userAgent.indexOf("Safari") != -1) {
+                alert('Safari');
+            }
+            else if (navigator.userAgent.indexOf("Firefox") != -1) {
+                alert('Firefox');
+            }
+            else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true)) //IF IE > 10
+            {
+                alert('IE');
+            }
+            else {
+                alert('unknown');
+            }
+        }
+
+
+        // Return today's date and time
+        var currentTime = new Date()
+        // returns the year (four digits)
+        var yearin = currentTime.getFullYear();
+        $("#copyYear").text(yearin);
+
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>
